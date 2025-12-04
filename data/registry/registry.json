@@ -1,14 +1,14 @@
 {
-  "SEM-2025-000152-3473": {
-    "document_id": "SEM-2025-000152-3473",
+  "SEM-2025-000152-1859": {
+    "document_id": "SEM-2025-000152-1859",
     "user_id": "user_123",
     "case_number": null,
     "original_filename": "\u0434\u043e\u043a\u0443\u043c\u0435\u043d\u0442_\u0442\u0435\u0441\u0442.pdf",
     "file_size": 63,
     "mime_type": "application/pdf",
     "content_hash": "f3c0b81970e1f08029a73cfde1bbbe4fabe6801e070f26d8ee309029e42a8c8c",
-    "metadata_hash": "0aee418ee8e150d24dc9a13dde3b069fc4e0dffd8a52bbac6b1629555cf65ce5",
-    "combined_hash": "6b9d123ddef18e0abc5963b2a7fb32910249f46506d2209d84a860cbc895edfd",
+    "metadata_hash": "9eb59495a4dfbb9a1464b8dec3e1c6d3c244cea945a4625497be6a6bdf732299",
+    "combined_hash": "0ee12a6261a8ea95ebeca82a985a2b501de89a09c5213afa0061e6fcb70fa643",
     "status": "original",
     "integrity_status": "verified",
     "is_duplicate": false,
@@ -18,197 +18,31 @@
     "forgery_alerts": [],
     "forgery_score": 0.0,
     "requires_review": false,
-    "registered_at": "2025-12-02T01:57:49.178000+00:00",
+    "registered_at": "2025-12-04T16:19:30.425968+00:00",
     "last_verified_at": null,
     "last_accessed_at": null,
-    "custody_chain": [],
-    "versions": [],
+    "custody_chain": [
+      {
+        "timestamp": "2025-12-04T16:19:30.425976+00:00",
+        "action": "received",
+        "actor": "user_123",
+        "details": "Document registered: \u0434\u043e\u043a\u0443\u043c\u0435\u043d\u0442_\u0442\u0435\u0441\u0442.pdf",
+        "ip_address": null,
+        "device_info": null,
+        "integrity_hash": "0ee12a6261a8ea95ebeca82a985a2b501de89a09c5213afa0061e6fcb70fa643"
+      }
+    ],
+    "versions": [
+      {
+        "version": 1,
+        "timestamp": "2025-12-04T16:19:30.425982+00:00",
+        "content_hash": "f3c0b81970e1f08029a73cfde1bbbe4fabe6801e070f26d8ee309029e42a8c8c",
+        "changes": "Initial registration",
+        "changed_by": "user_123"
+      }
+    ],
     "current_version": 1,
     "storage_path": null,
     "intake_document_id": null
-  },
-  "SEM-2025-000001-6D5A": {
-    "document_id": "SEM-2025-000001-6D5A",
-    "user_id": "DUdfrDGs9q",
-    "case_number": null,
-    "original_filename": "MCRO_19AV-CV-25-3477_Complaint-Civil_2025-11-17_20251127030721.pdf",
-    "file_size": 3130308,
-    "mime_type": "application/pdf",
-    "content_hash": "7320845cb5cad35aa90ad2a38cfad51115c2a9e4c64aeaf456659854b81579a9",
-    "metadata_hash": "e8f16c252974b3126690ac6c376b766554598dfd8e796666899b1b97b4cdd2a0",
-    "combined_hash": "11563206f9882d5e47f7b36e19e6f7b1f1fd491708abd15fa9ef0d512effeb18",
-    "status": "original",
-    "integrity_status": "verified",
-    "is_duplicate": false,
-    "original_document_id": null,
-    "duplicate_ids": [],
-    "duplicate_count": 0,
-    "forgery_alerts": [],
-    "forgery_score": 0.0,
-    "requires_review": false,
-    "registered_at": "2025-12-03T06:23:45.358704+00:00",
-    "last_verified_at": null,
-    "last_accessed_at": null,
-    "custody_chain": [
-      {
-        "timestamp": "2025-12-03T06:23:45.358723+00:00",
-        "action": "received",
-        "actor": "DUdfrDGs9q",
-        "details": "Document registered: MCRO_19AV-CV-25-3477_Complaint-Civil_2025-11-17_20251127030721.pdf",
-        "ip_address": "127.0.0.1",
-        "device_info": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36 Edg/142.0.0.0",
-        "integrity_hash": "11563206f9882d5e47f7b36e19e6f7b1f1fd491708abd15fa9ef0d512effeb18"
-      }
-    ],
-    "versions": [
-      {
-        "version": 1,
-        "timestamp": "2025-12-03T06:23:45.358852+00:00",
-        "content_hash": "7320845cb5cad35aa90ad2a38cfad51115c2a9e4c64aeaf456659854b81579a9",
-        "changes": "Initial registration",
-        "changed_by": "DUdfrDGs9q"
-      }
-    ],
-    "current_version": 1,
-    "storage_path": null,
-    "intake_document_id": "doc_0d5d3b3065f5"
-  },
-  "SEM-2025-000002-45D8": {
-    "document_id": "SEM-2025-000002-45D8",
-    "user_id": "DUdfrDGs9q",
-    "case_number": null,
-    "original_filename": "Lease paperwork (1) (1).pdf",
-    "file_size": 256994,
-    "mime_type": "application/pdf",
-    "content_hash": "a6df9a2a7cc4f8a2f2febda653ecc11515dfcbe4c0c324c24f8fd881461c4df3",
-    "metadata_hash": "c38342337da28281224e18bf6208a46766fe89e07400131362bc1e00814c2a40",
-    "combined_hash": "5c132121296ae4d44eeb87f5d791f12ec28bd1df5c93c3e9451edfcfa234ead9",
-    "status": "original",
-    "integrity_status": "verified",
-    "is_duplicate": false,
-    "original_document_id": null,
-    "duplicate_ids": [],
-    "duplicate_count": 0,
-    "forgery_alerts": [],
-    "forgery_score": 0.0,
-    "requires_review": false,
-    "registered_at": "2025-12-03T06:23:45.402494+00:00",
-    "last_verified_at": null,
-    "last_accessed_at": null,
-    "custody_chain": [
-      {
-        "timestamp": "2025-12-03T06:23:45.402511+00:00",
-        "action": "received",
-        "actor": "DUdfrDGs9q",
-        "details": "Document registered: Lease paperwork (1) (1).pdf",
-        "ip_address": "127.0.0.1",
-        "device_info": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36 Edg/142.0.0.0",
-        "integrity_hash": "5c132121296ae4d44eeb87f5d791f12ec28bd1df5c93c3e9451edfcfa234ead9"
-      }
-    ],
-    "versions": [
-      {
-        "version": 1,
-        "timestamp": "2025-12-03T06:23:45.402541+00:00",
-        "content_hash": "a6df9a2a7cc4f8a2f2febda653ecc11515dfcbe4c0c324c24f8fd881461c4df3",
-        "changes": "Initial registration",
-        "changed_by": "DUdfrDGs9q"
-      }
-    ],
-    "current_version": 1,
-    "storage_path": null,
-    "intake_document_id": "doc_85e9bbc4fd28"
-  },
-  "SEM-2025-000003-4332": {
-    "document_id": "SEM-2025-000003-4332",
-    "user_id": "DUdfrDGs9q",
-    "case_number": "19av-cv-25-3477",
-    "original_filename": "e mail final notice.pdf",
-    "file_size": 542366,
-    "mime_type": "application/pdf",
-    "content_hash": "d4fc6148acfc84def53b33b9acf77b74b2bda0093bffb9b24ab3f46e17730762",
-    "metadata_hash": "eceefd6deb5c13a9fe54cfebdd4929df43fa29a2cdf8aa7ef7b67b87166b8efb",
-    "combined_hash": "b05c6fd4e981ad8c8f529fd34dbe2217e44bc9e8e90cfd999fac4f42a7256f9d",
-    "status": "original",
-    "integrity_status": "verified",
-    "is_duplicate": false,
-    "original_document_id": null,
-    "duplicate_ids": [],
-    "duplicate_count": 0,
-    "forgery_alerts": [],
-    "forgery_score": 0.0,
-    "requires_review": false,
-    "registered_at": "2025-12-03T06:30:39.104675+00:00",
-    "last_verified_at": null,
-    "last_accessed_at": null,
-    "custody_chain": [
-      {
-        "timestamp": "2025-12-03T06:30:39.104680+00:00",
-        "action": "received",
-        "actor": "DUdfrDGs9q",
-        "details": "Document registered: e mail final notice.pdf",
-        "ip_address": "127.0.0.1",
-        "device_info": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36 Edg/142.0.0.0",
-        "integrity_hash": "b05c6fd4e981ad8c8f529fd34dbe2217e44bc9e8e90cfd999fac4f42a7256f9d"
-      }
-    ],
-    "versions": [
-      {
-        "version": 1,
-        "timestamp": "2025-12-03T06:30:39.104719+00:00",
-        "content_hash": "d4fc6148acfc84def53b33b9acf77b74b2bda0093bffb9b24ab3f46e17730762",
-        "changes": "Initial registration",
-        "changed_by": "DUdfrDGs9q"
-      }
-    ],
-    "current_version": 1,
-    "storage_path": null,
-    "intake_document_id": "doc_a2594d3130e4"
-  },
-  "SEM-2025-000004-CE7D": {
-    "document_id": "SEM-2025-000004-CE7D",
-    "user_id": "GAC5SjqJrk",
-    "case_number": null,
-    "original_filename": "notice of the lease violation .jpg",
-    "file_size": 7032403,
-    "mime_type": "image/jpeg",
-    "content_hash": "d8e38068ca4c317f9f1efba2a7cb65128781a4b24c8972bef1a0acf5675b9d88",
-    "metadata_hash": "b25dfd2fdd94511b5d674520c585c843f240aef912f2c6400cc4684951aafee5",
-    "combined_hash": "c82be17fc9508fa0e1c0a5d9fc31dc44ca978c078d27e78d790bbf52759ed998",
-    "status": "original",
-    "integrity_status": "verified",
-    "is_duplicate": false,
-    "original_document_id": null,
-    "duplicate_ids": [],
-    "duplicate_count": 0,
-    "forgery_alerts": [],
-    "forgery_score": 0.0,
-    "requires_review": false,
-    "registered_at": "2025-12-03T06:35:17.475784+00:00",
-    "last_verified_at": null,
-    "last_accessed_at": null,
-    "custody_chain": [
-      {
-        "timestamp": "2025-12-03T06:35:17.475797+00:00",
-        "action": "received",
-        "actor": "GAC5SjqJrk",
-        "details": "Document registered: notice of the lease violation .jpg",
-        "ip_address": "127.0.0.1",
-        "device_info": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36 Edg/142.0.0.0",
-        "integrity_hash": "c82be17fc9508fa0e1c0a5d9fc31dc44ca978c078d27e78d790bbf52759ed998"
-      }
-    ],
-    "versions": [
-      {
-        "version": 1,
-        "timestamp": "2025-12-03T06:35:17.475834+00:00",
-        "content_hash": "d8e38068ca4c317f9f1efba2a7cb65128781a4b24c8972bef1a0acf5675b9d88",
-        "changes": "Initial registration",
-        "changed_by": "GAC5SjqJrk"
-      }
-    ],
-    "current_version": 1,
-    "storage_path": null,
-    "intake_document_id": "doc_115bedb4b483"
   }
 }
