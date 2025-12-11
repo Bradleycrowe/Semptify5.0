@@ -1,14 +1,14 @@
 {
-  "SEM-2025-000152-0661": {
-    "document_id": "SEM-2025-000152-0661",
+  "SEM-2025-000152-1C11": {
+    "document_id": "SEM-2025-000152-1C11",
     "user_id": "user_123",
     "case_number": null,
     "original_filename": "\u0434\u043e\u043a\u0443\u043c\u0435\u043d\u0442_\u0442\u0435\u0441\u0442.pdf",
     "file_size": 63,
     "mime_type": "application/pdf",
     "content_hash": "f3c0b81970e1f08029a73cfde1bbbe4fabe6801e070f26d8ee309029e42a8c8c",
-    "metadata_hash": "f4cdef9508b82a2fa486732601056e4bd163c9a177d89eb6ec8260d0ff115b1c",
-    "combined_hash": "c732e418c9124fe0396da023ec6c6f5fb0b154e1e598a57f1125f296ccd7edaf",
+    "metadata_hash": "f572407ca3363d5abfa2de41b962ae35f7fbe9962e6f5374ba069da49ab7acd6",
+    "combined_hash": "85d1cbe4f3308179fc8df71b574e676d6aa1326194c1a59b6011b3c27f0d302d",
     "status": "original",
     "integrity_status": "verified",
     "is_duplicate": false,
@@ -18,24 +18,24 @@
     "forgery_alerts": [],
     "forgery_score": 0.0,
     "requires_review": false,
-    "registered_at": "2025-12-11T16:37:35.220893+00:00",
+    "registered_at": "2025-12-11T17:14:50.348435+00:00",
     "last_verified_at": null,
     "last_accessed_at": null,
     "custody_chain": [
       {
-        "timestamp": "2025-12-11T16:37:35.220896+00:00",
+        "timestamp": "2025-12-11T17:14:50.348438+00:00",
         "action": "received",
         "actor": "user_123",
         "details": "Document registered: \u0434\u043e\u043a\u0443\u043c\u0435\u043d\u0442_\u0442\u0435\u0441\u0442.pdf",
         "ip_address": null,
         "device_info": null,
-        "integrity_hash": "c732e418c9124fe0396da023ec6c6f5fb0b154e1e598a57f1125f296ccd7edaf"
+        "integrity_hash": "85d1cbe4f3308179fc8df71b574e676d6aa1326194c1a59b6011b3c27f0d302d"
       }
     ],
     "versions": [
       {
         "version": 1,
-        "timestamp": "2025-12-11T16:37:35.220901+00:00",
+        "timestamp": "2025-12-11T17:14:50.348445+00:00",
         "content_hash": "f3c0b81970e1f08029a73cfde1bbbe4fabe6801e070f26d8ee309029e42a8c8c",
         "changes": "Initial registration",
         "changed_by": "user_123"
