@@ -514,26 +514,29 @@
                         </div>
                     </div>
 
-                    <!-- Quick Actions -->
-                    <div class="grid md:grid-cols-3 gap-4 mb-8 max-w-2xl mx-auto">
-                        <a href="/static/command_center.html" class="bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl p-4 transition-all">
-                            <i class="fas fa-home text-2xl text-purple-400 mb-2"></i>
-                            <div class="text-white font-medium">Command Center</div>
-                        </a>
-                        <a href="/static/documents.html" class="bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl p-4 transition-all">
-                            <i class="fas fa-file-upload text-2xl text-blue-400 mb-2"></i>
-                            <div class="text-white font-medium">Upload Documents</div>
-                        </a>
-                        <a href="/static/timeline.html" class="bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl p-4 transition-all">
-                            <i class="fas fa-clock text-2xl text-green-400 mb-2"></i>
-                            <div class="text-white font-medium">Case Timeline</div>
-                        </a>
+                    <!-- Next Step - Tell Us About Your Situation -->
+                    <div class="bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-400/30 rounded-xl p-6 mb-8 max-w-2xl mx-auto">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-blue-500/30 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-comments text-blue-400 text-xl"></i>
+                            </div>
+                            <div class="text-left">
+                                <h4 class="text-white font-semibold mb-1">Next: Tell Us What Brings You Here</h4>
+                                <p class="text-gray-400 text-sm">We'll help you understand your situation, organize your documents, and identify your next steps.</p>
+                            </div>
+                        </div>
                     </div>
 
-                    <button onclick="window.location.href='/static/command_center.html'" class="px-8 py-4 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-semibold rounded-xl transition-all">
-                        <i class="fas fa-rocket mr-2"></i>
-                        Start Using Semptify
+                    <button onclick="window.location.href='/static/get_started.html'" class="px-8 py-4 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-semibold rounded-xl transition-all">
+                        <i class="fas fa-arrow-right mr-2"></i>
+                        Continue Setup
                     </button>
+                    
+                    <div class="mt-4">
+                        <a href="/static/case.html" class="text-gray-400 hover:text-white text-sm transition-colors">
+                            Skip and go directly to my case →
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

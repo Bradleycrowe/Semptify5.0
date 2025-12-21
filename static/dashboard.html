@@ -1821,7 +1821,8 @@
                 
                 const response = await fetch('/api/documents/upload', {
                     method: 'POST',
-                    body: formData
+                    body: formData,
+                    credentials: 'include'
                 });
 
                 if (!response.ok) throw new Error('Upload failed');
@@ -1831,7 +1832,7 @@
                 statusText.textContent = 'Extracting timeline events...';
 
                 // Auto-extract timeline events
-                await fetch(`/api/documents/${result.id}/auto-timeline`, { method: 'POST' });
+                await fetch(`/api/documents/${result.id}/auto-timeline`, { method: 'POST', credentials: 'include' });
                 
                 progressFill.style.width = '100%';
                 statusText.textContent = 'Complete!';
@@ -1905,7 +1906,7 @@
         // Load Documents
         async function loadDocuments() {
             try {
-                const response = await fetch('/api/documents/');
+                const response = await fetch('/api/documents/', { credentials: 'include' });
                 if (response.ok) {
                     const data = await response.json();
                     // Handle array or object with documents property
@@ -1988,7 +1989,7 @@
         // Load Timeline
         async function loadTimeline() {
             try {
-                const response = await fetch('/api/timeline/');
+                const response = await fetch('/api/timeline/', { credentials: 'include' });
                 if (response.ok) {
                     const data = await response.json();
                     if (Array.isArray(data)) {
@@ -2065,7 +2066,7 @@
         // Load Defenses
         async function loadDefenses() {
             try {
-                const response = await fetch('/api/eviction-defense/defenses');
+                const response = await fetch('/api/eviction-defense/defenses', { credentials: 'include' });
                 if (response.ok) {
                     const data = await response.json();
                     if (Array.isArray(data)) {
@@ -2116,7 +2117,7 @@
         // Load Motions
         async function loadMotions() {
             try {
-                const response = await fetch('/api/eviction-defense/motions');
+                const response = await fetch('/api/eviction-defense/motions', { credentials: 'include' });
                 if (response.ok) {
                     const data = await response.json();
                     if (Array.isArray(data)) {
@@ -2168,7 +2169,7 @@
         // Load Counterclaims
         async function loadCounterclaims() {
             try {
-                const response = await fetch('/api/eviction-defense/counterclaims');
+                const response = await fetch('/api/eviction-defense/counterclaims', { credentials: 'include' });
                 if (response.ok) {
                     const data = await response.json();
                     counterclaims = data.counterclaims || data || [];
@@ -2206,7 +2207,7 @@
         // Load Library
         async function loadLibrary() {
             try {
-                const response = await fetch('/api/law-library/categories');
+                const response = await fetch('/api/law-library/categories', { credentials: 'include' });
                 if (response.ok) {
                     const data = await response.json();
                     libraryCategories = data.categories || data || [];
@@ -2214,7 +2215,7 @@
                 }
                 
                 // Also load quick reference
-                const refResponse = await fetch('/api/law-library/quick-reference/eviction_process');
+                const refResponse = await fetch('/api/law-library/quick-reference/eviction_process', { credentials: 'include' });
                 if (refResponse.ok) {
                     const refData = await refResponse.json();
                     renderQuickReference(refData);
@@ -2267,7 +2268,7 @@
         // Load Zoom Tips
         async function loadZoomTips() {
             try {
-                const response = await fetch('/api/zoom-court/quick-tips');
+                const response = await fetch('/api/zoom-court/quick-tips', { credentials: 'include' });
                 if (response.ok) {
                     const data = await response.json();
                     zoomTips = data.tips || data || [];
@@ -2307,7 +2308,7 @@
         // Load Procedures
         async function loadProcedures() {
             try {
-                const response = await fetch('/api/eviction-defense/procedures');
+                const response = await fetch('/api/eviction-defense/procedures', { credentials: 'include' });
                 if (response.ok) {
                     const data = await response.json();
                     procedures = data.procedures || data || [];
@@ -2411,7 +2412,8 @@
                 const response = await fetch('/api/law-library/librarian/ask', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ question: message })
+                    body: JSON.stringify({ question: message }),
+                    credentials: 'include'
                 });
                 
                 if (response.ok) {
@@ -2485,7 +2487,7 @@
             searchCount.textContent = 'Searching...';
 
             try {
-                const response = await fetch(`/api/search/?q=${encodeURIComponent(query)}&limit=20`);
+                const response = await fetch(`/api/search/?q=${encodeURIComponent(query)}&limit=20`, { credentials: 'include' });
                 
                 if (!response.ok) {
                     throw new Error('Search failed');

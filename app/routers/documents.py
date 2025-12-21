@@ -44,6 +44,10 @@ class DocumentResponse(BaseModel):
 
 class DocumentDetailResponse(DocumentResponse):
     """Detailed document response with extracted data."""
+    original_filename: Optional[str] = None
+    mime_type: Optional[str] = None
+    file_size: Optional[int] = None
+    title_updated_at: Optional[str] = None
     key_dates: Optional[list] = None
     key_parties: Optional[list] = None
     key_amounts: Optional[list] = None
@@ -319,6 +323,10 @@ async def get_document(doc_id: str):
         summary=doc.summary,
         uploaded_at=doc.uploaded_at.isoformat() if doc.uploaded_at else None,
         analyzed_at=doc.analyzed_at.isoformat() if doc.analyzed_at else None,
+        original_filename=doc.filename,
+        mime_type=doc.mime_type,
+        file_size=doc.file_size,
+        title_updated_at=doc.title_updated_at.isoformat() if doc.title_updated_at else None,
         key_dates=doc.key_dates,
         key_parties=doc.key_parties,
         key_amounts=doc.key_amounts,
@@ -462,6 +470,19 @@ class CategoryUpdateRequest(BaseModel):
     doc_type: str
 
 
+class TitleUpdateRequest(BaseModel):
+    """Request to update document title only."""
+    title: str
+
+
+class TitleUpdateResponse(BaseModel):
+    """Response after title update."""
+    doc_id: str
+    title: str
+    title_updated_at: str
+    message: str
+
+
 @router.get("/{doc_id}/text", response_model=DocumentTextResponse)
 async def get_document_text(
     doc_id: str,
@@ -530,6 +551,63 @@ async def update_document_category(
         raise HTTPException(status_code=400, detail="Invalid document type")
 
 
+@router.patch("/{doc_id}/title", response_model=TitleUpdateResponse)
+async def update_document_title(
+    doc_id: str,
+    request: TitleUpdateRequest,
+    user: StorageUser = Depends(require_user)
+):
+    """
+    Update ONLY the title of a document.
+    
+    Documents are stored in their original, unmodified form.
+    The title is the ONLY editable field - for organization purposes.
+    All changes are timestamped for audit trail.
+    """
+    from datetime import datetime
+    
+    pipeline = get_document_pipeline()
+    doc = pipeline.get_document(doc_id)
+
+    if not doc:
+        raise HTTPException(status_code=404, detail="Document not found")
+
+    if doc.user_id != user.user_id:
+        raise HTTPException(status_code=403, detail="Access denied")
+
+    # Validate title
+    title = request.title.strip()
+    if not title:
+        raise HTTPException(status_code=400, detail="Title cannot be empty")
+    
+    if len(title) > 500:
+        raise HTTPException(status_code=400, detail="Title too long (max 500 characters)")
+
+    # Update title with timestamp
+    now = datetime.utcnow()
+    doc.title = title
+    doc.title_updated_at = now
+    
+    # Save the index
+    pipeline._save_index()
+    
+    # Emit event for audit trail
+    event_bus.publish_sync(EventType.DOCUMENT_UPDATED, {
+        "user_id": user.user_id,
+        "document_id": doc_id,
+        "field": "title",
+        "new_value": title,
+        "timestamp": now.isoformat()
+    })
+
+    return TitleUpdateResponse(
+        doc_id=doc_id,
+        title=title,
+        title_updated_at=now.isoformat(),
+        message="Title updated successfully"
+    )
+
+
 @router.get("/{doc_id}/download")
 async def download_document(
     doc_id: str,
@@ -554,6 +632,42 @@ async def download_document(
             path=doc.file_path,
             filename=doc.filename,
             media_type="application/octet-stream"
+        )
+
+    raise HTTPException(status_code=404, detail="Document file not found")
+
+
+@router.get("/{doc_id}/preview")
+async def preview_document(
+    doc_id: str,
+    user: StorageUser = Depends(require_user)
+):
+    """
+    Serve the original document file inline for browser preview.
+    
+    Documents are stored in original, unmodified form.
+    This endpoint serves them with inline Content-Disposition for viewing.
+    """
+    from fastapi.responses import FileResponse
+    import os
+
+    pipeline = get_document_pipeline()
+    doc = pipeline.get_document(doc_id)
+
+    if not doc:
+        raise HTTPException(status_code=404, detail="Document not found")
+
+    if doc.user_id != user.user_id:
+        raise HTTPException(status_code=403, detail="Access denied")
+
+    # Find the file path
+    if hasattr(doc, 'file_path') and doc.file_path and os.path.exists(doc.file_path):
+        # Serve inline for browser viewing
+        return FileResponse(
+            path=doc.file_path,
+            filename=doc.filename,
+            media_type=doc.mime_type or "application/octet-stream",
+            headers={"Content-Disposition": f'inline; filename="{doc.filename}"'}
         )
 
     raise HTTPException(status_code=404, detail="Document file not found")

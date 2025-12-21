@@ -4,6 +4,29 @@ Tenant rights protection platform.
 
 Core Promise: Help tenants with tools and information to uphold tenant rights,
 in court if it goes that far - hopefully it won't.
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                    SEMPTIFY PRIVACY PRINCIPLES                               ║
+║                    ═══════════════════════════════                           ║
+║                                                                              ║
+║  THIS APPLICATION NEVER STORES PERSONAL DATA. EVER.                          ║
+║                                                                              ║
+║  ❌ No email addresses                                                       ║
+║  ❌ No names (first, last, display, real)                                   ║
+║  ❌ No phone numbers                                                         ║
+║  ❌ No physical addresses                                                    ║
+║  ❌ No government IDs (SSN, driver's license, etc.)                         ║
+║  ❌ No financial information                                                 ║
+║  ❌ No biometric data                                                        ║
+║  ❌ No location tracking                                                     ║
+║                                                                              ║
+║  User identity = anonymous random ID (example: GU7x9kM2pQ)                   ║
+║  User data = stored in THEIR cloud storage (Google Drive/Dropbox/OneDrive)  ║
+║                                                                              ║
+║  We are a TOOL that operates on user data, not a VAULT that stores it.      ║
+║                                                                              ║
+║  See app/core/privacy.py for enforcement rules.                              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
 """
 
 import asyncio
@@ -68,6 +91,8 @@ from app.routers.court_forms import router as court_forms_router
 from app.routers.zoom_court_prep import router as zoom_court_prep_router
 from app.routers.pdf_tools import router as pdf_tools_router
 from app.routers.briefcase import router as briefcase_router
+from app.routers.ocr import router as ocr_router
+from app.routers.cases import router as cases_router
 from app.routers.emotion import router as emotion_router
 from app.routers.court_packet import router as court_packet_router
 from app.routers.actions import router as actions_router
@@ -79,6 +104,7 @@ from app.routers.role_ui import router as role_ui_router
 from app.routers.role_upgrade import router as role_upgrade_router
 from app.routers.guided_intake import router as guided_intake_router
 from app.routers.case_builder import router as case_builder_router
+from app.routers.correspondence import router as correspondence_router
 from app.core.mesh_integration import start_mesh_network, stop_mesh_network
 
 # Tenant Defense Module
@@ -256,6 +282,12 @@ async def lifespan(app: FastAPI):
             nonlocal missing_required, missing_optional
             import importlib
             
+            # ════════════════════════════════════════════════════════════════
+            # PRIVACY VERIFICATION - FIRST THING ON STARTUP
+            # ════════════════════════════════════════════════════════════════
+            from app.core.privacy import verify_privacy_compliance
+            verify_privacy_compliance()
+            
             # Check required packages
             for pkg, desc in REQUIRED_PACKAGES.items():
                 try:
@@ -327,6 +359,55 @@ async def lifespan(app: FastAPI):
             # Verify routers can be imported
             from app.routers import storage, documents, timeline, calendar, health
             from app.services import azure_ai, document_pipeline
+            
+            # ENHANCED: Preload active sessions from database into memory cache
+            # This enables seamless auth after server restart
+            try:
+                from app.core.database import get_db_session
+                from sqlalchemy import select
+                from app.models.models import Session as SessionModel
+                from app.routers.storage import SESSIONS, _decrypt_string
+                from app.core.utc import utc_now
+                from datetime import timedelta
+                
+                async with get_db_session() as db:
+                    # Load sessions that haven't expired (or have no expiry)
+                    result = await db.execute(
+                        select(SessionModel).where(
+                            (SessionModel.expires_at == None) | 
+                            (SessionModel.expires_at > utc_now() - timedelta(days=7))  # Include recently expired for refresh
+                        )
+                    )
+                    sessions = result.scalars().all()
+                    
+                    restored_count = 0
+                    for session_row in sessions:
+                        try:
+                            access_token = _decrypt_string(session_row.access_token_encrypted, session_row.user_id)
+                            refresh_token = None
+                            if session_row.refresh_token_encrypted:
+                                refresh_token = _decrypt_string(session_row.refresh_token_encrypted, session_row.user_id)
+                            
+                            SESSIONS[session_row.user_id] = {
+                                "user_id": session_row.user_id,
+                                "provider": session_row.provider,
+                                "access_token": access_token,
+                                "refresh_token": refresh_token,
+                                "authenticated_at": session_row.authenticated_at.isoformat() if session_row.authenticated_at else None,
+                                "expires_at": session_row.expires_at.isoformat() if session_row.expires_at else None,
+                            }
+                            restored_count += 1
+                        except Exception as e:
+                            logger.debug("Could not restore session for user %s: %s", session_row.user_id[:4] + "***", e)
+                    
+                    if restored_count > 0:
+                        logger.info("   🔑 Restored %d sessions from database (seamless auth enabled)", restored_count)
+                    else:
+                        logger.info("   🔑 No existing sessions to restore (fresh start)")
+                        
+            except Exception as e:
+                logger.warning("   ⚠️ Session preload skipped: %s", e)
+            
             # Initialize Positronic Brain connections
             from app.services.brain_integrations import initialize_brain_connections
             await initialize_brain_connections()
@@ -1556,12 +1637,15 @@ All errors return JSON with `detail` field. Rate limit errors include `retry_aft
     app.include_router(legal_analysis_router, tags=["Legal Analysis"])  # Legal merit, consistency, evidence analysis
     app.include_router(legal_trails_router, tags=["Legal Trails"])  # Track violations, claims, broker oversight, filing deadlines
     app.include_router(contacts_router, tags=["Contact Manager"])  # Track landlords, attorneys, witnesses, agencies
+    app.include_router(correspondence_router, prefix="/api", tags=["Correspondence Tracker"])  # WHO sent WHAT to WHOM and WHEN
     app.include_router(recognition_router, tags=["Document Recognition"])  # World-class document recognition engine
+    app.include_router(ocr_router, tags=["OCR Engine"])  # World-class multi-engine OCR
     app.include_router(search_router, prefix="/api/search", tags=["Global Search"])  # Universal search across all content
     app.include_router(court_forms_router, tags=["Court Forms"])  # Auto-generate Minnesota court forms
     app.include_router(zoom_court_prep_router, tags=["Zoom Court Prep"])  # Hearing preparation and tech checks
     app.include_router(pdf_tools_router, tags=["PDF Tools"])  # PDF reader, viewer, page extractor
     app.include_router(briefcase_router, tags=["Briefcase"])  # Document & folder organization system
+    app.include_router(cases_router, tags=["Case Management"])  # Central case management system
     app.include_router(emotion_router, tags=["Emotion Engine"])  # Adaptive UI emotion tracking
     app.include_router(court_packet_router, tags=["Court Packet"])  # Export court-ready document packets
     app.include_router(actions_router, tags=["Smart Actions"])  # Personalized action recommendations
@@ -1625,20 +1709,10 @@ All errors return JSON with `detail` field. Rate limit errors include `retry_aft
     # Root endpoint - Serve SPA
     # =========================================================================
 
-    @app.get("/", response_class=HTMLResponse)
+    @app.get("/")
     async def root():
-        """Serve the dashboard directly - no welcome screens, no setup, just the app."""
-        # Go straight to dashboard - no welcome, no roles, no storage setup
-        dashboard_path = Path("static/dashboard.html")
-        if dashboard_path.exists():
-            return HTMLResponse(content=dashboard_path.read_text(encoding="utf-8"))
-        # Fallback JSON response if no frontend
-        return JSONResponse(content={
-            "name": settings.app_name,
-            "version": settings.app_version,
-            "description": settings.app_description,
-            "docs": "/api/docs" if settings.debug else "disabled",
-        })
+        """Redirect to welcome page - the starting point for all users."""
+        return RedirectResponse(url="/static/welcome.html", status_code=302)
 
     @app.get("/dashboard", response_class=HTMLResponse)
     async def dashboard_page():

@@ -603,3 +603,116 @@ async def auto_build_from_document(
             "events_saved": events_saved,
             "warnings": build_result.warnings,
         }
+
+
+@router.post("/auto-build/from-file")
+async def auto_build_from_file(
+    file: UploadFile = File(...),
+    auto_save: bool = Form(True),
+    document_type: Optional[str] = Form(None),
+    user: StorageUser = Depends(require_user),
+):
+    """
+    Auto-build timeline from an uploaded file.
+    
+    Supports TXT files directly, PDF/DOC files require text extraction.
+    """
+    if not file.filename:
+        raise HTTPException(status_code=400, detail="No file provided")
+    
+    # Read file content
+    content = await file.read()
+    text = ""
+    
+    # Handle different file types
+    filename_lower = file.filename.lower()
+    if filename_lower.endswith('.txt'):
+        # Plain text file
+        text = content.decode('utf-8', errors='ignore')
+    elif filename_lower.endswith('.pdf'):
+        # Try to extract text from PDF
+        try:
+            import io
+            try:
+                import pypdf
+                pdf_reader = pypdf.PdfReader(io.BytesIO(content))
+                text = "\n".join(page.extract_text() or "" for page in pdf_reader.pages)
+            except ImportError:
+                # Fallback: try pdfplumber
+                try:
+                    import pdfplumber
+                    with pdfplumber.open(io.BytesIO(content)) as pdf:
+                        text = "\n".join(page.extract_text() or "" for page in pdf.pages)
+                except ImportError:
+                    raise HTTPException(
+                        status_code=400, 
+                        detail="PDF processing not available. Please install pypdf or pdfplumber, or upload a .txt file."
+                    )
+        except Exception as e:
+            raise HTTPException(status_code=400, detail=f"Failed to read PDF: {str(e)}")
+    elif filename_lower.endswith(('.doc', '.docx')):
+        # Try to extract text from DOC/DOCX
+        try:
+            import io
+            try:
+                import docx
+                doc = docx.Document(io.BytesIO(content))
+                text = "\n".join(para.text for para in doc.paragraphs)
+            except ImportError:
+                raise HTTPException(
+                    status_code=400,
+                    detail="DOCX processing not available. Please install python-docx, or upload a .txt file."
+                )
+        except Exception as e:
+            raise HTTPException(status_code=400, detail=f"Failed to read document: {str(e)}")
+    else:
+        # Try to decode as text
+        try:
+            text = content.decode('utf-8', errors='ignore')
+        except:
+            raise HTTPException(status_code=400, detail="Unsupported file type. Please upload TXT, PDF, or DOCX.")
+    
+    if not text.strip():
+        raise HTTPException(status_code=400, detail="No text could be extracted from the file")
+    
+    # Build timeline
+    builder = TimelineBuilder()
+    build_result = await builder.build_from_text(
+        text=text,
+        filename=file.filename,
+        document_type=document_type,
+    )
+    
+    events_saved = 0
+    
+    # Save events if requested
+    if auto_save and build_result.events:
+        async with get_db_session() as session:
+            for event in build_result.events:
+                if event.event_date:
+                    db_event = TimelineEventModel(
+                        id=event.id,
+                        user_id=user.user_id,
+                        event_type=event.event_type.value if hasattr(event.event_type, 'value') else str(event.event_type),
+                        title=event.title,
+                        description=event.description,
+                        event_date=datetime.combine(event.event_date, datetime.min.time()),
+                        document_id=None,
+                        is_evidence=False,
+                        created_at=utc_now(),
+                    )
+                    session.add(db_event)
+                    events_saved += 1
+            
+            await session.commit()
+    
+    return {
+        "filename": file.filename,
+        "events": [e.to_dict() for e in build_result.events],
+        "total_events_found": build_result.total_events_found,
+        "total_deadlines_found": build_result.total_deadlines_found,
+        "events_saved": events_saved,
+        "earliest_date": build_result.earliest_date.isoformat() if build_result.earliest_date else None,
+        "latest_date": build_result.latest_date.isoformat() if build_result.latest_date else None,
+        "warnings": build_result.warnings,
+    }

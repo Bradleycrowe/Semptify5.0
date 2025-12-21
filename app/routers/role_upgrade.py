@@ -27,8 +27,16 @@ router = APIRouter(prefix="/api/roles", tags=["Role Management"])
 # =============================================================================
 
 class RoleUpgradeRequest(BaseModel):
-    """Request to upgrade to an elevated role."""
+    """
+    Request to upgrade to an elevated role.
+    
+    PRIVACY NOTE: The email field is ONLY used for domain verification
+    (checking if @homeline.org, @lawhelpmn.org, etc.). It is NEVER stored
+    in our database. The verification happens in-memory and is discarded.
+    """
     requested_role: str  # "advocate" or "legal"
+    # Email for domain verification ONLY - not stored, used to check if
+    # the email domain belongs to a trusted organization (e.g., @homeline.org)
     email: Optional[str] = None
     bar_number: Optional[str] = None
     hud_cert_number: Optional[str] = None
@@ -40,7 +48,8 @@ class RoleUpgradeRequest(BaseModel):
             "example": {
                 "requested_role": "advocate",
                 "email": "counselor@homeline.org",
-                "invite_code": "HOMELINE2025"
+                "invite_code": "HOMELINE2025",
+                "_note": "Email is used for domain verification only, never stored"
             }
         }
 

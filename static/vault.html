@@ -1,0 +1,1520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔐 Vault - Semptify 5.0</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/shared-nav.css">
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #1d4ed8;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --bg-hover: #334155;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: rgba(255,255,255,0.1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        .main-content {
+            margin-left: 260px;
+            padding: 0;
+            min-height: 100vh;
+            transition: margin-left 0.3s ease;
+        }
+
+        body:not(.nav-pinned) .main-content { margin-left: 60px; }
+
+        @media (max-width: 768px) { .main-content { margin-left: 0 !important; } }
+
+        /* Header */
+        .page-header {
+            background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%);
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .page-header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(255,255,255,0.05);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+        }
+
+        .user-info .user-id {
+            font-family: monospace;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .provider-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .provider-badge.google { background: rgba(234, 67, 53, 0.2); color: #ea4335; }
+        .provider-badge.dropbox { background: rgba(0, 97, 255, 0.2); color: #0061ff; }
+        .provider-badge.onedrive { background: rgba(0, 120, 212, 0.2); color: #0078d4; }
+
+        /* Dashboard Grid */
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 1rem;
+            padding: 1.5rem;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255,255,255,0.02);
+        }
+
+        .card-header h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-body {
+            padding: 1rem;
+        }
+
+        /* Quick Actions Card */
+        .quick-actions { grid-column: span 3; }
+        
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 0.5rem;
+            width: 100%;
+            color: var(--text);
+            text-decoration: none;
+        }
+
+        .action-btn:hover {
+            background: var(--bg-hover);
+            border-color: var(--primary);
+        }
+
+        .action-btn .icon {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .action-btn .icon.blue { background: rgba(59, 130, 246, 0.2); color: var(--primary); }
+        .action-btn .icon.green { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+        .action-btn .icon.yellow { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
+        .action-btn .icon.purple { background: rgba(139, 92, 246, 0.2); color: #8b5cf6; }
+
+        /* Timeline Preview */
+        .timeline-card { grid-column: span 5; }
+        
+        .timeline-mini {
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        .timeline-mini::before {
+            content: '';
+            position: absolute;
+            left: 6px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--border);
+        }
+
+        .timeline-event {
+            position: relative;
+            padding: 0.75rem 0;
+            padding-left: 1rem;
+        }
+
+        .timeline-event::before {
+            content: '';
+            position: absolute;
+            left: -1.5rem;
+            top: 1rem;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--primary);
+            border: 2px solid var(--bg-dark);
+        }
+
+        .timeline-event.urgent::before { background: var(--danger); }
+        .timeline-event.complete::before { background: var(--success); }
+
+        .timeline-date {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .timeline-title {
+            font-weight: 500;
+            margin-top: 0.25rem;
+        }
+
+        /* Calendar Preview */
+        .calendar-card { grid-column: span 4; }
+
+        .calendar-mini {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+            text-align: center;
+            font-size: 0.75rem;
+        }
+
+        .calendar-day-header {
+            padding: 0.5rem 0;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .calendar-day {
+            padding: 0.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .calendar-day:hover { background: var(--bg-hover); }
+        .calendar-day.today { background: var(--primary); font-weight: 700; }
+        .calendar-day.has-event { position: relative; }
+        .calendar-day.has-event::after {
+            content: '';
+            position: absolute;
+            bottom: 4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: var(--warning);
+        }
+        .calendar-day.other-month { opacity: 0.4; }
+
+        /* Documents Card */
+        .documents-card { grid-column: span 6; }
+
+        .doc-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .doc-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .doc-item:hover { background: var(--bg-hover); }
+
+        .doc-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-size: 1.25rem;
+        }
+
+        .doc-icon.pdf { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+        .doc-icon.image { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+        .doc-icon.doc { background: rgba(59, 130, 246, 0.2); color: var(--primary); }
+
+        .doc-info { flex: 1; }
+        .doc-name { font-weight: 500; }
+        .doc-meta { font-size: 0.75rem; color: var(--text-muted); }
+
+        /* Briefcase Card */
+        .briefcase-card { grid-column: span 6; }
+
+        .briefcase-status {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .briefcase-status.incomplete {
+            background: rgba(245, 158, 11, 0.1);
+        }
+
+        .status-icon {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            font-size: 1.5rem;
+        }
+
+        .briefcase-status .status-icon { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+        .briefcase-status.incomplete .status-icon { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--success);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        /* Settings Card */
+        .settings-card { grid-column: span 4; }
+
+        .setting-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .setting-row:last-child { border-bottom: none; }
+
+        .setting-label {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .setting-value {
+            font-weight: 500;
+            font-family: monospace;
+        }
+
+        /* Stats Row */
+        .stats-card { grid-column: span 8; }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(255,255,255,0.02);
+            border-radius: 8px;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        /* Upload Zone */
+        .upload-zone {
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .upload-zone:hover, .upload-zone.dragover {
+            border-color: var(--primary);
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        .upload-zone i { font-size: 2rem; color: var(--text-muted); margin-bottom: 0.5rem; }
+        .upload-zone p { color: var(--text-muted); }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .quick-actions, .timeline-card, .calendar-card,
+            .documents-card, .briefcase-card, .settings-card, .stats-card {
+                grid-column: span 12;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard { padding: 1rem; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        /* Loading State */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            color: var(--text-muted);
+        }
+
+        .loading i { animation: spin 1s linear infinite; margin-right: 0.5rem; }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+        }
+
+        .empty-state i { font-size: 3rem; margin-bottom: 1rem; opacity: 0.5; }
+
+        /* ===== Document Viewer Modal ===== */
+        .doc-viewer-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.9);
+            z-index: 9999;
+            display: none;
+            flex-direction: column;
+        }
+
+        .doc-viewer-overlay.active { display: flex; }
+
+        .doc-viewer-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.5rem;
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border);
+            gap: 1rem;
+        }
+
+        .doc-title-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .doc-title-input {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.5rem 0.75rem;
+            color: var(--text);
+            font-size: 1.125rem;
+            font-weight: 600;
+            flex: 1;
+            min-width: 200px;
+            max-width: 500px;
+        }
+
+        .doc-title-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(255,255,255,0.08);
+        }
+
+        .doc-title-save {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            display: none;
+        }
+
+        .doc-title-save.visible { display: inline-flex; }
+        .doc-title-save:hover { background: var(--primary-dark); }
+
+        .doc-meta-info {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        .doc-meta-info .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .doc-meta-info .meta-item i { color: var(--primary); }
+
+        .doc-viewer-close {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: var(--text);
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .doc-viewer-close:hover { background: var(--danger); }
+
+        .doc-viewer-body {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .doc-viewer-main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            overflow: auto;
+            background: #1a1a2e;
+        }
+
+        .doc-viewer-main iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 8px;
+            background: white;
+        }
+
+        .doc-viewer-main img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .doc-viewer-main .text-preview {
+            background: var(--bg-card);
+            padding: 2rem;
+            border-radius: 8px;
+            max-width: 900px;
+            width: 100%;
+            max-height: 100%;
+            overflow: auto;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            line-height: 1.6;
+        }
+
+        .doc-viewer-main .unsupported-preview {
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        .doc-viewer-main .unsupported-preview i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .doc-viewer-main .unsupported-preview .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--primary);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            margin-top: 1rem;
+            font-weight: 500;
+        }
+
+        .doc-viewer-main .unsupported-preview .download-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .doc-viewer-sidebar {
+            width: 320px;
+            background: var(--bg-card);
+            border-left: 1px solid var(--border);
+            padding: 1.5rem;
+            overflow-y: auto;
+        }
+
+        .sidebar-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .sidebar-section h4 {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .sidebar-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.875rem;
+        }
+
+        .sidebar-row:last-child { border-bottom: none; }
+        .sidebar-row .label { color: var(--text-muted); }
+        .sidebar-row .value { font-weight: 500; font-family: monospace; }
+
+        .timestamp-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .timestamp-badge i { font-size: 0.875rem; }
+
+        .immutable-notice {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 8px;
+            padding: 0.75rem;
+            font-size: 0.8rem;
+            color: var(--primary);
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        .immutable-notice i { margin-top: 2px; }
+
+        @media (max-width: 900px) {
+            .doc-viewer-sidebar { display: none; }
+            .doc-viewer-header { flex-wrap: wrap; }
+            .doc-meta-info { width: 100%; justify-content: center; }
+        }
+    </style>
+</head>
+<body class="nav-pinned">
+    <!-- Navigation will be injected -->
+    <script src="/static/js/shared-nav.js"></script>
+
+    <main class="main-content">
+        <!-- Header -->
+        <header class="page-header">
+            <h1>
+                <i class="fas fa-vault"></i>
+                My Vault
+            </h1>
+            <div class="user-info" id="userInfo">
+                <span>User ID:</span>
+                <span class="user-id" id="userId">Loading...</span>
+                <div class="provider-badge google" id="providerBadge">
+                    <i class="fab fa-google-drive"></i>
+                    <span id="providerName">Google Drive</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Grid -->
+        <div class="dashboard">
+            <!-- Quick Actions -->
+            <div class="card quick-actions">
+                <div class="card-header">
+                    <h3><i class="fas fa-bolt"></i> Quick Actions</h3>
+                </div>
+                <div class="card-body">
+                    <a href="/static/briefcase.html" class="action-btn">
+                        <div class="icon blue"><i class="fas fa-briefcase"></i></div>
+                        <div>
+                            <div class="label">Open Briefcase</div>
+                            <div class="desc" style="font-size:0.75rem;color:var(--text-muted)">Extract & organize documents</div>
+                        </div>
+                    </a>
+                    <a href="/static/timeline.html" class="action-btn">
+                        <div class="icon green"><i class="fas fa-clock"></i></div>
+                        <div>
+                            <div class="label">View Timeline</div>
+                            <div class="desc" style="font-size:0.75rem;color:var(--text-muted)">See your case history</div>
+                        </div>
+                    </a>
+                    <a href="/static/calendar.html" class="action-btn">
+                        <div class="icon yellow"><i class="fas fa-calendar-alt"></i></div>
+                        <div>
+                            <div class="label">Calendar</div>
+                            <div class="desc" style="font-size:0.75rem;color:var(--text-muted)">Deadlines & hearings</div>
+                        </div>
+                    </a>
+                    <a href="/static/settings-v2.html" class="action-btn">
+                        <div class="icon purple"><i class="fas fa-cog"></i></div>
+                        <div>
+                            <div class="label">Settings</div>
+                            <div class="desc" style="font-size:0.75rem;color:var(--text-muted)">Configure your vault</div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Timeline Preview -->
+            <div class="card timeline-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-stream"></i> Recent Timeline</h3>
+                    <a href="/static/timeline.html" style="color:var(--primary);font-size:0.875rem;text-decoration:none;">View All →</a>
+                </div>
+                <div class="card-body">
+                    <div class="timeline-mini" id="timelinePreview">
+                        <div class="loading"><i class="fas fa-spinner"></i> Loading timeline...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Calendar Preview -->
+            <div class="card calendar-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-calendar"></i> <span id="calendarMonth">December 2025</span></h3>
+                    <a href="/static/calendar.html" style="color:var(--primary);font-size:0.875rem;text-decoration:none;">Full Calendar →</a>
+                </div>
+                <div class="card-body">
+                    <div class="calendar-mini" id="calendarPreview">
+                        <!-- Calendar will be generated by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="card stats-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-chart-bar"></i> Vault Statistics</h3>
+                </div>
+                <div class="card-body">
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-value" id="docCount">-</div>
+                            <div class="stat-label">Documents</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="eventCount">-</div>
+                            <div class="stat-label">Timeline Events</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="deadlineCount">-</div>
+                            <div class="stat-label">Upcoming Deadlines</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="storageUsed">-</div>
+                            <div class="stat-label">Storage Used</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Summary -->
+            <div class="card settings-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-shield-alt"></i> Vault Settings</h3>
+                    <a href="/static/settings-v2.html" style="color:var(--primary);font-size:0.875rem;text-decoration:none;">Edit →</a>
+                </div>
+                <div class="card-body">
+                    <div class="setting-row">
+                        <span class="setting-label">Storage Provider</span>
+                        <span class="setting-value" id="settingProvider">-</span>
+                    </div>
+                    <div class="setting-row">
+                        <span class="setting-label">Session Expires</span>
+                        <span class="setting-value" id="settingExpires">-</span>
+                    </div>
+                    <div class="setting-row">
+                        <span class="setting-label">Documents Stored</span>
+                        <span class="setting-value" id="settingDocs">-</span>
+                    </div>
+                    <div class="setting-row">
+                        <span class="setting-label">Encryption</span>
+                        <span class="setting-value" style="color:var(--success)">AES-256-GCM</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Documents -->
+            <div class="card documents-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-folder-open"></i> Recent Documents</h3>
+                    <a href="/static/documents.html" style="color:var(--primary);font-size:0.875rem;text-decoration:none;">View All →</a>
+                </div>
+                <div class="card-body">
+                    <div class="doc-list" id="documentsList">
+                        <div class="loading"><i class="fas fa-spinner"></i> Loading documents...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Briefcase Status -->
+            <div class="card briefcase-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-briefcase"></i> Case Briefcase</h3>
+                    <a href="/static/briefcase.html" style="color:var(--primary);font-size:0.875rem;text-decoration:none;">Open →</a>
+                </div>
+                <div class="card-body">
+                    <div class="briefcase-status incomplete" id="briefcaseStatus">
+                        <div class="status-icon"><i class="fas fa-folder-open"></i></div>
+                        <div style="flex:1">
+                            <div style="font-weight:600">Case Packet Progress</div>
+                            <div style="font-size:0.875rem;color:var(--text-muted)">
+                                <span id="briefcaseComplete">0</span> of <span id="briefcaseTotal">8</span> required documents
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="briefcaseProgress" style="width:0%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Upload Zone -->
+                    <div class="upload-zone" id="uploadZone">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>Drop files here or click to upload</p>
+                        <input type="file" id="fileInput" multiple hidden>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ===== Document Viewer Modal ===== -->
+    <div class="doc-viewer-overlay" id="docViewer">
+        <header class="doc-viewer-header">
+            <div class="doc-title-section">
+                <input type="text" class="doc-title-input" id="docTitleInput" placeholder="Document Title">
+                <button class="doc-title-save" id="docTitleSave" onclick="saveDocumentTitle()">
+                    <i class="fas fa-check"></i> Save Title
+                </button>
+            </div>
+            <div class="doc-meta-info">
+                <div class="meta-item">
+                    <i class="fas fa-calendar-plus"></i>
+                    <span>Uploaded: <strong id="docUploadDate">-</strong></span>
+                </div>
+                <div class="meta-item">
+                    <i class="fas fa-clock"></i>
+                    <span>Modified: <strong id="docModDate">-</strong></span>
+                </div>
+            </div>
+            <button class="doc-viewer-close" onclick="closeDocViewer()">
+                <i class="fas fa-times"></i>
+            </button>
+        </header>
+        <div class="doc-viewer-body">
+            <div class="doc-viewer-main" id="docViewerMain">
+                <!-- Document preview will be rendered here -->
+            </div>
+            <aside class="doc-viewer-sidebar">
+                <div class="sidebar-section">
+                    <h4><i class="fas fa-shield-alt"></i> Document Integrity</h4>
+                    <div class="immutable-notice">
+                        <i class="fas fa-lock"></i>
+                        <span>This document is stored in its original, unmodified form. Only the title can be edited for organization purposes.</span>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <h4><i class="fas fa-clock"></i> Timestamps</h4>
+                    <div class="timestamp-badge" style="width:100%;margin-bottom:0.5rem">
+                        <i class="fas fa-upload"></i>
+                        <span>Created: <span id="sidebarCreated">-</span></span>
+                    </div>
+                    <div class="timestamp-badge" style="width:100%;background:rgba(245,158,11,0.1);color:var(--warning)">
+                        <i class="fas fa-edit"></i>
+                        <span>Title Modified: <span id="sidebarModified">-</span></span>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <h4><i class="fas fa-file-alt"></i> File Details</h4>
+                    <div class="sidebar-row">
+                        <span class="label">Document ID</span>
+                        <span class="value" id="sidebarDocId">-</span>
+                    </div>
+                    <div class="sidebar-row">
+                        <span class="label">Original Name</span>
+                        <span class="value" id="sidebarOrigName">-</span>
+                    </div>
+                    <div class="sidebar-row">
+                        <span class="label">File Type</span>
+                        <span class="value" id="sidebarFileType">-</span>
+                    </div>
+                    <div class="sidebar-row">
+                        <span class="label">File Size</span>
+                        <span class="value" id="sidebarFileSize">-</span>
+                    </div>
+                    <div class="sidebar-row">
+                        <span class="label">Category</span>
+                        <span class="value" id="sidebarCategory">-</span>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <h4><i class="fas fa-download"></i> Actions</h4>
+                    <a href="#" class="action-btn" id="downloadDocBtn" style="margin-bottom:0.5rem">
+                        <div class="icon blue"><i class="fas fa-download"></i></div>
+                        <span>Download Original</span>
+                    </a>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <script>
+        // ===================================================================
+        // Vault Dashboard - Main Logic
+        // ===================================================================
+
+        const API_BASE = '';
+        let userData = null;
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadUserSession();
+            await Promise.all([
+                loadDocuments(),
+                loadTimeline(),
+                loadStats(),
+            ]);
+            renderCalendar();
+            setupUploadZone();
+        });
+
+        // Load user session info
+        async function loadUserSession() {
+            try {
+                const res = await fetch('/storage/session');
+                const data = await res.json();
+                
+                if (data.authenticated) {
+                    userData = data;
+                    document.getElementById('userId').textContent = data.user_id || 'Anonymous';
+                    
+                    // Update provider badge
+                    const provider = data.provider || 'unknown';
+                    const badge = document.getElementById('providerBadge');
+                    const providerName = document.getElementById('providerName');
+                    
+                    badge.className = 'provider-badge ' + provider.replace('_', '').replace('drive', '');
+                    
+                    if (provider === 'google_drive') {
+                        badge.innerHTML = '<i class="fab fa-google-drive"></i><span>Google Drive</span>';
+                        badge.className = 'provider-badge google';
+                    } else if (provider === 'dropbox') {
+                        badge.innerHTML = '<i class="fab fa-dropbox"></i><span>Dropbox</span>';
+                        badge.className = 'provider-badge dropbox';
+                    } else if (provider === 'onedrive') {
+                        badge.innerHTML = '<i class="fab fa-microsoft"></i><span>OneDrive</span>';
+                        badge.className = 'provider-badge onedrive';
+                    }
+
+                    // Update settings
+                    document.getElementById('settingProvider').textContent = provider.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
+                    
+                    if (data.expires_at) {
+                        const expires = new Date(data.expires_at);
+                        document.getElementById('settingExpires').textContent = expires.toLocaleString();
+                    }
+                } else {
+                    // Not authenticated - redirect to storage setup
+                    window.location.href = '/storage/providers';
+                }
+            } catch (err) {
+                console.error('Failed to load session:', err);
+                document.getElementById('userId').textContent = 'Error';
+            }
+        }
+
+        // Load recent documents
+        async function loadDocuments() {
+            try {
+                const res = await fetch('/api/documents?limit=5');
+                const docs = await res.json();
+                
+                const container = document.getElementById('documentsList');
+                
+                if (!docs.length) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-file-alt"></i>
+                            <p>No documents yet</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = docs.map(doc => {
+                    const icon = getDocIcon(doc.mime_type || doc.filename);
+                    const size = formatBytes(doc.file_size || 0);
+                    const date = new Date(doc.created_at).toLocaleDateString();
+                    
+                    return `
+                        <div class="doc-item" onclick="viewDocument('${doc.id}')">
+                            <div class="doc-icon ${icon.class}"><i class="${icon.icon}"></i></div>
+                            <div class="doc-info">
+                                <div class="doc-name">${escapeHtml(doc.filename || doc.original_filename)}</div>
+                                <div class="doc-meta">${size} • ${date}</div>
+                            </div>
+                            <i class="fas fa-chevron-right" style="color:var(--text-muted)"></i>
+                        </div>
+                    `;
+                }).join('');
+
+                document.getElementById('settingDocs').textContent = docs.length;
+            } catch (err) {
+                console.error('Failed to load documents:', err);
+                document.getElementById('documentsList').innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <p>Failed to load documents</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Load timeline preview
+        async function loadTimeline() {
+            try {
+                const res = await fetch('/api/timeline?limit=4');
+                const events = await res.json();
+                
+                const container = document.getElementById('timelinePreview');
+                
+                if (!events.length) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-stream"></i>
+                            <p>No timeline events yet</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = events.map(event => {
+                    const date = new Date(event.event_date || event.created_at);
+                    const isUrgent = event.is_deadline && new Date(event.event_date) < new Date(Date.now() + 7*24*60*60*1000);
+                    
+                    return `
+                        <div class="timeline-event ${isUrgent ? 'urgent' : ''}">
+                            <div class="timeline-date">${date.toLocaleDateString()}</div>
+                            <div class="timeline-title">${escapeHtml(event.title || event.event_type)}</div>
+                        </div>
+                    `;
+                }).join('');
+            } catch (err) {
+                console.error('Failed to load timeline:', err);
+                document.getElementById('timelinePreview').innerHTML = `
+                    <div class="empty-state">
+                        <p>Failed to load timeline</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Load stats
+        async function loadStats() {
+            try {
+                // Get document count
+                const docsRes = await fetch('/api/documents');
+                const docs = await docsRes.json();
+                document.getElementById('docCount').textContent = Array.isArray(docs) ? docs.length : 0;
+
+                // Get timeline events
+                const timelineRes = await fetch('/api/timeline');
+                const events = await timelineRes.json();
+                document.getElementById('eventCount').textContent = Array.isArray(events) ? events.length : 0;
+
+                // Get upcoming deadlines
+                const calendarRes = await fetch('/api/calendar');
+                const calendar = await calendarRes.json();
+                const upcomingDeadlines = Array.isArray(calendar) 
+                    ? calendar.filter(e => new Date(e.event_date) > new Date()).length 
+                    : 0;
+                document.getElementById('deadlineCount').textContent = upcomingDeadlines;
+
+                // Storage used (calculate from docs)
+                const totalBytes = Array.isArray(docs) 
+                    ? docs.reduce((sum, d) => sum + (d.file_size || 0), 0) 
+                    : 0;
+                document.getElementById('storageUsed').textContent = formatBytes(totalBytes);
+
+                // Update briefcase progress (mock for now)
+                updateBriefcaseProgress(docs);
+            } catch (err) {
+                console.error('Failed to load stats:', err);
+            }
+        }
+
+        // Update briefcase progress
+        function updateBriefcaseProgress(docs) {
+            const requiredTypes = ['lease', 'notice', 'complaint', 'photo', 'payment', 'communication', 'id', 'other'];
+            const docTypes = new Set((docs || []).map(d => d.document_type || 'other'));
+            const complete = requiredTypes.filter(t => docTypes.has(t)).length;
+            
+            document.getElementById('briefcaseComplete').textContent = complete;
+            document.getElementById('briefcaseTotal').textContent = requiredTypes.length;
+            document.getElementById('briefcaseProgress').style.width = `${(complete / requiredTypes.length) * 100}%`;
+            
+            const status = document.getElementById('briefcaseStatus');
+            if (complete >= requiredTypes.length) {
+                status.classList.remove('incomplete');
+                status.querySelector('.status-icon').innerHTML = '<i class="fas fa-check-circle"></i>';
+            }
+        }
+
+        // Render mini calendar
+        function renderCalendar() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth();
+            
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                               'July', 'August', 'September', 'October', 'November', 'December'];
+            document.getElementById('calendarMonth').textContent = `${monthNames[month]} ${year}`;
+            
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const daysInPrevMonth = new Date(year, month, 0).getDate();
+            
+            const container = document.getElementById('calendarPreview');
+            let html = '';
+            
+            // Day headers
+            ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].forEach(day => {
+                html += `<div class="calendar-day-header">${day}</div>`;
+            });
+            
+            // Previous month days
+            for (let i = firstDay - 1; i >= 0; i--) {
+                html += `<div class="calendar-day other-month">${daysInPrevMonth - i}</div>`;
+            }
+            
+            // Current month days
+            for (let day = 1; day <= daysInMonth; day++) {
+                const isToday = day === now.getDate();
+                html += `<div class="calendar-day ${isToday ? 'today' : ''}">${day}</div>`;
+            }
+            
+            // Fill remaining
+            const remaining = 42 - (firstDay + daysInMonth);
+            for (let day = 1; day <= remaining; day++) {
+                html += `<div class="calendar-day other-month">${day}</div>`;
+            }
+            
+            container.innerHTML = html;
+        }
+
+        // Setup upload zone
+        function setupUploadZone() {
+            const zone = document.getElementById('uploadZone');
+            const input = document.getElementById('fileInput');
+
+            zone.addEventListener('click', () => input.click());
+            
+            zone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                zone.classList.add('dragover');
+            });
+
+            zone.addEventListener('dragleave', () => {
+                zone.classList.remove('dragover');
+            });
+
+            zone.addEventListener('drop', async (e) => {
+                e.preventDefault();
+                zone.classList.remove('dragover');
+                const files = e.dataTransfer.files;
+                if (files.length) await uploadFiles(files);
+            });
+
+            input.addEventListener('change', async () => {
+                if (input.files.length) await uploadFiles(input.files);
+            });
+        }
+
+        // Upload files
+        async function uploadFiles(files) {
+            for (const file of files) {
+                const formData = new FormData();
+                formData.append('file', file);
+
+                try {
+                    const res = await fetch('/api/documents/upload', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    if (res.ok) {
+                        alert(`Uploaded: ${file.name}`);
+                        await loadDocuments();
+                        await loadStats();
+                    } else {
+                        const err = await res.json();
+                        alert(`Failed to upload ${file.name}: ${err.detail || 'Unknown error'}`);
+                    }
+                } catch (err) {
+                    alert(`Failed to upload ${file.name}: ${err.message}`);
+                }
+            }
+        }
+
+        // View document - opens full viewer modal
+        async function viewDocument(id) {
+            await openDocViewer(id);
+        }
+
+        // ===== Document Viewer Functions =====
+        let currentDocData = null;
+        let originalTitle = '';
+
+        async function openDocViewer(docId) {
+            const viewer = document.getElementById('docViewer');
+            const mainArea = document.getElementById('docViewerMain');
+            
+            // Show viewer with loading state
+            viewer.classList.add('active');
+            mainArea.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i> Loading document...</div>';
+
+            try {
+                // Fetch document metadata
+                const metaRes = await fetch(`/api/documents/${docId}`);
+                if (!metaRes.ok) throw new Error('Document not found');
+                
+                currentDocData = await metaRes.json();
+                originalTitle = currentDocData.title || currentDocData.filename || '';
+
+                // Populate header info
+                document.getElementById('docTitleInput').value = originalTitle;
+                document.getElementById('docUploadDate').textContent = formatDateTime(currentDocData.created_at);
+                document.getElementById('docModDate').textContent = formatDateTime(currentDocData.updated_at || currentDocData.created_at);
+
+                // Populate sidebar
+                document.getElementById('sidebarDocId').textContent = currentDocData.id?.substring(0, 12) + '...' || '-';
+                document.getElementById('sidebarOrigName').textContent = currentDocData.original_filename || currentDocData.filename || '-';
+                document.getElementById('sidebarFileType').textContent = currentDocData.mime_type || getFileExtension(currentDocData.filename);
+                document.getElementById('sidebarFileSize').textContent = formatBytes(currentDocData.file_size || 0);
+                document.getElementById('sidebarCategory').textContent = currentDocData.document_type || 'Uncategorized';
+                document.getElementById('sidebarCreated').textContent = formatDateTime(currentDocData.created_at);
+                document.getElementById('sidebarModified').textContent = formatDateTime(currentDocData.title_updated_at || currentDocData.updated_at || 'Never');
+
+                // Set download link
+                document.getElementById('downloadDocBtn').href = `/api/documents/${docId}/download`;
+
+                // Setup title change listener
+                const titleInput = document.getElementById('docTitleInput');
+                const saveBtn = document.getElementById('docTitleSave');
+                
+                titleInput.oninput = () => {
+                    if (titleInput.value !== originalTitle) {
+                        saveBtn.classList.add('visible');
+                    } else {
+                        saveBtn.classList.remove('visible');
+                    }
+                };
+
+                // Render document preview based on type
+                await renderDocumentPreview(docId, currentDocData.mime_type || '', currentDocData.filename || '');
+
+            } catch (err) {
+                console.error('Failed to load document:', err);
+                mainArea.innerHTML = `
+                    <div class="unsupported-preview">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>Failed to load document: ${escapeHtml(err.message)}</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function renderDocumentPreview(docId, mimeType, filename) {
+            const mainArea = document.getElementById('docViewerMain');
+            const downloadUrl = `/api/documents/${docId}/download`;
+            const previewUrl = `/api/documents/${docId}/preview`;
+            
+            const mime = mimeType.toLowerCase();
+            const ext = getFileExtension(filename).toLowerCase();
+
+            // PDF - use iframe viewer
+            if (mime.includes('pdf') || ext === 'pdf') {
+                mainArea.innerHTML = `<iframe src="${previewUrl}" title="PDF Viewer"></iframe>`;
+                return;
+            }
+
+            // Images - show directly
+            if (mime.startsWith('image/') || ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg'].includes(ext)) {
+                mainArea.innerHTML = `<img src="${previewUrl}" alt="Document Image" loading="lazy">`;
+                return;
+            }
+
+            // Text files - fetch and display
+            if (mime.startsWith('text/') || ['txt', 'md', 'json', 'csv', 'xml', 'html', 'css', 'js', 'py', 'log'].includes(ext)) {
+                try {
+                    const textRes = await fetch(previewUrl);
+                    const text = await textRes.text();
+                    mainArea.innerHTML = `<div class="text-preview">${escapeHtml(text)}</div>`;
+                } catch {
+                    mainArea.innerHTML = `
+                        <div class="unsupported-preview">
+                            <i class="fas fa-file-alt"></i>
+                            <p>Could not load text preview</p>
+                            <a href="${downloadUrl}" class="download-btn" download>
+                                <i class="fas fa-download"></i> Download Original
+                            </a>
+                        </div>
+                    `;
+                }
+                return;
+            }
+
+            // Word docs, Excel, etc. - try Office viewer or show download
+            if (['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'].includes(ext)) {
+                // Try using Office Online viewer if document is accessible via URL
+                // For local docs, show download option
+                mainArea.innerHTML = `
+                    <div class="unsupported-preview">
+                        <i class="fas fa-file-word"></i>
+                        <p>Office documents are stored in original format</p>
+                        <p style="font-size:0.875rem;color:var(--text-muted);margin-top:0.5rem">
+                            Download to view in Microsoft Office or compatible application
+                        </p>
+                        <a href="${downloadUrl}" class="download-btn" download>
+                            <i class="fas fa-download"></i> Download Original
+                        </a>
+                    </div>
+                `;
+                return;
+            }
+
+            // Video
+            if (mime.startsWith('video/') || ['mp4', 'webm', 'mov', 'avi'].includes(ext)) {
+                mainArea.innerHTML = `
+                    <video controls style="max-width:100%;max-height:100%;border-radius:8px">
+                        <source src="${previewUrl}" type="${mimeType}">
+                        Your browser does not support video playback.
+                    </video>
+                `;
+                return;
+            }
+
+            // Audio
+            if (mime.startsWith('audio/') || ['mp3', 'wav', 'ogg', 'm4a'].includes(ext)) {
+                mainArea.innerHTML = `
+                    <div style="text-align:center;padding:2rem">
+                        <i class="fas fa-music" style="font-size:4rem;color:var(--primary);margin-bottom:1rem"></i>
+                        <audio controls style="width:100%;max-width:500px">
+                            <source src="${previewUrl}" type="${mimeType}">
+                        </audio>
+                    </div>
+                `;
+                return;
+            }
+
+            // Unsupported - show download option
+            mainArea.innerHTML = `
+                <div class="unsupported-preview">
+                    <i class="fas fa-file"></i>
+                    <p>Preview not available for this file type</p>
+                    <p style="font-size:0.875rem;color:var(--text-muted);margin-top:0.5rem">
+                        The document is stored in its original, unmodified form
+                    </p>
+                    <a href="${downloadUrl}" class="download-btn" download>
+                        <i class="fas fa-download"></i> Download Original
+                    </a>
+                </div>
+            `;
+        }
+
+        async function saveDocumentTitle() {
+            if (!currentDocData) return;
+
+            const titleInput = document.getElementById('docTitleInput');
+            const saveBtn = document.getElementById('docTitleSave');
+            const newTitle = titleInput.value.trim();
+
+            if (!newTitle || newTitle === originalTitle) {
+                saveBtn.classList.remove('visible');
+                return;
+            }
+
+            saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+            saveBtn.disabled = true;
+
+            try {
+                const res = await fetch(`/api/documents/${currentDocData.id}/title`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ title: newTitle })
+                });
+
+                if (!res.ok) {
+                    const err = await res.json();
+                    throw new Error(err.detail || 'Failed to save title');
+                }
+
+                const updated = await res.json();
+                originalTitle = newTitle;
+                
+                // Update timestamp displays
+                const now = new Date().toISOString();
+                document.getElementById('docModDate').textContent = formatDateTime(now);
+                document.getElementById('sidebarModified').textContent = formatDateTime(now);
+
+                saveBtn.innerHTML = '<i class="fas fa-check"></i> Saved!';
+                setTimeout(() => {
+                    saveBtn.classList.remove('visible');
+                    saveBtn.innerHTML = '<i class="fas fa-check"></i> Save Title';
+                }, 1500);
+
+                // Refresh documents list
+                await loadDocuments();
+
+            } catch (err) {
+                alert('Failed to save title: ' + err.message);
+                saveBtn.innerHTML = '<i class="fas fa-check"></i> Save Title';
+            } finally {
+                saveBtn.disabled = false;
+            }
+        }
+
+        function closeDocViewer() {
+            document.getElementById('docViewer').classList.remove('active');
+            currentDocData = null;
+            originalTitle = '';
+        }
+
+        // Close viewer on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeDocViewer();
+        });
+
+        // Helper: Get file extension
+        function getFileExtension(filename) {
+            if (!filename) return '';
+            const parts = filename.split('.');
+            return parts.length > 1 ? parts.pop() : '';
+        }
+
+        // Helper: Format date/time
+        function formatDateTime(dateStr) {
+            if (!dateStr || dateStr === 'Never') return 'Never';
+            const d = new Date(dateStr);
+            return d.toLocaleString();
+        }
+
+        // Helper: Get document icon
+        function getDocIcon(mimeOrFilename) {
+            const str = (mimeOrFilename || '').toLowerCase();
+            if (str.includes('pdf')) return { icon: 'fas fa-file-pdf', class: 'pdf' };
+            if (str.includes('image') || str.includes('.jpg') || str.includes('.png')) 
+                return { icon: 'fas fa-file-image', class: 'image' };
+            return { icon: 'fas fa-file-alt', class: 'doc' };
+        }
+
+        // Helper: Format bytes
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 B';
+            const k = 1024;
+            const sizes = ['B', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+        }
+
+        // Helper: Escape HTML
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str || '';
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>

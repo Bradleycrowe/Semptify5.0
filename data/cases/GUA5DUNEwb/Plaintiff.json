@@ -1,0 +1,68 @@
+{
+  "user_id": "GUA5DUNEwb",
+  "case_number": "Plaintiff",
+  "case_type": "eviction_defense",
+  "status": "active",
+  "court": "District Court",
+  "property_address": "2025\nBrian\nSowada\nMetro Legal Services\n616 South 3rd Street\nMinneapolis, MN 55415",
+  "rent_amount": 0,
+  "security_deposit": 0,
+  "plaintiff": {
+    "name": "Lexington Flats, Limited Partnership",
+    "role": "plaintiff",
+    "address": null,
+    "phone": null
+  },
+  "defendant": {
+    "name": "Jane Doe",
+    "role": "defendant",
+    "is_pro_se": true,
+    "address": null,
+    "phone": null
+  },
+  "hearing_date": "2025-12-03",
+  "answer_due": null,
+  "source_document_id": "ee835742-442a-4905-b4a7-f821c6555918",
+  "source_filename": "MCRO_19AV-CV-25-3477_Affidavit-Other_2025-11-25_20251127030659 - Copy.pdf",
+  "timeline": [
+    {
+      "id": "evt_doc_ee835742",
+      "date": "2025-12-20",
+      "title": "Document Received: MCRO_19AV-CV-25-3477_Affidavit-Other_2025-11-25_20251127030659 - Copy.pdf",
+      "description": "Court document 'MCRO_19AV-CV-25-3477_Affidavit-Other_2025-11-25_20251127030659 - Copy.pdf' uploaded and case auto-created",
+      "category": "court",
+      "importance": "high"
+    }
+  ],
+  "evidence": [
+    {
+      "id": "evi_ee835742",
+      "title": "MCRO_19AV-CV-25-3477_Affidavit-Other_2025-11-25_20251127030659 - Copy.pdf",
+      "evidence_type": "document",
+      "date_obtained": "2025-12-20",
+      "description": "Original court filing: court_filing",
+      "source": "document_intake",
+      "relevance": "Primary court document",
+      "document_id": "ee835742-442a-4905-b4a7-f821c6555918"
+    }
+  ],
+  "defenses": [],
+  "counterclaims": [],
+  "motions": [],
+  "deadlines": [
+    {
+      "id": "ddl_hearing_20251220212630",
+      "title": "Court Hearing",
+      "deadline": "2025-12-03",
+      "description": "Court hearing date",
+      "priority": "critical",
+      "completed": false
+    }
+  ],
+  "notes": [
+    "Case auto-created from uploaded document: MCRO_19AV-CV-25-3477_Affidavit-Other_2025-11-25_20251127030659 - Copy.pdf"
+  ],
+  "created_at": "2025-12-20T21:26:30.197891",
+  "updated_at": "2025-12-20T21:26:30.197899",
+  "auto_created": true
+}

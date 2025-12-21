@@ -193,6 +193,204 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+
+        /* Legal Vocabulary Panel */
+        .vocab-toggle {
+            position: fixed;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 1rem 0.5rem;
+            border-radius: 8px 0 0 8px;
+            cursor: pointer;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            font-weight: 600;
+            z-index: 1000;
+            transition: all 0.3s;
+        }
+
+        .vocab-toggle:hover {
+            padding-right: 0.75rem;
+        }
+
+        .vocab-panel {
+            position: fixed;
+            right: -400px;
+            top: 0;
+            width: 400px;
+            height: 100vh;
+            background: var(--bg-secondary);
+            border-left: 1px solid var(--border-color);
+            z-index: 1001;
+            transition: right 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .vocab-panel.open {
+            right: 0;
+        }
+
+        .vocab-header {
+            padding: 1rem 1.5rem;
+            background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .vocab-header h3 {
+            margin: 0;
+            font-size: 1.1rem;
+        }
+
+        .vocab-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            opacity: 0.8;
+        }
+
+        .vocab-close:hover { opacity: 1; }
+
+        .vocab-search {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .vocab-search input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+        }
+
+        .vocab-search input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .vocab-categories {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .vocab-cat {
+            padding: 0.4rem 0.75rem;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .vocab-cat:hover, .vocab-cat.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
+        }
+
+        .vocab-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+
+        .vocab-term {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .vocab-term:hover {
+            border-color: var(--accent);
+            transform: translateX(-3px);
+        }
+
+        .vocab-term .word {
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 0.25rem;
+        }
+
+        .vocab-term .def {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .vocab-term .example {
+            font-size: 0.8rem;
+            font-style: italic;
+            color: var(--text-muted);
+            background: rgba(99, 102, 241, 0.1);
+            padding: 0.5rem;
+            border-radius: 4px;
+            border-left: 3px solid var(--accent);
+        }
+
+        .vocab-term .insert-hint {
+            font-size: 0.7rem;
+            color: var(--success);
+            margin-top: 0.5rem;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .vocab-term:hover .insert-hint {
+            opacity: 1;
+        }
+
+        .vocab-footer {
+            padding: 1rem;
+            border-top: 1px solid var(--border-color);
+            background: var(--bg-elevated);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        /* Toast notification */
+        .vocab-toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--success);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            z-index: 2000;
+            transition: transform 0.3s ease;
+        }
+
+        .vocab-toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .vocab-panel {
+                width: 100%;
+                right: -100%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -296,8 +494,106 @@
         </div>
     </div>
     
+    <!-- Legal Vocabulary Toggle -->
+    <button class="vocab-toggle" onclick="toggleVocabPanel()">
+        📚 Legal Terms
+    </button>
+
+    <!-- Legal Vocabulary Panel -->
+    <div class="vocab-panel" id="vocabPanel">
+        <div class="vocab-header">
+            <h3>⚖️ Courtroom Vocabulary</h3>
+            <button class="vocab-close" onclick="toggleVocabPanel()">&times;</button>
+        </div>
+        <div class="vocab-search">
+            <input type="text" id="vocabSearch" placeholder="Search legal terms..." oninput="filterVocab()">
+        </div>
+        <div class="vocab-categories" id="vocabCategories">
+            <span class="vocab-cat active" data-cat="all" onclick="filterCategory('all')">All</span>
+            <span class="vocab-cat" data-cat="pleadings" onclick="filterCategory('pleadings')">Pleadings</span>
+            <span class="vocab-cat" data-cat="motions" onclick="filterCategory('motions')">Motions</span>
+            <span class="vocab-cat" data-cat="evidence" onclick="filterCategory('evidence')">Evidence</span>
+            <span class="vocab-cat" data-cat="parties" onclick="filterCategory('parties')">Parties</span>
+            <span class="vocab-cat" data-cat="procedures" onclick="filterCategory('procedures')">Procedures</span>
+            <span class="vocab-cat" data-cat="housing" onclick="filterCategory('housing')">Housing</span>
+        </div>
+        <div class="vocab-content" id="vocabContent"></div>
+        <div class="vocab-footer">
+            💡 Click any term to insert into your letter
+        </div>
+    </div>
+
+    <!-- Toast notification -->
+    <div class="vocab-toast" id="vocabToast">Term inserted!</div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // ==========================================
+        // LEGAL VOCABULARY DATABASE
+        // ==========================================
+        const legalVocabulary = [
+            // PLEADINGS
+            { word: "Complaint", cat: "pleadings", def: "The initial document filed by the plaintiff that starts a lawsuit, stating the claims against the defendant.", example: "The Complaint filed against me contains factual errors that I will address in my Answer." },
+            { word: "Answer", cat: "pleadings", def: "The defendant's formal written response to the complaint, admitting or denying each allegation.", example: "I hereby submit my Answer to the Complaint, denying the allegations in paragraphs 3 through 7." },
+            { word: "Counterclaim", cat: "pleadings", def: "A claim made by a defendant against the plaintiff in the same lawsuit.", example: "In addition to my Answer, I am filing a Counterclaim for the Plaintiff's failure to maintain habitable conditions." },
+            { word: "Affirmative Defense", cat: "pleadings", def: "A defense that introduces new facts to defeat the plaintiff's claim, even if the plaintiff's allegations are true.", example: "I assert the affirmative defense of retaliatory eviction under state law." },
+            { word: "Summons", cat: "pleadings", def: "An official court document notifying a defendant that a lawsuit has been filed and requiring a response.", example: "I received the Summons on [date] and am responding within the required timeframe." },
+            { word: "Petition", cat: "pleadings", def: "A formal written request to the court asking for a specific action or order.", example: "I respectfully submit this Petition requesting the court to..." },
+            
+            // MOTIONS
+            { word: "Motion", cat: "motions", def: "A formal request asking the court to make a specific ruling or order.", example: "I file this Motion requesting the Court to dismiss the case for lack of proper notice." },
+            { word: "Motion to Dismiss", cat: "motions", def: "A request asking the court to throw out a case for legal deficiencies.", example: "Defendant respectfully moves to dismiss this action based on Plaintiff's failure to provide proper notice as required by law." },
+            { word: "Motion for Continuance", cat: "motions", def: "A request to postpone a court date or deadline.", example: "I request a continuance to allow adequate time to gather evidence and prepare my defense." },
+            { word: "Motion to Compel", cat: "motions", def: "A request asking the court to order the other party to take a required action, usually related to discovery.", example: "I file this Motion to Compel the landlord to produce maintenance records." },
+            { word: "Motion for Summary Judgment", cat: "motions", def: "A request for the court to rule in your favor without a trial because there are no disputed facts.", example: "The undisputed facts establish that Plaintiff failed to provide required notice, warranting summary judgment." },
+            { word: "Motion to Stay", cat: "motions", def: "A request to temporarily halt proceedings or enforcement of a judgment.", example: "I request a stay of execution pending the outcome of my appeal." },
+            { word: "Motion in Limine", cat: "motions", def: "A pretrial motion asking the court to exclude certain evidence from trial.", example: "I move in limine to exclude any reference to matters outside the scope of this eviction." },
+            
+            // EVIDENCE
+            { word: "Exhibit", cat: "evidence", def: "A document or object presented as evidence in court.", example: "Attached hereto as Exhibit A is a photograph documenting the mold conditions." },
+            { word: "Affidavit", cat: "evidence", def: "A written statement of facts made under oath.", example: "I submit this Affidavit attesting to the facts described herein under penalty of perjury." },
+            { word: "Declaration", cat: "evidence", def: "A written statement of facts, similar to an affidavit but typically not notarized.", example: "I declare under penalty of perjury that the foregoing is true and correct." },
+            { word: "Testimony", cat: "evidence", def: "Statements made by witnesses under oath.", example: "My testimony will demonstrate that the landlord was notified of these issues on multiple occasions." },
+            { word: "Hearsay", cat: "evidence", def: "An out-of-court statement offered to prove the truth of the matter asserted, generally inadmissible.", example: "I object to this statement as hearsay not falling within any recognized exception." },
+            { word: "Burden of Proof", cat: "evidence", def: "The obligation to prove allegations; in civil cases, usually 'preponderance of the evidence.'", example: "The Plaintiff bears the burden of proof to establish that rent was not paid." },
+            { word: "Prima Facie", cat: "evidence", def: "Evidence sufficient to establish a fact unless rebutted.", example: "These photographs establish a prima facie case of habitability violations." },
+            { word: "Discovery", cat: "evidence", def: "The pretrial process of exchanging relevant information between parties.", example: "Through discovery, I request all maintenance records for the property." },
+            
+            // PARTIES
+            { word: "Plaintiff", cat: "parties", def: "The party who initiates a lawsuit.", example: "The Plaintiff (landlord) has failed to prove their case." },
+            { word: "Defendant", cat: "parties", def: "The party being sued or accused in a lawsuit.", example: "As the Defendant, I deny the allegations set forth in the Complaint." },
+            { word: "Petitioner", cat: "parties", def: "The party who files a petition with the court.", example: "Petitioner respectfully requests the Court grant the following relief." },
+            { word: "Respondent", cat: "parties", def: "The party who responds to a petition.", example: "Respondent opposes the motion for the following reasons." },
+            { word: "Pro Se", cat: "parties", def: "Representing oneself in court without an attorney.", example: "I am appearing pro se in this matter and request the Court's consideration." },
+            { word: "Counsel", cat: "parties", def: "An attorney or legal representative.", example: "I have not yet retained counsel but intend to seek legal assistance." },
+            
+            // PROCEDURES
+            { word: "Jurisdiction", cat: "procedures", def: "The court's authority to hear and decide a case.", example: "This Court has jurisdiction over this matter pursuant to state housing law." },
+            { word: "Venue", cat: "procedures", def: "The proper geographic location for a case to be heard.", example: "Venue is proper in this county as it is where the rental property is located." },
+            { word: "Service of Process", cat: "procedures", def: "The formal delivery of legal documents to a party.", example: "I was not properly served as required by law, as the notice was left at an incorrect address." },
+            { word: "Due Process", cat: "procedures", def: "The constitutional right to fair legal proceedings.", example: "My due process rights were violated when I was not given adequate notice." },
+            { word: "Stipulation", cat: "procedures", def: "An agreement between parties on certain facts or procedures.", example: "The parties stipulate to the following facts." },
+            { word: "Continuance", cat: "procedures", def: "A postponement of a court proceeding to a later date.", example: "I request a continuance to obtain legal representation." },
+            { word: "Default Judgment", cat: "procedures", def: "A judgment entered against a party who fails to respond or appear.", example: "I request the Court set aside the default judgment as I did not receive proper notice." },
+            { word: "Appeal", cat: "procedures", def: "A request to a higher court to review a lower court's decision.", example: "I intend to appeal this decision on the grounds of legal error." },
+            { word: "Stay of Execution", cat: "procedures", def: "A court order temporarily preventing enforcement of a judgment.", example: "I request a stay of execution of the eviction order pending my appeal." },
+            
+            // HOUSING-SPECIFIC
+            { word: "Unlawful Detainer", cat: "housing", def: "The legal action to evict a tenant; the formal name for an eviction lawsuit.", example: "The Unlawful Detainer action filed against me lacks merit for the following reasons." },
+            { word: "Writ of Possession", cat: "housing", def: "A court order authorizing the sheriff to remove a tenant from the property.", example: "I request the Court not issue a Writ of Possession until I have exhausted my appeals." },
+            { word: "Notice to Quit", cat: "housing", def: "A notice informing a tenant they must leave the property.", example: "The Notice to Quit was defective because it did not comply with the required timeframe." },
+            { word: "Habitability", cat: "housing", def: "The legal requirement that rental property be fit for human habitation.", example: "The landlord breached the implied warranty of habitability by failing to address mold and pest issues." },
+            { word: "Rent Withholding", cat: "housing", def: "A tenant's legal right to withhold rent due to uninhabitable conditions.", example: "I exercised my right to rent withholding after the landlord failed to make necessary repairs." },
+            { word: "Retaliatory Eviction", cat: "housing", def: "An illegal eviction in response to a tenant exercising their legal rights.", example: "This eviction is retaliatory, filed within 90 days of my complaint to the housing authority." },
+            { word: "Security Deposit", cat: "housing", def: "Money held by the landlord as protection against damage or unpaid rent.", example: "The landlord has failed to return my security deposit as required by law." },
+            { word: "Lease Violation", cat: "housing", def: "A breach of the terms of the rental agreement.", example: "I deny the alleged lease violation and provide evidence to the contrary." },
+            { word: "Constructive Eviction", cat: "housing", def: "When conditions make the property uninhabitable, forcing the tenant to leave.", example: "The landlord's failure to provide heat constituted constructive eviction." },
+            { word: "Quiet Enjoyment", cat: "housing", def: "A tenant's right to use and enjoy the property without interference.", example: "The landlord's repeated unannounced entries violated my right to quiet enjoyment." },
+            { word: "Cure or Quit", cat: "housing", def: "A notice giving a tenant time to fix a lease violation or leave.", example: "I cured the violation within the timeframe specified in the Cure or Quit notice." },
+            { word: "Just Cause", cat: "housing", def: "A legally valid reason for eviction required in some jurisdictions.", example: "The landlord has not established just cause for this eviction as required by local ordinance." }
+        ];
+
+        let currentCategory = 'all';
         let selectedType = '';
         let generatedContent = '';
         
@@ -407,6 +703,81 @@
             document.querySelectorAll('.letter-card').forEach(c => {
                 c.classList.toggle('active', c.dataset.type === type);
             });
+        });
+
+        // ==========================================
+        // VOCABULARY PANEL FUNCTIONS
+        // ==========================================
+        
+        function toggleVocabPanel() {
+            document.getElementById('vocabPanel').classList.toggle('open');
+        }
+
+        function renderVocab(terms) {
+            const container = document.getElementById('vocabContent');
+            container.innerHTML = terms.map(term => `
+                <div class="vocab-term" onclick="insertTerm('${term.word}')">
+                    <div class="word">${term.word}</div>
+                    <div class="def">${term.def}</div>
+                    <div class="example">"${term.example}"</div>
+                    <div class="insert-hint">Click to insert into your letter</div>
+                </div>
+            `).join('');
+        }
+
+        function filterCategory(cat) {
+            currentCategory = cat;
+            document.querySelectorAll('.vocab-cat').forEach(c => c.classList.remove('active'));
+            document.querySelector(`.vocab-cat[data-cat="${cat}"]`).classList.add('active');
+            
+            const filtered = cat === 'all' 
+                ? legalVocabulary 
+                : legalVocabulary.filter(t => t.cat === cat);
+            
+            renderVocab(filtered);
+        }
+
+        function filterVocab() {
+            const query = document.getElementById('vocabSearch').value.toLowerCase();
+            let filtered = legalVocabulary;
+            
+            if (currentCategory !== 'all') {
+                filtered = filtered.filter(t => t.cat === currentCategory);
+            }
+            
+            if (query) {
+                filtered = filtered.filter(t => 
+                    t.word.toLowerCase().includes(query) || 
+                    t.def.toLowerCase().includes(query)
+                );
+            }
+            
+            renderVocab(filtered);
+        }
+
+        function insertTerm(term) {
+            const textarea = document.getElementById('letter-context');
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const text = textarea.value;
+            
+            textarea.value = text.substring(0, start) + term + text.substring(end);
+            textarea.selectionStart = textarea.selectionEnd = start + term.length;
+            textarea.focus();
+            
+            showToast(`"${term}" inserted!`);
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('vocabToast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+
+        // Initialize vocabulary panel
+        document.addEventListener('DOMContentLoaded', () => {
+            renderVocab(legalVocabulary);
         });
     </script>
 </body>

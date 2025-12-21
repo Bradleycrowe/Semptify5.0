@@ -233,22 +233,28 @@ class UserContext:
     """
     Complete context for an authenticated user session.
     This is what gets passed to route handlers.
+    
+    PRIVACY: No personal data (email, display_name) is stored.
+    User identity is an anonymous random ID only.
     """
-    # Identity (stable)
-    user_id: str                          # Internal ID (hash of provider:storage_id)
+    # Identity (stable, anonymous)
+    user_id: str                          # Anonymous ID (e.g., GU7x9kM2pQ)
     
     # Storage info
     provider: StorageProvider             # Which storage provider authenticated
-    storage_user_id: str                  # ID in the storage provider
+    storage_user_id: str                  # Opaque ID in the storage provider (NOT email)
     access_token: str                     # Current access token for API calls
     
     # Role & permissions
     role: UserRole = UserRole.USER        # Active role for this session
     permissions: set[str] = field(default_factory=set)
     
-    # Optional info
-    email: Optional[str] = None
-    display_name: Optional[str] = None
+    # Auth state flags
+    needs_reauth: bool = False            # True if cookie exists but DB session missing/expired
+    
+    # PRIVACY: NO personal data fields
+    # email - REMOVED
+    # display_name - REMOVED
     
     # Session tracking
     session_id: Optional[str] = None
@@ -299,13 +305,16 @@ class StoredSession:
     """
     What we store in the session store (memory/Redis/DB).
     Contains everything needed to reconstruct UserContext.
+    
+    PRIVACY: No personal data (email, display_name) is stored.
+    User identity is an anonymous random ID only.
     """
     session_id: str
     
-    # Identity
-    user_id: str
-    provider: str  # StorageProvider value
-    storage_user_id: str
+    # Identity (anonymous)
+    user_id: str                          # Anonymous ID (e.g., GU7x9kM2pQ)
+    provider: str                         # StorageProvider value
+    storage_user_id: str                  # Opaque ID from provider (NOT email)
     
     # Auth
     access_token: str
@@ -315,9 +324,9 @@ class StoredSession:
     # Role (can be switched)
     role: str = "user"  # UserRole value
     
-    # Profile
-    email: Optional[str] = None
-    display_name: Optional[str] = None
+    # PRIVACY: NO personal data fields
+    # email - REMOVED
+    # display_name - REMOVED
     
     # Timestamps
     created_at: datetime = field(default_factory=datetime.utcnow)
@@ -331,14 +340,12 @@ class StoredSession:
             storage_user_id=self.storage_user_id,
             access_token=self.access_token,
             role=UserRole(self.role),
-            email=self.email,
-            display_name=self.display_name,
             session_id=self.session_id,
             authenticated_at=self.created_at,
         )
     
     def to_dict(self) -> dict:
-        """Serialize for storage."""
+        """Serialize for storage (no personal data)."""
         return {
             "session_id": self.session_id,
             "user_id": self.user_id,
@@ -348,8 +355,6 @@ class StoredSession:
             "refresh_token": self.refresh_token,
             "token_expires_at": self.token_expires_at.isoformat() if self.token_expires_at else None,
             "role": self.role,
-            "email": self.email,
-            "display_name": self.display_name,
             "created_at": self.created_at.isoformat(),
             "expires_at": self.expires_at.isoformat() if self.expires_at else None,
         }
@@ -366,8 +371,6 @@ class StoredSession:
             refresh_token=data.get("refresh_token"),
             token_expires_at=datetime.fromisoformat(data["token_expires_at"]) if data.get("token_expires_at") else None,
             role=data.get("role", "user"),
-            email=data.get("email"),
-            display_name=data.get("display_name"),
             created_at=datetime.fromisoformat(data["created_at"]),
             expires_at=datetime.fromisoformat(data["expires_at"]) if data.get("expires_at") else None,
         )

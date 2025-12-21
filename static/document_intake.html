@@ -2098,9 +2098,9 @@
 
                 showToast('Signed out successfully', 'success');
                 
-                // Redirect to welcome page after short delay
+                // Redirect to storage providers after short delay
                 setTimeout(() => {
-                    window.location.href = '/static/welcome.html';
+                    window.location.href = '/storage/providers';
                 }, 1000);
 
             } catch (error) {
@@ -4000,5 +4000,8 @@
             }
         });
     </script>
+
+    <!-- Legal Vocabulary Panel -->
+    <script src="/static/js/legal-vocabulary.js"></script>
 </body>
 </html>

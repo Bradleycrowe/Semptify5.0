@@ -719,6 +719,9 @@
             <h1 class="page-title">⚡ Timeline Builder</h1>
         </div>
         <div class="header-actions">
+            <button class="btn btn-ghost" onclick="openBriefcase()" title="Open Document Briefcase">
+                💼 Briefcase
+            </button>
             <button class="btn btn-ghost" onclick="printTimeline()" title="Print timeline">
                 🖨️ Print
             </button>
@@ -1212,10 +1215,88 @@
                 const saved = localStorage.getItem('semptify_timeline');
                 if (saved) {
                     timelineEvents = JSON.parse(saved);
-                    renderTimeline();
                 }
+                
+                // Import events from Briefcase
+                importBriefcaseEvents();
+                
+                renderTimeline();
             } catch (err) {
                 console.error('Load error:', err);
+            }
+        }
+        
+        // Import events from Briefcase document processing
+        function importBriefcaseEvents() {
+            try {
+                const briefcaseEvents = localStorage.getItem('briefcase_timeline_events');
+                if (!briefcaseEvents) return;
+                
+                const events = JSON.parse(briefcaseEvents);
+                if (!events.length) return;
+                
+                // Get IDs of existing events to avoid duplicates
+                const existingIds = new Set(timelineEvents.map(e => e.id));
+                const existingTitles = new Set(timelineEvents.map(e => e.title.toLowerCase()));
+                
+                let imported = 0;
+                
+                for (const event of events) {
+                    // Skip if already imported
+                    if (existingIds.has(event.id)) continue;
+                    
+                    // Skip if same title exists (probably duplicate)
+                    if (existingTitles.has(event.title.toLowerCase())) continue;
+                    
+                    // Map briefcase type to timeline type
+                    const typeMap = {
+                        'notice': 'notice',
+                        'payment': 'document',
+                        'maintenance': 'document',
+                        'communication': 'document',
+                        'court': 'hearing',
+                        'other': 'document'
+                    };
+                    
+                    // Parse date
+                    let dateStr;
+                    try {
+                        const d = new Date(event.date);
+                        dateStr = d.toISOString().split('T')[0];
+                    } catch {
+                        dateStr = new Date().toISOString().split('T')[0];
+                    }
+                    
+                    // Add to timeline
+                    timelineEvents.push({
+                        id: event.id,
+                        type: typeMap[event.type] || 'document',
+                        title: event.title,
+                        date: dateStr,
+                        description: `📁 From: ${event.documentName || 'Briefcase Document'}`,
+                        status: new Date(dateStr) > new Date() ? 'upcoming' : 'completed',
+                        source: 'briefcase',
+                        documentId: event.documentId,
+                        createdAt: event.createdAt || new Date().toISOString()
+                    });
+                    
+                    imported++;
+                    existingIds.add(event.id);
+                    existingTitles.add(event.title.toLowerCase());
+                }
+                
+                if (imported > 0) {
+                    // Sort by date
+                    timelineEvents.sort((a, b) => new Date(a.date) - new Date(b.date));
+                    saveToStorage();
+                    
+                    // Clear imported briefcase events
+                    localStorage.removeItem('briefcase_timeline_events');
+                    
+                    showToast(`📥 Imported ${imported} event${imported > 1 ? 's' : ''} from Briefcase!`, 'success');
+                }
+            } catch (err) {
+                console.error('Briefcase import error:', err);
             }
         }
 
@@ -1365,11 +1446,19 @@
             setTimeout(() => toast.remove(), 3000);
         }
 
+        // Open Briefcase
+        function openBriefcase() {
+            window.location.href = '/static/briefcase.html';
+        }
+
         // Keyboard shortcuts
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') deselectEvent();
             if (e.key === 'Delete' && selectedEventId) deleteEvent(selectedEventId);
         });
     </script>
+
+    <!-- Legal Vocabulary Panel -->
+    <script src="/static/js/legal-vocabulary.js"></script>
 </body>
 </html>

@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What Brings You Here? - Semptify</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #1a1a2e 100%);
+            min-height: 100vh;
+            color: #ffffff;
+        }
+        
+        .glass {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .situation-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .situation-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(59, 130, 246, 0.5);
+            background: rgba(59, 130, 246, 0.1);
+        }
+        .situation-card.selected {
+            border-color: #3b82f6;
+            background: rgba(59, 130, 246, 0.15);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+        }
+        
+        .tool-card {
+            transition: all 0.3s ease;
+            opacity: 0.5;
+        }
+        .tool-card.recommended {
+            opacity: 1;
+            border-color: rgba(34, 197, 94, 0.5);
+            background: rgba(34, 197, 94, 0.1);
+        }
+        .tool-card.recommended::before {
+            content: "Recommended";
+            position: absolute;
+            top: -10px;
+            right: 10px;
+            background: #22c55e;
+            color: white;
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+        
+        .upload-zone {
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+        .upload-zone:hover, .upload-zone.dragover {
+            border-color: #3b82f6;
+            background: rgba(59, 130, 246, 0.1);
+        }
+        
+        .step-indicator {
+            transition: all 0.3s ease;
+        }
+        .step-indicator.active {
+            background: #3b82f6;
+            color: white;
+        }
+        .step-indicator.completed {
+            background: #22c55e;
+            color: white;
+        }
+        
+        .step-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        .step-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .pulse-dot {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        textarea:focus, input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+        
+        .path-card {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .path-card:hover {
+            transform: scale(1.02);
+            border-color: rgba(59, 130, 246, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <nav class="glass fixed top-0 left-0 right-0 z-50 px-6 py-4">
+        <div class="max-w-4xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-balance-scale text-white"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-white">Semptify</h1>
+                    <p class="text-xs text-gray-400">The Tenant's Journal</p>
+                </div>
+            </div>
+            <!-- Step Progress -->
+            <div class="flex items-center gap-2">
+                <div class="step-indicator active w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold bg-white/20" data-step="1">1</div>
+                <div class="w-8 h-1 bg-white/20 rounded"></div>
+                <div class="step-indicator w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold bg-white/20" data-step="2">2</div>
+                <div class="w-8 h-1 bg-white/20 rounded"></div>
+                <div class="step-indicator w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold bg-white/20" data-step="3">3</div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="pt-24 pb-12 px-6">
+        <div class="max-w-4xl mx-auto">
+            
+            <!-- STEP 1: Situation Selection -->
+            <div id="step1" class="step-content active">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold mb-3">What Brings You Here Today?</h2>
+                    <p class="text-gray-400">Select your situation and we'll guide you to the right tools</p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-4 mb-8">
+                    <div class="situation-card glass rounded-xl p-5 relative" data-situation="notice" onclick="selectSituation('notice')">
+                        <div class="absolute top-3 right-3 text-xs text-red-400 font-semibold">
+                            <i class="fas fa-clock mr-1"></i>Time Sensitive
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="w-14 h-14 bg-red-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-exclamation-triangle text-red-400 text-2xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-white mb-1 text-lg">I received a notice</h4>
+                                <p class="text-sm text-gray-400 mb-2">Eviction notice, pay or quit, lease violation</p>
+                                <div class="flex flex-wrap gap-1">
+                                    <span class="text-xs bg-red-500/20 text-red-300 px-2 py-0.5 rounded">Urgent</span>
+                                    <span class="text-xs bg-white/10 text-gray-300 px-2 py-0.5 rounded">Deadlines</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="situation-card glass rounded-xl p-5" data-situation="lease" onclick="selectSituation('lease')">
+                        <div class="flex items-start gap-4">
+                            <div class="w-14 h-14 bg-blue-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-file-contract text-blue-400 text-2xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-white mb-1 text-lg">Lease questions</h4>
+                                <p class="text-sm text-gray-400 mb-2">Understanding terms, renewal, or obligations</p>
+                                <div class="flex flex-wrap gap-1">
+                                    <span class="text-xs bg-blue-500/20 text-blue-300 px-2 py-0.5 rounded">Review</span>
+                                    <span class="text-xs bg-white/10 text-gray-300 px-2 py-0.5 rounded">Rights</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="situation-card glass rounded-xl p-5" data-situation="repairs" onclick="selectSituation('repairs')">
+                        <div class="flex items-start gap-4">
+                            <div class="w-14 h-14 bg-yellow-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-tools text-yellow-400 text-2xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-white mb-1 text-lg">Repair issues</h4>
+                                <p class="text-sm text-gray-400 mb-2">Landlord not fixing things, habitability</p>
+                                <div class="flex flex-wrap gap-1">
+                                    <span class="text-xs bg-yellow-500/20 text-yellow-300 px-2 py-0.5 rounded">Document</span>
+                                    <span class="text-xs bg-white/10 text-gray-300 px-2 py-0.5 rounded">Evidence</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="situation-card glass rounded-xl p-5" data-situation="other" onclick="selectSituation('other')">
+                        <div class="flex items-start gap-4">
+                            <div class="w-14 h-14 bg-purple-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-folder-open text-purple-400 text-2xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-white mb-1 text-lg">Something else</h4>
+                                <p class="text-sm text-gray-400 mb-2">Deposit, discrimination, harassment, etc.</p>
+                                <div class="flex flex-wrap gap-1">
+                                    <span class="text-xs bg-purple-500/20 text-purple-300 px-2 py-0.5 rounded">General</span>
+                                    <span class="text-xs bg-white/10 text-gray-300 px-2 py-0.5 rounded">Help</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center">
+                    <button onclick="skipToCase()" class="text-gray-400 hover:text-white text-sm transition">
+                        I'll explore on my own →
+                    </button>
+                </div>
+            </div>
+
+            <!-- STEP 2: Tools You'll Need -->
+            <div id="step2" class="step-content">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold mb-3">Tools You'll Need</h2>
+                    <p class="text-gray-400">Based on your situation, here's what we recommend</p>
+                </div>
+                
+                <!-- Tools Grid - dynamically highlighted based on situation -->
+                <div id="toolsGrid" class="grid md:grid-cols-3 gap-4 mb-8">
+                    <div class="tool-card glass rounded-xl p-4 relative" data-tool="timeline">
+                        <div class="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center mb-3">
+                            <i class="fas fa-clock text-purple-400 text-xl"></i>
+                        </div>
+                        <h4 class="font-semibold text-white mb-1">Timeline</h4>
+                        <p class="text-xs text-gray-400">Track events chronologically</p>
+                    </div>
+                    
+                    <div class="tool-card glass rounded-xl p-4 relative" data-tool="documents">
+                        <div class="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center mb-3">
+                            <i class="fas fa-file-alt text-blue-400 text-xl"></i>
+                        </div>
+                        <h4 class="font-semibold text-white mb-1">Document Vault</h4>
+                        <p class="text-xs text-gray-400">Store & organize files</p>
+                    </div>
+                    
+                    <div class="tool-card glass rounded-xl p-4 relative" data-tool="deadlines">
+                        <div class="w-12 h-12 bg-red-500/20 rounded-xl flex items-center justify-center mb-3">
+                            <i class="fas fa-calendar-exclamation text-red-400 text-xl"></i>
+                        </div>
+                        <h4 class="font-semibold text-white mb-1">Deadline Tracker</h4>
+                        <p class="text-xs text-gray-400">Never miss important dates</p>
+                    </div>
+                    
+                    <div class="tool-card glass rounded-xl p-4 relative" data-tool="photos">
+                        <div class="w-12 h-12 bg-yellow-500/20 rounded-xl flex items-center justify-center mb-3">
+                            <i class="fas fa-camera text-yellow-400 text-xl"></i>
+                        </div>
+                        <h4 class="font-semibold text-white mb-1">Photo Evidence</h4>
+                        <p class="text-xs text-gray-400">Capture & timestamp proof</p>
+                    </div>
+                    
+                    <div class="tool-card glass rounded-xl p-4 relative" data-tool="rights">
+                        <div class="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center mb-3">
+                            <i class="fas fa-gavel text-green-400 text-xl"></i>
+                        </div>
+                        <h4 class="font-semibold text-white mb-1">Know Your Rights</h4>
+                        <p class="text-xs text-gray-400">MN tenant law guide</p>
+                    </div>
+                    
+                    <div class="tool-card glass rounded-xl p-4 relative" data-tool="letters">
+                        <div class="w-12 h-12 bg-indigo-500/20 rounded-xl flex items-center justify-center mb-3">
+                            <i class="fas fa-envelope text-indigo-400 text-xl"></i>
+                        </div>
+                        <h4 class="font-semibold text-white mb-1">Letter Templates</h4>
+                        <p class="text-xs text-gray-400">Communicate effectively</p>
+                    </div>
+                </div>
+                
+                <!-- Quick tip based on situation -->
+                <div id="situationTip" class="glass rounded-xl p-4 mb-8 border-l-4 border-blue-500">
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-lightbulb text-yellow-400 mt-1"></i>
+                        <div>
+                            <h4 class="font-semibold text-white mb-1">Quick Tip</h4>
+                            <p id="tipText" class="text-sm text-gray-400">Select a situation to see personalized tips.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex gap-4 justify-center">
+                    <button onclick="goToStep(1)" class="px-6 py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl transition">
+                        <i class="fas fa-arrow-left mr-2"></i>Back
+                    </button>
+                    <button onclick="goToStep(3)" class="px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl font-semibold transition">
+                        Continue<i class="fas fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- STEP 3: Add Details (Document/Description) -->
+            <div id="step3" class="step-content">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold mb-3">Add Your First Item</h2>
+                    <p class="text-gray-400">Upload a document or describe your situation to get started</p>
+                </div>
+                
+                <!-- Quick Path Options -->
+                <div class="grid md:grid-cols-2 gap-6 mb-8">
+                    <div class="path-card glass rounded-xl p-6 border-2 border-transparent hover:border-blue-500/50" onclick="showUploadPath()">
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-blue-500/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-file-upload text-blue-400 text-2xl"></i>
+                            </div>
+                            <h4 class="font-semibold text-white text-lg mb-2">I have a document</h4>
+                            <p class="text-sm text-gray-400">Upload a notice, lease, or other document</p>
+                        </div>
+                    </div>
+                    
+                    <div class="path-card glass rounded-xl p-6 border-2 border-transparent hover:border-purple-500/50" onclick="showDescribePath()">
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-purple-500/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-pen text-purple-400 text-2xl"></i>
+                            </div>
+                            <h4 class="font-semibold text-white text-lg mb-2">I'll describe it</h4>
+                            <p class="text-sm text-gray-400">Tell us what's happening in your own words</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Upload Section (hidden by default) -->
+                <div id="uploadPath" class="hidden glass rounded-xl p-6 mb-6">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                        <i class="fas fa-upload text-blue-400"></i>
+                        Upload Your Document
+                    </h3>
+                    <div id="uploadZone" class="upload-zone rounded-xl p-8 text-center"
+                         ondragover="handleDragOver(event)" 
+                         ondragleave="handleDragLeave(event)"
+                         ondrop="handleDrop(event)">
+                        <input type="file" id="fileInput" class="hidden" accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png" onchange="handleFileSelect(event)">
+                        <div id="uploadPrompt">
+                            <i class="fas fa-cloud-upload-alt text-4xl text-gray-500 mb-4"></i>
+                            <p class="text-gray-400 mb-2">Drag and drop your document here</p>
+                            <button onclick="document.getElementById('fileInput').click()" 
+                                    class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition">
+                                Browse Files
+                            </button>
+                            <p class="text-gray-500 text-xs mt-4">PDF, Word, Text, or Images</p>
+                        </div>
+                        <div id="uploadedFile" class="hidden">
+                            <i class="fas fa-file-alt text-4xl text-blue-400 mb-3"></i>
+                            <p id="fileName" class="text-white font-medium mb-2"></p>
+                            <button onclick="clearFile()" class="text-sm text-red-400 hover:text-red-300">
+                                <i class="fas fa-times mr-1"></i> Remove
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Describe Section (hidden by default) -->
+                <div id="describePath" class="hidden glass rounded-xl p-6 mb-6">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                        <i class="fas fa-pen text-purple-400"></i>
+                        Describe Your Situation
+                    </h3>
+                    <textarea id="situationDescription" 
+                              class="w-full h-32 bg-white/5 border border-white/20 rounded-xl p-4 text-white placeholder-gray-500 resize-none"
+                              placeholder="What happened? When did it happen? What are you concerned about?"></textarea>
+                    <p class="text-xs text-gray-500 mt-2">
+                        <i class="fas fa-lock mr-1"></i>Your information stays private and secure
+                    </p>
+                </div>
+                
+                <div class="flex gap-4 justify-center">
+                    <button onclick="goToStep(2)" class="px-6 py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl transition">
+                        <i class="fas fa-arrow-left mr-2"></i>Back
+                    </button>
+                    <button id="finishBtn" onclick="finishOnboarding()" class="px-8 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-xl font-semibold transition">
+                        <i class="fas fa-check mr-2"></i>Start My Case
+                    </button>
+                </div>
+                
+                <div class="text-center mt-4">
+                    <button onclick="skipToCase()" class="text-gray-400 hover:text-white text-sm transition">
+                        Skip and explore on my own →
+                    </button>
+                </div>
+            </div>
+
+            <!-- Document Upload Section -->
+            <div id="uploadSection" class="glass rounded-xl p-6 mb-8">
+                <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <i class="fas fa-upload text-blue-400"></i>
+                    Upload a Document (Optional)
+                </h3>
+                <p class="text-gray-400 text-sm mb-4">
+                    If you have a notice, lease, or any document related to your situation, 
+                    upload it here. We'll analyze it to better understand your situation.
+                </p>
+                
+                <div id="uploadZone" class="upload-zone rounded-xl p-8 text-center"
+                     ondragover="handleDragOver(event)" 
+                     ondragleave="handleDragLeave(event)"
+                     ondrop="handleDrop(event)">
+                    <input type="file" id="fileInput" class="hidden" accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png" onchange="handleFileSelect(event)">
+                    <div id="uploadPrompt">
+                        <i class="fas fa-cloud-upload-alt text-4xl text-gray-500 mb-4"></i>
+                        <p class="text-gray-400 mb-2">Drag and drop your document here</p>
+                        <p class="text-gray-500 text-sm mb-4">or</p>
+                        <button onclick="document.getElementById('fileInput').click()" 
+                                class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition">
+                            Browse Files
+                        </button>
+                        <p class="text-gray-500 text-xs mt-4">Supports PDF, Word, Text, and Images</p>
+                    </div>
+                    <div id="uploadedFile" class="hidden">
+                        <i class="fas fa-file-alt text-4xl text-blue-400 mb-3"></i>
+                        <p id="fileName" class="text-white font-medium mb-2"></p>
+                        <button onclick="clearFile()" class="text-sm text-red-400 hover:text-red-300">
+                            <i class="fas fa-times mr-1"></i> Remove
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tell Us More Section -->
+            <div id="descriptionSection" class="glass rounded-xl p-6 mb-8">
+                <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <i class="fas fa-pen text-purple-400"></i>
+                    Tell Us In Your Own Words
+                </h3>
+                <p class="text-gray-400 text-sm mb-4">
+                    Describe your situation. What's happening? What are you concerned about? 
+                    The more details you provide, the better we can help.
+                </p>
+                <textarea id="situationDescription" 
+                          class="w-full h-32 bg-white/5 border border-white/20 rounded-xl p-4 text-white placeholder-gray-500 resize-none"
+                          placeholder="Example: My landlord gave me a paper last week saying I have to leave in 14 days. I've been here for 2 years and always paid rent on time..."></textarea>
+            </div>
+
+            <!-- Analysis Section (hidden until submitted) -->
+            <div id="analysisSection" class="hidden glass rounded-xl p-6 mb-8">
+                <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <i class="fas fa-brain text-green-400 analyzing"></i>
+                    <span id="analysisTitle">Analyzing Your Situation...</span>
+                </h3>
+                <div id="analysisContent">
+                    <div class="flex items-center gap-3 text-gray-400">
+                        <div class="w-6 h-6 border-2 border-blue-400 border-t-transparent rounded-full animate-spin"></div>
+                        <span>Understanding your situation...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button id="analyzeBtn" onclick="analyzeAndContinue()" 
+                        class="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl font-semibold transition flex items-center justify-center gap-2">
+                    <i class="fas fa-arrow-right"></i>
+                    Analyze & Continue
+                </button>
+                <button onclick="skipToCase()" 
+                        class="px-8 py-4 bg-white/10 hover:bg-white/20 text-white rounded-xl font-semibold transition">
+                    Skip for Now
+                </button>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        let selectedSituation = null;
+        let uploadedFile = null;
+        let currentStep = 1;
+        
+        // Tool recommendations per situation
+        const toolsPerSituation = {
+            notice: ['timeline', 'documents', 'deadlines', 'rights'],
+            lease: ['documents', 'rights', 'letters'],
+            repairs: ['photos', 'timeline', 'letters', 'documents'],
+            other: ['documents', 'timeline', 'rights']
+        };
+        
+        // Tips per situation
+        const tipsPerSituation = {
+            notice: "⚠️ Time is critical! Most eviction notices have strict response deadlines. Start by uploading your notice so we can identify key dates.",
+            lease: "📋 Understanding your lease is key to knowing your rights. Upload your lease and we'll help you identify important clauses.",
+            repairs: "📸 Documentation is everything for repair issues. Start by taking photos and keeping a timeline of all repair requests.",
+            other: "📁 Whatever your situation, having organized records will help. Let's start documenting your case."
+        };
+        
+        // Page directions per situation
+        const pageDirections = {
+            notice: { page: '/static/timeline.html', label: 'Go to Timeline', icon: 'fa-clock' },
+            lease: { page: '/static/documents.html', label: 'Go to Documents', icon: 'fa-file-alt' },
+            repairs: { page: '/static/case.html', label: 'Start Case', icon: 'fa-folder-open' },
+            other: { page: '/static/case.html', label: 'Start Case', icon: 'fa-folder-open' }
+        };
+
+        function selectSituation(situation) {
+            // Remove previous selection
+            document.querySelectorAll('.situation-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Add selection to clicked card
+            const card = document.querySelector(`[data-situation="${situation}"]`);
+            if (card) {
+                card.classList.add('selected');
+            }
+            
+            selectedSituation = situation;
+            
+            // Auto-advance to step 2 after short delay
+            setTimeout(() => goToStep(2), 300);
+        }
+        
+        function goToStep(step) {
+            // Update step indicators
+            document.querySelectorAll('.step-indicator').forEach(ind => {
+                const indStep = parseInt(ind.dataset.step);
+                ind.classList.remove('active', 'completed');
+                if (indStep < step) {
+                    ind.classList.add('completed');
+                    ind.innerHTML = '<i class="fas fa-check text-xs"></i>';
+                } else if (indStep === step) {
+                    ind.classList.add('active');
+                    ind.textContent = indStep;
+                } else {
+                    ind.textContent = indStep;
+                }
+            });
+            
+            // Show correct step content
+            document.querySelectorAll('.step-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(`step${step}`).classList.add('active');
+            
+            currentStep = step;
+            
+            // Update tools and tips for step 2
+            if (step === 2 && selectedSituation) {
+                updateToolsForSituation();
+            }
+        }
+        
+        function updateToolsForSituation() {
+            const recommendedTools = toolsPerSituation[selectedSituation] || [];
+            
+            // Update tool cards
+            document.querySelectorAll('.tool-card').forEach(card => {
+                card.classList.remove('recommended');
+                if (recommendedTools.includes(card.dataset.tool)) {
+                    card.classList.add('recommended');
+                }
+            });
+            
+            // Update tip
+            document.getElementById('tipText').textContent = tipsPerSituation[selectedSituation] || "Let's get you organized.";
+        }
+        
+        function showUploadPath() {
+            document.getElementById('uploadPath').classList.remove('hidden');
+            document.getElementById('describePath').classList.add('hidden');
+        }
+        
+        function showDescribePath() {
+            document.getElementById('describePath').classList.remove('hidden');
+            document.getElementById('uploadPath').classList.add('hidden');
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            document.getElementById('uploadZone').classList.add('dragover');
+        }
+
+        function handleDragLeave(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            document.getElementById('uploadZone').classList.remove('dragover');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            document.getElementById('uploadZone').classList.remove('dragover');
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                processFile(files[0]);
+            }
+        }
+
+        function handleFileSelect(e) {
+            const files = e.target.files;
+            if (files.length > 0) {
+                processFile(files[0]);
+            }
+        }
+
+        function processFile(file) {
+            uploadedFile = file;
+            document.getElementById('uploadPrompt').classList.add('hidden');
+            document.getElementById('uploadedFile').classList.remove('hidden');
+            document.getElementById('fileName').textContent = file.name;
+        }
+
+        function clearFile() {
+            uploadedFile = null;
+            document.getElementById('fileInput').value = '';
+            document.getElementById('uploadPrompt').classList.remove('hidden');
+            document.getElementById('uploadedFile').classList.add('hidden');
+        }
+
+        async function finishOnboarding() {
+            const description = document.getElementById('situationDescription')?.value?.trim() || '';
+            const btn = document.getElementById('finishBtn');
+            
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Setting up...';
+
+            // Build intake data
+            const intakeData = {
+                situation_type: selectedSituation,
+                description: description,
+                has_document: !!uploadedFile,
+                timestamp: new Date().toISOString(),
+                recommended_tools: toolsPerSituation[selectedSituation] || []
+            };
+
+            try {
+                // If there's a file, upload and analyze it
+                if (uploadedFile) {
+                    const formData = new FormData();
+                    formData.append('file', uploadedFile);
+                    formData.append('situation_type', selectedSituation || 'unknown');
+                    formData.append('description', description);
+
+                    const response = await fetch('/api/intake/analyze-document', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (response.ok) {
+                        const result = await response.json();
+                        intakeData.analysis = result;
+                    }
+                } else if (description) {
+                    // Text-based analysis
+                    const response = await fetch('/api/intake/analyze-situation', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(intakeData)
+                    });
+
+                    if (response.ok) {
+                        const result = await response.json();
+                        intakeData.analysis = result;
+                    }
+                }
+            } catch (err) {
+                console.error('Analysis error:', err);
+            }
+
+            // Store intake data
+            localStorage.setItem('intakeData', JSON.stringify(intakeData));
+            localStorage.setItem('onboardingComplete', 'true');
+            
+            // Redirect to appropriate page based on situation
+            const direction = pageDirections[selectedSituation] || { page: '/static/case.html' };
+            window.location.href = direction.page;
+        }
+
+        function skipToCase() {
+            localStorage.setItem('intakeData', JSON.stringify({
+                skipped: true,
+                timestamp: new Date().toISOString()
+            }));
+            localStorage.setItem('onboardingComplete', 'true');
+            window.location.href = '/static/case.html';
+        }
+    </script>
+</body>
+</html>

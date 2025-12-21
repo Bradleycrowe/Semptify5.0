@@ -300,12 +300,15 @@ def create_session(
     storage_user_id: str,
     access_token: str,
     refresh_token: Optional[str] = None,
-    email: Optional[str] = None,
-    display_name: Optional[str] = None,
     role: str = "user",
     ttl_hours: int = 24,
 ) -> StoredSession:
-    """Create a new session for an authenticated user."""
+    """
+    Create a new session for an authenticated user.
+    
+    PRIVACY: No personal data (email, display_name) is stored in sessions.
+    User identity is an anonymous random ID only.
+    """
     session_id = secrets.token_urlsafe(32)
     now = datetime.now(timezone.utc)
 
@@ -317,8 +320,7 @@ def create_session(
         access_token=access_token,
         refresh_token=refresh_token,
         role=role,
-        email=email,
-        display_name=display_name,
+        # PRIVACY: No email or display_name stored
         created_at=now,
         expires_at=now + timedelta(hours=ttl_hours),
     )
@@ -742,6 +744,70 @@ def get_admin_token_from_request(request: Request) -> Optional[str]:
 security_bearer = HTTPBearer(auto_error=False)
 
 
+# =============================================================================
+# Database Session Restoration (Cookie → DB → Memory)
+# =============================================================================
+
+async def restore_session_from_db(user_id: str) -> Optional[dict]:
+    """
+    Restore session from database into memory cache.
+    
+    This is the KEY FUNCTION for seamless auth:
+    1. User has valid cookie
+    2. Memory cache might be empty (server restart)
+    3. We check database for their session
+    4. If found, decrypt tokens and cache in memory
+    
+    Returns session dict if found, None otherwise.
+    """
+    from app.core.database import get_db_session
+    from sqlalchemy import select
+    from app.models.models import Session as SessionModel
+    
+    try:
+        async with get_db_session() as db:
+            result = await db.execute(
+                select(SessionModel).where(SessionModel.user_id == user_id)
+            )
+            session_row = result.scalar_one_or_none()
+            
+            if not session_row:
+                logger.debug("No DB session found for user %s", user_id[:4] + "***")
+                return None
+            
+            # Import decryption helper from storage router
+            from app.routers.storage import _decrypt_string, SESSIONS
+            
+            # Decrypt tokens
+            try:
+                access_token = _decrypt_string(session_row.access_token_encrypted, user_id)
+                refresh_token = None
+                if session_row.refresh_token_encrypted:
+                    refresh_token = _decrypt_string(session_row.refresh_token_encrypted, user_id)
+                
+                session_data = {
+                    "user_id": session_row.user_id,
+                    "provider": session_row.provider,
+                    "access_token": access_token,
+                    "refresh_token": refresh_token,
+                    "authenticated_at": session_row.authenticated_at.isoformat() if session_row.authenticated_at else None,
+                    "expires_at": session_row.expires_at.isoformat() if session_row.expires_at else None,
+                }
+                
+                # Cache in memory for future requests
+                SESSIONS[user_id] = session_data
+                logger.info("✅ Restored session from DB for user %s", user_id[:4] + "***")
+                return session_data
+                
+            except Exception as e:
+                logger.warning("Failed to decrypt session for user %s: %s", user_id[:4] + "***", e)
+                return None
+                
+    except Exception as e:
+        logger.error("Database error restoring session for user %s: %s", user_id[:4] + "***", e)
+        return None
+
+
 async def get_current_user(
     request: Request,
     semptify_session: Optional[str] = Cookie(None),
@@ -754,9 +820,12 @@ async def get_current_user(
 
     Authentication sources (priority order):
     1. semptify_session cookie (OAuth session)
-    2. semptify_uid cookie (welcome sequence user ID)
+    2. semptify_uid cookie (Semptify 5.0 user ID) - NOW WITH DB VALIDATION!
     3. Authorization: Bearer <session_id>
     4. X-Session-Id header
+    
+    ENHANCED: For semptify_uid cookie, we now validate against database
+    to restore sessions across server restarts.
     """
     session_id = None
 
@@ -773,10 +842,9 @@ async def get_current_user(
         if session:
             return session.to_context()
 
-    # Check for welcome sequence user ID cookie
+    # Check for Semptify 5.0 user ID cookie
     # SECURITY: Only accept UIDs that look like valid connected users
     # Valid format: <provider><role><8-char-random> (minimum 10 chars)
-    # Do NOT create fallback contexts - user must complete OAuth
     if semptify_uid and len(semptify_uid) >= 10:
         provider_code = semptify_uid[0].upper()
         role_code = semptify_uid[1].upper()
@@ -798,14 +866,47 @@ async def get_current_user(
         provider = provider_map.get(provider_code)
         role = role_map.get(role_code)
         
-        # Only create context if we have valid provider and role codes
+        # Only proceed if we have valid provider and role codes
         if provider and role:
+            # ENHANCED: Try to restore session from database
+            # This is the key to seamless auth after server restart!
+            from app.routers.storage import SESSIONS
+            
+            # Check memory cache first
+            if semptify_uid in SESSIONS:
+                session_data = SESSIONS[semptify_uid]
+                return UserContext(
+                    user_id=semptify_uid,
+                    provider=provider,
+                    storage_user_id=semptify_uid,
+                    access_token=session_data.get("access_token", ""),
+                    role=role,
+                )
+            
+            # Not in memory - try to restore from database
+            session_data = await restore_session_from_db(semptify_uid)
+            
+            if session_data:
+                # Successfully restored from DB!
+                return UserContext(
+                    user_id=semptify_uid,
+                    provider=provider,
+                    storage_user_id=semptify_uid,
+                    access_token=session_data.get("access_token", ""),
+                    role=role,
+                )
+            
+            # No session in DB - user needs to re-authenticate
+            # But we still return a context with minimal info so the
+            # middleware can redirect them to OAuth (not welcome page)
+            logger.debug("User %s has cookie but no DB session - needs OAuth", semptify_uid[:4] + "***")
             return UserContext(
                 user_id=semptify_uid,
                 provider=provider,
                 storage_user_id=semptify_uid,
-                access_token="cookie-token",  # Will be refreshed from storage
+                access_token="",  # Empty - will trigger OAuth redirect
                 role=role,
+                needs_reauth=True,  # Flag for middleware
             )
     
     # No valid cookie - user needs to connect storage
@@ -868,6 +969,9 @@ async def require_user(
     - Every user MUST have their own cloud storage connected
     - System users and demo users are NEVER allowed in production
     - Open mode only allowed in development (debug=true)
+    
+    ENHANCED: Users needing re-auth are redirected to their provider's
+    OAuth (not the welcome page) for seamless re-authentication.
     """
     # SECURITY: Only allow open mode in actual development environment
     if settings.security_mode == "open" and settings.debug:
@@ -892,6 +996,23 @@ async def require_user(
                     "redirect_url": "/storage/providers"
                 },
             )
+        
+        # ENHANCED: Check if user needs re-authentication
+        # This happens when they have a cookie but no valid DB session
+        if getattr(user, 'needs_reauth', False) or not user.access_token:
+            # Redirect to their specific provider for re-auth (not welcome page!)
+            provider = user.provider.value if user.provider else "google_drive"
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail={
+                    "error": "session_expired",
+                    "message": "Your session has expired. Please reconnect your storage.",
+                    "action": "redirect",
+                    "redirect_url": f"/storage/auth/{provider}?existing_uid={user.user_id}"
+                },
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+        
         return user
 
     raise HTTPException(

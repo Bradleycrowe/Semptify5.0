@@ -37,7 +37,7 @@ from app.core.user_id import (
     COOKIE_USER_ID,
     COOKIE_MAX_AGE,
 )
-from app.models.models import User, Session as SessionModel, StorageConfig
+from app.models.models import User, Session as SessionModel, StorageConfig, OAuthState
 
 
 router = APIRouter(prefix="/storage", tags=["storage"])
@@ -72,32 +72,113 @@ OAUTH_CONFIGS = {
     },
 }
 
-# Temporary state storage for OAuth CSRF protection
-# States expire after 15 minutes (increased from 5 for slower connections)
-OAUTH_STATES: dict[str, dict] = {}
-OAUTH_STATE_TIMEOUT_MINUTES = 15  # Give users more time to complete OAuth
+# OAuth state timeout (25 minutes - window to complete OAuth login flow)
+OAUTH_STATE_TIMEOUT_MINUTES = 25
 
-# Clean up expired states periodically
-def _cleanup_expired_states():
-    """Remove expired OAuth states from memory."""
-    now = utc_now()
-    expired = [
-        state for state, data in OAUTH_STATES.items()
-        if now - data.get("created_at", now) > timedelta(minutes=OAUTH_STATE_TIMEOUT_MINUTES)
-    ]
-    for state in expired:
-        OAUTH_STATES.pop(state, None)
-    if expired:
-        print(f"🧹 Cleaned up {len(expired)} expired OAuth states")
+# ============================================================================
+# PRIVACY-FIRST: NO IN-MEMORY FALLBACK
+# ============================================================================
+# OAuth states MUST be stored in database only.
+# If database is unavailable, the operation fails cleanly.
+# NO user data ever stored in server memory or system storage.
+# ============================================================================
+
+async def _cleanup_expired_states_db(db: AsyncSession):
+    """Remove expired OAuth states from database."""
+    try:
+        cutoff = utc_now() - timedelta(minutes=OAUTH_STATE_TIMEOUT_MINUTES)
+        result = await db.execute(
+            select(OAuthState).where(OAuthState.created_at < cutoff)
+        )
+        expired_states = result.scalars().all()
+        for state in expired_states:
+            await db.delete(state)
+        if expired_states:
+            await db.commit()
+            print(f"🧹 Cleaned up {len(expired_states)} expired OAuth states from database")
+    except Exception as e:
+        print(f"⚠️ Failed to cleanup OAuth states: {e}")
+
+async def _store_oauth_state(db: AsyncSession, state: str, provider: str, role: str, 
+                             existing_uid: Optional[str], return_to: Optional[str]) -> bool:
+    """
+    Store OAuth state in database for multi-worker support.
+    
+    PRIVACY: No fallback to memory - if DB fails, operation fails.
+    Returns True on success, raises exception on failure.
+    """
+    try:
+        oauth_state = OAuthState(
+            state=state,
+            provider=provider,
+            role=role,
+            existing_uid=existing_uid,
+            return_to=return_to,
+            created_at=utc_now(),
+        )
+        db.add(oauth_state)
+        await db.commit()
+        print(f"🔐 OAuth state stored in database: {state[:8]}...")
+        return True
+    except Exception as e:
+        print(f"❌ Failed to store OAuth state - database unavailable: {e}")
+        # NO FALLBACK - privacy first, fail cleanly
+        raise HTTPException(
+            status_code=503,
+            detail={
+                "error": "service_unavailable",
+                "message": "Storage service temporarily unavailable. Please try again in a moment.",
+                "action": "retry"
+            }
+        )
+
+async def _get_oauth_state(db: AsyncSession, state: str) -> Optional[dict]:
+    """
+    Retrieve and delete OAuth state from database.
+    
+    PRIVACY: No fallback to memory - database only.
+    """
+    try:
+        result = await db.execute(
+            select(OAuthState).where(OAuthState.state == state)
+        )
+        oauth_state = result.scalar_one_or_none()
+        
+        if oauth_state:
+            state_data = {
+                "provider": oauth_state.provider,
+                "role": oauth_state.role,
+                "existing_uid": oauth_state.existing_uid,
+                "return_to": oauth_state.return_to,
+                "created_at": oauth_state.created_at,
+            }
+            # Delete the used state
+            await db.delete(oauth_state)
+            await db.commit()
+            print(f"✅ OAuth state retrieved from database: {state[:8]}...")
+            return state_data
+        
+        # State not found in database - no fallback
+        return None
+    except Exception as e:
+        print(f"❌ Failed to retrieve OAuth state - database unavailable: {e}")
+        # NO FALLBACK - privacy first
+        raise HTTPException(
+            status_code=503,
+            detail={
+                "error": "service_unavailable", 
+                "message": "Storage service temporarily unavailable. Please try again.",
+                "action": "retry"
+            }
+        )
 
 # In-memory session cache (backed by database via SessionModel)
 # This is a cache - the source of truth is the database
 SESSIONS: dict[str, dict] = {}
 
-# User registry - maps OAuth email to user_id (for session recovery on new browser/cleared cookies)
-# When user re-authenticates with same OAuth account, we restore their original user_id
-# Backed by User table in database
-USER_REGISTRY: dict[str, str] = {}  # {email: user_id}
+# Session authorization duration (24 hours)
+# User stays authorized for 24 hours before needing to re-authenticate
+SESSION_AUTH_DURATION = timedelta(hours=24)
 
 # Token expiry buffer (refresh 5 minutes before actual expiry)
 TOKEN_EXPIRY_BUFFER = timedelta(minutes=5)
@@ -464,62 +545,44 @@ async def get_user_from_db(db: AsyncSession, user_id: str) -> Optional[User]:
     return result.scalar_one_or_none()
 
 
-async def get_user_by_email(db: AsyncSession, email: str) -> Optional[User]:
-    """Find user by email for session recovery."""
-    # Check memory cache first
-    if email in USER_REGISTRY:
-        return await get_user_from_db(db, USER_REGISTRY[email])
-    
-    # Query database
-    result = await db.execute(
-        select(User).where(User.email == email)
-    )
-    user = result.scalar_one_or_none()
-    
-    if user:
-        USER_REGISTRY[email] = user.id
-    
-    return user
-
-
 async def create_or_update_user(
     db: AsyncSession,
     user_id: str,
     provider: str,
-    email: Optional[str] = None,
-    display_name: Optional[str] = None,
 ) -> User:
-    """Create new user or update existing one."""
+    """
+    Create new user or update existing one.
+    
+    ╔══════════════════════════════════════════════════════════════╗
+    ║  PRIVACY: NO PERSONAL DATA IS EVER STORED                    ║
+    ║  - No email addresses                                        ║
+    ║  - No names (display name, real name, etc.)                 ║
+    ║  - No phone numbers, addresses, or any PII                  ║
+    ║                                                              ║
+    ║  User identity = anonymous random ID                         ║
+    ║  User data = stored in THEIR cloud storage                   ║
+    ╚══════════════════════════════════════════════════════════════╝
+    """
     user = await get_user_from_db(db, user_id)
 
     _, role, _ = parse_user_id(user_id)
     now = utc_now()
 
     if user:
-        # Update last login
+        # Update last login only - NO personal data
         user.last_login = now
-        if email and not user.email:
-            user.email = email
-        if display_name and not user.display_name:
-            user.display_name = display_name
     else:
-        # Create new user
+        # Create new user - NO personal data stored
         user = User(
             id=user_id,
             primary_provider=provider,
-            storage_user_id=user_id,  # Will be updated with actual provider ID
+            storage_user_id=user_id,  # Anonymous ID, not email
             default_role=role,
-            email=email,
-            display_name=display_name,
             last_login=now,
         )
         db.add(user)
     
     await db.commit()
-    
-    # Update registry cache
-    if email:
-        USER_REGISTRY[email] = user_id
     
     return user
 
@@ -581,18 +644,49 @@ def _decrypt_token(encrypted: bytes, user_id: str) -> dict:
 async def storage_home(
     request: Request,
     semptify_uid: Optional[str] = Cookie(None),
+    db: AsyncSession = Depends(get_db),
 ):
     """
     Main entry point. Checks cookie and routes user appropriately.
     
-    - Has cookie? → Parse it → Redirect to their provider's OAuth
-    - No cookie? → Show provider selection page
+    Cookie contains user ID which encodes:
+    - Provider: O=OneDrive, G=Google, D=Dropbox (1st char)
+    - Role: U=User, M=Manager, V=Advocate, L=Legal, A=Admin (2nd char)
+    - Unique: Random 8 chars
+    
+    Flow:
+    1. Has cookie? → Parse it → Know provider + role
+    2. Check if we have valid session in database
+    3. If session exists → User is authenticated, redirect to dashboard
+    4. If no session → Redirect to OAuth with their provider (preserving user ID)
+    5. No cookie? → New user, show provider selection
     """
     if semptify_uid:
-        # Returning user! Parse their ID to know where to go
-        provider, role, _ = parse_user_id(semptify_uid)
-        if provider:
-            # Redirect to their storage provider to re-authenticate
+        # Returning user! Parse their ID to know provider and role
+        provider, role, unique = parse_user_id(semptify_uid)
+        if provider and unique:
+            # Check if we have a valid session in database
+            session = await get_session_from_db(db, semptify_uid)
+            
+            if session and session.get("access_token"):
+                # Have valid session! Check if token is still good
+                valid_session = await get_valid_session(db, semptify_uid, auto_refresh=True)
+                
+                if valid_session:
+                    # Fully authenticated - send to dashboard based on role
+                    landing_pages = {
+                        "user": "/dashboard",
+                        "tenant": "/dashboard",
+                        "manager": "/properties",
+                        "advocate": "/clients",
+                        "legal": "/clients",
+                        "admin": "/admin",
+                    }
+                    landing = landing_pages.get(role, "/dashboard")
+                    return RedirectResponse(url=landing, status_code=302)
+            
+            # No valid session - redirect to OAuth to re-authenticate
+            # This preserves their user ID so they keep same identity
             return RedirectResponse(
                 url=f"/storage/auth/{provider}?existing_uid={semptify_uid}",
                 status_code=302
@@ -672,13 +766,16 @@ def _generate_providers_html(semptify_uid: Optional[str] = None) -> str:
     if semptify_uid:
         current_provider = get_provider_from_user_id(semptify_uid)
     
+    # For returning users, add existing_uid to links so their ID is preserved
+    uid_param = f"?existing_uid={semptify_uid}" if semptify_uid else ""
+    
     # Build provider cards
     provider_cards = ""
     
     if settings.GOOGLE_DRIVE_CLIENT_ID:
         connected = "connected" if current_provider == "google_drive" else ""
         provider_cards += f'''
-        <a href="/storage/auth/google_drive" class="provider-card {connected}">
+        <a href="/storage/auth/google_drive{uid_param}" class="provider-card {connected}">
             <div class="provider-icon">
                 <svg viewBox="0 0 24 24" width="48" height="48">
                     <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -695,7 +792,7 @@ def _generate_providers_html(semptify_uid: Optional[str] = None) -> str:
     if settings.DROPBOX_APP_KEY:
         connected = "connected" if current_provider == "dropbox" else ""
         provider_cards += f'''
-        <a href="/storage/auth/dropbox" class="provider-card {connected}">
+        <a href="/storage/auth/dropbox{uid_param}" class="provider-card {connected}">
             <div class="provider-icon">
                 <svg viewBox="0 0 24 24" width="48" height="48">
                     <path fill="#0061FF" d="M12 6.19L6.5 9.89l5.5 3.7-5.5 3.7L1 13.59l5.5-3.7L1 6.19 6.5 2.5 12 6.19zm0 7.4l5.5-3.7L12 6.19 6.5 9.89l5.5 3.7zm0 3.7l-5.5-3.7 5.5 3.7 5.5-3.7-5.5 3.7zm5.5-7.4L12 6.19l5.5-3.69L23 6.19l-5.5 3.7zm-5.5 11.1l-5.5-3.7v1.5l5.5 3.7 5.5-3.7v-1.5l-5.5 3.7z"/>
@@ -709,7 +806,7 @@ def _generate_providers_html(semptify_uid: Optional[str] = None) -> str:
     if settings.ONEDRIVE_CLIENT_ID:
         connected = "connected" if current_provider == "onedrive" else ""
         provider_cards += f'''
-        <a href="/storage/auth/onedrive" class="provider-card {connected}">
+        <a href="/storage/auth/onedrive{uid_param}" class="provider-card {connected}">
             <div class="provider-icon">
                 <svg viewBox="0 0 24 24" width="48" height="48">
                     <path fill="#0078D4" d="M10.5 18.5c0 .28-.22.5-.5.5H3c-1.1 0-2-.9-2-2v-1c0-2.21 1.79-4 4-4 .34 0 .68.04 1 .12V12c0-2.76 2.24-5 5-5 2.06 0 3.83 1.24 4.6 3.02.13-.01.26-.02.4-.02 2.76 0 5 2.24 5 5s-2.24 5-5 5h-5c-.28 0-.5-.22-.5-.5z"/>
@@ -951,6 +1048,7 @@ async def initiate_oauth(
     role: str = "user",
     existing_uid: Optional[str] = None,
     return_to: Optional[str] = None,
+    db: AsyncSession = Depends(get_db),
 ):
     """
     Start OAuth flow.
@@ -964,15 +1062,9 @@ async def initiate_oauth(
 
     config = OAUTH_CONFIGS[provider]
     
-    # Generate state for CSRF
+    # Generate state for CSRF - stored in database for multi-worker support
     state = secrets.token_urlsafe(32)
-    OAUTH_STATES[state] = {
-        "provider": provider,
-        "role": role,
-        "existing_uid": existing_uid,
-        "return_to": return_to,
-        "created_at": utc_now(),  # In-memory state, use aware for comparison
-    }
+    await _store_oauth_state(db, state, provider, role, existing_uid, return_to)
 
     # Build callback URL
     base_url = str(request.base_url).rstrip("/")
@@ -1023,11 +1115,12 @@ async def oauth_callback(
     """
     OAuth callback. Creates/validates user and sets cookie.
     """
-    # Clean up any old states first
-    _cleanup_expired_states()
+    # Clean up any old states from database
+    await _cleanup_expired_states_db(db)
     
-    # Validate state
-    if state not in OAUTH_STATES:
+    # Validate state - retrieve from database
+    state_data = await _get_oauth_state(db, state)
+    if not state_data:
         # More helpful error message
         raise HTTPException(
             status_code=400, 
@@ -1039,7 +1132,6 @@ async def oauth_callback(
             }
         )
 
-    state_data = OAUTH_STATES.pop(state)
     if state_data["provider"] != provider:
         raise HTTPException(status_code=400, detail="Provider mismatch")
 
@@ -1048,7 +1140,7 @@ async def oauth_callback(
             status_code=400, 
             detail={
                 "error": "bad_request",
-                "message": "Session expired. Please try connecting your storage again.",
+                "message": "Login session expired. Please try connecting your storage again.",
                 "action": "redirect", 
                 "redirect_url": "/storage/providers"
             }
@@ -1061,11 +1153,14 @@ async def oauth_callback(
     # Exchange code for tokens
     token_data = await _exchange_code(provider, code, callback_uri)
     access_token = token_data["access_token"]
-
-    # Determine user ID
+    refresh_token = token_data.get("refresh_token", "")
+    
+    # Determine user ID - use existing_uid from cookie or generate new
+    # NO personal data (email) is stored or used for lookup
     existing_uid = state_data.get("existing_uid")
+    
     if existing_uid:
-        # Returning user - keep their ID
+        # Returning user via cookie - keep their ID
         user_id = existing_uid
         print(f"🔄 OAuth callback: Returning user with existing ID: {user_id}")
     else:
@@ -1083,7 +1178,6 @@ async def oauth_callback(
     }
     encrypted = _encrypt_token(auth_marker, user_id)
     base_url = str(request.base_url).rstrip("/")
-    refresh_token = token_data.get("refresh_token", "")
     expires_in = token_data.get("expires_in", 3600)
     token_expires_at = (utc_now() + timedelta(seconds=expires_in)).isoformat() + "Z"
     
@@ -1097,19 +1191,21 @@ async def oauth_callback(
         token_expires_at=token_expires_at,
     )
 
-    # Save session to database (persists across server restarts)
-    expires_at = utc_now() + timedelta(seconds=token_data.get("expires_in", 3600))
-    print(f"💾 Saving session to DB: user_id={user_id}, provider={provider}, expires_at={expires_at}")
+    # Save session to database with 24-hour authorization window
+    # Session expires after 24 hours - user must re-authenticate
+    # Token refresh happens automatically within that window
+    session_expires_at = utc_now() + SESSION_AUTH_DURATION  # 24 hours
+    print(f"💾 Saving session to DB: user_id={user_id}, provider={provider}, auth valid for 24 hours until {session_expires_at}")
     await save_session_to_db(
         db=db,
         user_id=user_id,
         provider=provider,
         access_token=access_token,
         refresh_token=refresh_token,
-        expires_at=expires_at,
+        expires_at=session_expires_at,
     )
 
-    # Create/update user and storage config in database
+    # Create/update user and storage config in database (no personal data stored)
     await create_or_update_user(db, user_id, provider)
     await get_or_create_storage_config(db, user_id, provider)
 

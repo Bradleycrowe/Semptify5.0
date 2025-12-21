@@ -1341,7 +1341,7 @@ What would you like help with?</div>
         // Load session info
         async function loadSession() {
             try {
-                const res = await fetch('/storage/session');
+                const res = await fetch('/storage/session', { credentials: 'include' });
                 const data = await res.json();
                 document.getElementById('userName').textContent = 
                     data.authenticated ? `${data.provider_name} Connected` : 'Not Connected';
@@ -1354,20 +1354,20 @@ What would you like help with?</div>
         async function loadStats() {
             try {
                 // Timeline events
-                const timelineRes = await fetch('/api/timeline/');
+                const timelineRes = await fetch('/api/timeline/', { credentials: 'include' });
                 const timeline = await timelineRes.json();
                 document.getElementById('eventCount').textContent = timeline.total || 0;
                 document.getElementById('timelineCount').textContent = timeline.total || 0;
                 
                 // Documents
-                const docsRes = await fetch('/api/documents/');
+                const docsRes = await fetch('/api/documents/', { credentials: 'include' });
                 const docs = await docsRes.json();
                 const docCount = docs.documents?.length || 0;
                 document.getElementById('docCount').textContent = docCount;
                 document.getElementById('docStatus').textContent = `${docCount} processed`;
                 
                 // Defenses
-                const defensesRes = await fetch('/dakota/procedures/defenses');
+                const defensesRes = await fetch('/dakota/procedures/defenses', { credentials: 'include' });
                 const defenses = await defensesRes.json();
                 let defenseCount = 0;
                 Object.values(defenses).forEach(cat => {
@@ -1383,7 +1383,7 @@ What would you like help with?</div>
         // Load timeline preview
         async function loadTimeline() {
             try {
-                const res = await fetch('/api/timeline/?limit=5');
+                const res = await fetch('/api/timeline/?limit=5', { credentials: 'include' });
                 const data = await res.json();
                 
                 const container = document.getElementById('timelinePreview');
@@ -1408,7 +1408,7 @@ What would you like help with?</div>
         // Load recent documents
         async function loadDocuments() {
             try {
-                const res = await fetch('/api/documents/?limit=4');
+                const res = await fetch('/api/documents/?limit=4', { credentials: 'include' });
                 const data = await res.json();
                 
                 const container = document.getElementById('recentDocs');
@@ -1505,7 +1505,8 @@ What would you like help with?</div>
                     
                     const res = await fetch('/api/documents/upload', {
                         method: 'POST',
-                        body: formData
+                        body: formData,
+                        credentials: 'include'
                     });
                     
                     if (res.ok) {
@@ -1548,7 +1549,7 @@ What would you like help with?</div>
             strategiesList.innerHTML = '<div class="empty-state">Matching defense strategies...</div>';
 
             try {
-                const res = await fetch('/api/eviction-defense/analyze', { method: 'POST' });
+                const res = await fetch('/api/eviction-defense/analyze', { method: 'POST', credentials: 'include' });
                 const data = await res.json();
 
                 // Render violations
@@ -1662,7 +1663,8 @@ What would you like help with?</div>
                 const res = await fetch('/api/copilot/', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message, context: 'eviction_defense' })
+                    body: JSON.stringify({ message, context: 'eviction_defense' }),
+                    credentials: 'include'
                 });
                 
                 const data = await res.json();
@@ -1708,7 +1710,7 @@ What would you like help with?</div>
         async function openZoomSetup() {
             openModal('zoomModal');
             try {
-                const res = await fetch('/api/zoom-court/tech-checklist');
+                const res = await fetch('/api/zoom-court/tech-checklist', { credentials: 'include' });
                 const data = await res.json();
                 
                 let html = '<div style="display: grid; gap: 1rem;">';

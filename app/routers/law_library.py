@@ -174,6 +174,150 @@ MINNESOTA_TENANT_LAWS = {
         "full_text": "Subdivision 1. Retaliatory conduct prohibited. A landlord may not...",
         "related_forms": ["retaliation_defense", "counterclaim_retaliation"],
         "effective_date": "1999-08-01"
+    },
+    "minn_stat_504b_335": {
+        "id": "minn_stat_504b_335",
+        "title": "Jury Trial in Eviction Actions",
+        "citation": "Minn. Stat. § 504B.335",
+        "category": "eviction",
+        "subcategory": "trial",
+        "summary": "Establishes the right to demand a jury trial in eviction proceedings.",
+        "key_points": [
+            "Either party may demand jury trial",
+            "Must file demand at or before first appearance",
+            "Six-person jury in district court",
+            "Jury fee may be required",
+            "Waiver if not timely demanded"
+        ],
+        "full_text": "In any action for recovery of premises...",
+        "related_forms": ["demand_for_jury_trial"],
+        "effective_date": "1999-08-01"
+    },
+    "minn_stat_504b_178": {
+        "id": "minn_stat_504b_178",
+        "title": "Security Deposit Return",
+        "citation": "Minn. Stat. § 504B.178",
+        "category": "security_deposits",
+        "subcategory": "return",
+        "summary": "Detailed requirements for returning security deposits to tenants.",
+        "key_points": [
+            "Return within 21 days after termination",
+            "Must provide itemized list of deductions",
+            "Cannot charge for normal wear and tear",
+            "Interest required on deposits over $2000 held more than 6 months",
+            "Bad faith withholding allows punitive damages"
+        ],
+        "full_text": "Within three weeks after termination of the tenancy...",
+        "related_forms": ["security_deposit_demand", "small_claims_complaint"],
+        "effective_date": "1999-08-01"
+    },
+    "minn_stat_504b_161": {
+        "id": "minn_stat_504b_161",
+        "title": "Covenants of Habitability",
+        "citation": "Minn. Stat. § 504B.161",
+        "category": "habitability",
+        "subcategory": "warranties",
+        "summary": "Establishes the implied warranty of habitability that landlords must maintain.",
+        "key_points": [
+            "Property must be fit for use intended",
+            "Landlord must maintain in reasonable repair",
+            "Must comply with housing codes",
+            "Cannot waive this warranty in lease",
+            "Tenant remedies include rent abatement"
+        ],
+        "full_text": "Subdivision 1. Requirements. (a) In every lease or license of a residential building...",
+        "related_forms": ["rent_escrow_petition", "habitability_complaint"],
+        "effective_date": "1999-08-01"
+    },
+    "minn_stat_504b_385": {
+        "id": "minn_stat_504b_385",
+        "title": "Rent Escrow Actions",
+        "citation": "Minn. Stat. § 504B.385",
+        "category": "habitability",
+        "subcategory": "remedies",
+        "summary": "Allows tenants to deposit rent with the court when landlord fails to maintain premises.",
+        "key_points": [
+            "Available when landlord violates habitability",
+            "Tenant deposits rent with court clerk",
+            "Court may order repairs before releasing rent",
+            "Court may reduce rent for diminished value",
+            "Cannot be evicted while escrow pending"
+        ],
+        "full_text": "Subdivision 1. Escrow. A tenant may deposit rent with the court...",
+        "related_forms": ["rent_escrow_petition", "emergency_tenant_remedies"],
+        "effective_date": "1999-08-01"
+    },
+    "minn_stat_504b_441": {
+        "id": "minn_stat_504b_441",
+        "title": "Tenant's Right to File Complaints",
+        "citation": "Minn. Stat. § 504B.441",
+        "category": "tenant_rights",
+        "subcategory": "complaints",
+        "summary": "Protects tenants' right to file complaints about housing conditions without retaliation.",
+        "key_points": [
+            "Right to report violations to authorities",
+            "Protected from retaliation for complaints",
+            "Can complain to housing inspectors",
+            "Can file complaints with city/county",
+            "Landlord cannot terminate lease as retaliation"
+        ],
+        "full_text": "A tenant may file a written complaint with a governmental body...",
+        "related_forms": ["housing_complaint_form", "retaliation_defense"],
+        "effective_date": "1999-08-01"
+    },
+    "minn_stat_504b_206": {
+        "id": "minn_stat_504b_206",
+        "title": "Tenant Screening and Application Fees",
+        "citation": "Minn. Stat. § 504B.173",
+        "category": "tenant_rights",
+        "subcategory": "screening",
+        "summary": "Regulates tenant screening practices and application fee requirements.",
+        "key_points": [
+            "Screening fee limited to actual cost",
+            "Must disclose screening criteria before application",
+            "Must provide copy of screening report if requested",
+            "Cannot charge more than one fee per unit",
+            "Must refund if not screened"
+        ],
+        "full_text": "A landlord may not charge a prospective tenant...",
+        "related_forms": [],
+        "effective_date": "2007-08-01"
+    },
+    "minn_stat_504b_345": {
+        "id": "minn_stat_504b_345",
+        "title": "Expungement of Eviction Records",
+        "citation": "Minn. Stat. § 504B.345",
+        "category": "eviction",
+        "subcategory": "records",
+        "summary": "Allows expungement of eviction case records under certain circumstances.",
+        "key_points": [
+            "Automatic expungement if case dismissed",
+            "Can petition for expungement if tenant prevails",
+            "Expungement possible in certain settlements",
+            "Must file motion with court",
+            "Sealed records not public"
+        ],
+        "full_text": "If an eviction action is dismissed or judgment is entered for the defendant...",
+        "related_forms": ["motion_to_expunge", "expungement_order"],
+        "effective_date": "2014-08-01"
+    },
+    "minn_stat_504b_291": {
+        "id": "minn_stat_504b_291",
+        "title": "Notice to Quit - Nonpayment of Rent",
+        "citation": "Minn. Stat. § 504B.291",
+        "category": "eviction",
+        "subcategory": "notices",
+        "summary": "Requirements for termination notices when tenant fails to pay rent.",
+        "key_points": [
+            "14-day notice required before filing eviction",
+            "Notice must state amount owed",
+            "Tenant can cure by paying within notice period",
+            "Notice must be in writing",
+            "Must be properly served on tenant"
+        ],
+        "full_text": "A landlord may not bring an action to recover possession of the premises...",
+        "related_forms": ["14_day_notice", "proof_of_service"],
+        "effective_date": "1999-08-01"
     }
 }
 
@@ -1496,8 +1640,7 @@ CASE_LAW_DATABASE = [
 @router.get("/statutes")
 async def list_statutes(
     category: Optional[str] = Query(None, description="Filter by category"),
-    search: Optional[str] = Query(None, description="Search in title and summary"),
-    user: StorageUser = Depends(require_user)
+    search: Optional[str] = Query(None, description="Search in title and summary")
 ):
     """List all available statutes and laws including Federal and ADA."""
     laws = list(ALL_LAWS.values())
@@ -1518,25 +1661,60 @@ async def list_statutes(
     }
 
 
+def normalize_statute_id(statute_id: str) -> str:
+    """Normalize statute ID to match database format.
+    
+    Accepts: '504B.321', '504B321', 'minn_stat_504b_321', 'Minn. Stat. § 504B.321'
+    Returns: 'minn_stat_504b_321' or the original if already correct
+    """
+    # Already in correct format
+    if statute_id in ALL_LAWS:
+        return statute_id
+    
+    # Clean up input
+    clean_id = statute_id.lower().strip()
+    clean_id = clean_id.replace('minn. stat. §', '').replace('minn.stat.§', '')
+    clean_id = clean_id.replace('minn. stat.', '').replace('§', '').strip()
+    clean_id = clean_id.replace('.', '_').replace(' ', '_')
+    
+    # Try minn_stat_ prefix
+    test_id = f"minn_stat_{clean_id}"
+    if test_id in ALL_LAWS:
+        return test_id
+    
+    # Try without prefix variations
+    for key in ALL_LAWS:
+        # Match by citation pattern in key
+        key_lower = key.lower()
+        if clean_id in key_lower:
+            return key
+        # Try matching just the number part
+        if clean_id.replace('_', '') in key_lower.replace('_', ''):
+            return key
+    
+    return statute_id  # Return original if no match
+
+
 @router.get("/statutes/{statute_id}")
 async def get_statute(
-    statute_id: str,
-    user: StorageUser = Depends(require_user)
+    statute_id: str
 ):
     """Get a specific statute by ID."""
-    if statute_id not in ALL_LAWS:
-        raise HTTPException(status_code=404, detail="Statute not found")
+    # Normalize the ID to handle different formats
+    normalized_id = normalize_statute_id(statute_id)
+    
+    if normalized_id not in ALL_LAWS:
+        raise HTTPException(status_code=404, detail=f"Statute not found: {statute_id}")
 
     return {
         "disclaimer": LEGAL_DISCLAIMER,
         "last_verified": LAST_VERIFIED_DATE,
-        "statute": LawReference(**ALL_LAWS[statute_id])
+        "statute": LawReference(**ALL_LAWS[normalized_id])
     }
     
 @router.get("/court-rules")
 async def list_court_rules(
-    category: Optional[str] = Query(None, description="Filter by category"),
-    user: StorageUser = Depends(require_user)
+    category: Optional[str] = Query(None, description="Filter by category")
 ):
     """List all court rules for Dakota County."""
     rules = list(DAKOTA_COUNTY_RULES.values())
@@ -1553,8 +1731,7 @@ async def list_court_rules(
 
 @router.get("/court-rules/{rule_id}", response_model=CourtRule)
 async def get_court_rule(
-    rule_id: str,
-    user: StorageUser = Depends(require_user)
+    rule_id: str
 ):
     """Get a specific court rule."""
     if rule_id not in DAKOTA_COUNTY_RULES:
@@ -1569,8 +1746,7 @@ async def get_court_rule(
 
 @router.get("/case-law")
 async def list_case_law(
-    search: Optional[str] = Query(None, description="Search in case name and summary"),
-    user: StorageUser = Depends(require_user)
+    search: Optional[str] = Query(None, description="Search in case name and summary")
 ):
     """List relevant case law."""
     cases = CASE_LAW_DATABASE
@@ -1589,8 +1765,7 @@ async def list_case_law(
 
 @router.get("/case-law/{case_id}")
 async def get_case(
-    case_id: str,
-    user: StorageUser = Depends(require_user)
+    case_id: str
 ):
     """Get a specific case by ID."""
     for case in CASE_LAW_DATABASE:
@@ -1604,7 +1779,7 @@ async def get_case(
 
 
 @router.get("/categories")
-async def list_categories(user: StorageUser = Depends(require_user)):
+async def list_categories():
     """List all available categories in the law library."""
     return {
         "statute_categories": [
@@ -1666,8 +1841,7 @@ class LibrarianQuery(BaseModel):
 
 @router.post("/librarian/ask", response_model=LibrarianResponse)
 async def ask_librarian(
-    query: LibrarianQuery,
-    user: StorageUser = Depends(require_user)
+    query: LibrarianQuery
 ):
     """
     Ask the AI Librarian a legal question.
@@ -2169,8 +2343,7 @@ Please ask a specific question about any of these topics!"""
 
 @router.get("/quick-reference/{topic}")
 async def get_quick_reference(
-    topic: str,
-    user: StorageUser = Depends(require_user)
+    topic: str
 ):
     """Get a quick reference guide for a specific topic."""
     quick_refs = {

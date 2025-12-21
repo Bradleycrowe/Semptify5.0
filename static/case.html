@@ -1,0 +1,1622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Case Folder - Semptify</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --primary: #1e3a5f;
+            --primary-light: #2d5a87;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --text: #1e293b;
+            --muted: #64748b;
+            --border: #e2e8f0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: var(--primary);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.15s;
+        }
+
+        .btn-primary {
+            background: white;
+            color: var(--primary);
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        /* No Case State */
+        .no-case {
+            max-width: 600px;
+            margin: 4rem auto;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .no-case h2 {
+            font-size: 1.75rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .no-case p {
+            color: var(--muted);
+            margin-bottom: 2rem;
+        }
+
+        .start-options {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .start-card {
+            background: var(--surface);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            width: 250px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .start-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .start-card .icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .start-card h3 {
+            margin-bottom: 0.5rem;
+        }
+
+        .start-card p {
+            font-size: 0.875rem;
+            color: var(--muted);
+            margin: 0;
+        }
+
+        /* Case View */
+        .case-container {
+            display: none;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .case-container.active {
+            display: block;
+        }
+
+        /* Case Header Card */
+        .case-header-card {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .case-number {
+            font-size: 0.875rem;
+            color: var(--muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .case-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .case-parties {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 1rem;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .party {
+            padding: 1rem;
+            background: var(--bg);
+            border-radius: 8px;
+        }
+
+        .party-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 0.25rem;
+        }
+
+        .party-name {
+            font-weight: 600;
+        }
+
+        .vs {
+            font-weight: bold;
+            color: var(--muted);
+        }
+
+        .case-property {
+            display: flex;
+            gap: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .property-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .property-item .icon {
+            font-size: 1.25rem;
+        }
+
+        .property-item .label {
+            font-size: 0.75rem;
+            color: var(--muted);
+        }
+
+        .property-item .value {
+            font-weight: 500;
+        }
+
+        /* Deadline Alert */
+        .deadline-alert {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border: 1px solid #f59e0b;
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .deadline-alert.urgent {
+            background: linear-gradient(135deg, #fee2e2, #fecaca);
+            border-color: #ef4444;
+        }
+
+        .deadline-alert .icon {
+            font-size: 1.5rem;
+        }
+
+        .deadline-alert .content {
+            flex: 1;
+        }
+
+        .deadline-alert .title {
+            font-weight: 600;
+        }
+
+        .deadline-alert .date {
+            font-size: 0.875rem;
+            color: var(--muted);
+        }
+
+        .deadline-alert .action {
+            background: var(--primary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+
+        /* Tools Grid */
+        .tools-section h2 {
+            font-size: 1.125rem;
+            margin-bottom: 1rem;
+            color: var(--muted);
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .tool-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.25rem;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .tool-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .tool-card .icon {
+            font-size: 1.75rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .tool-card h3 {
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .tool-card p {
+            font-size: 0.8rem;
+            color: var(--muted);
+        }
+
+        .tool-card .badge {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            font-size: 0.7rem;
+            padding: 0.125rem 0.5rem;
+            border-radius: 10px;
+            margin-top: 0.5rem;
+        }
+
+        /* Documents Section */
+        .documents-section {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .section-header h2 {
+            font-size: 1.125rem;
+            margin: 0;
+        }
+
+        .doc-list {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .doc-item {
+            display: flex;
+            align-items: center;
+            padding: 0.875rem 1rem;
+            border-bottom: 1px solid var(--border);
+            gap: 1rem;
+        }
+
+        .doc-item:last-child {
+            border-bottom: none;
+        }
+
+        .doc-item .icon {
+            font-size: 1.5rem;
+        }
+
+        .doc-item .info {
+            flex: 1;
+        }
+
+        .doc-item .name {
+            font-weight: 500;
+        }
+
+        .doc-item .meta {
+            font-size: 0.75rem;
+            color: var(--muted);
+        }
+
+        .doc-item .actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .doc-item .actions button {
+            background: none;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: var(--muted);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.hidden {
+            display: none;
+        }
+
+        .modal {
+            background: var(--surface);
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            font-size: 1.25rem;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--muted);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+        }
+
+        .btn-lg {
+            padding: 0.75rem 1.5rem;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-outline {
+            background: white;
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        .btn-add {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            margin-left: 0.5rem;
+        }
+
+        .party-input {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .party-input input {
+            flex: 1;
+        }
+
+        .btn-remove {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 0.5rem 0.75rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+
+        .parties-display {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        /* Upload Zone */
+        .upload-zone {
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .upload-zone:hover {
+            border-color: var(--primary);
+            background: #f0f9ff;
+        }
+
+        .upload-zone .icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .case-parties {
+                grid-template-columns: 1fr;
+            }
+            .vs { display: none; }
+            .case-property {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            .tools-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Status badge */
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .status-active { background: #dcfce7; color: #166534; }
+        .status-paused { background: #fef3c7; color: #92400e; }
+        .status-judgment, .status-closed { background: #e5e7eb; color: #374151; }
+        
+        /* Case controls */
+        .case-controls {
+            display: flex;
+            gap: 0.5rem;
+            margin-left: auto;
+        }
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+        .btn-sm {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>📁 Semptify Case Folder</h1>
+        <div class="header-actions">
+            <button class="btn btn-secondary" onclick="showNewCaseModal()" id="new-case-btn">+ New Case</button>
+            <button class="btn btn-primary" onclick="location.href='/dashboard'">All Tools</button>
+        </div>
+    </header>
+
+    <!-- No Case State -->
+    <div class="no-case" id="no-case-state">
+        <h2>Start Your Case</h2>
+        <p>Create a case folder to organize all documents, deadlines, and actions for a single matter.</p>
+        
+        <div class="start-options">
+            <div class="start-card" onclick="showNewCaseModal()">
+                <div class="icon">📝</div>
+                <h3>New Case</h3>
+                <p>Enter case details manually</p>
+            </div>
+            <div class="start-card" onclick="showUploadModal()">
+                <div class="icon">📄</div>
+                <h3>From Document</h3>
+                <p>Upload complaint or summons to extract details</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Case View -->
+    <div class="case-container" id="case-view">
+        <!-- Case Header -->
+        <div class="case-header-card">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <div>
+                    <div class="case-number" id="display-case-number">Case #27-CV-25-12345</div>
+                    <div class="case-title" id="display-case-title">Eviction Action</div>
+                </div>
+                <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem;">
+                    <span class="status-badge status-active" id="display-status">Active</span>
+                    <div class="case-controls" id="case-controls">
+                        <button class="btn btn-warning btn-sm" onclick="pauseCase()" title="Pause this case to work on another">⏸️ Pause</button>
+                        <button class="btn btn-sm" onclick="showJudgmentModal()" title="Record final outcome">⚖️ Close Case</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="case-parties">
+                <div class="party">
+                    <div class="party-label">Plaintiff(s)</div>
+                    <div class="party-name parties-display" id="display-plaintiff"></div>
+                </div>
+                <div class="vs">v.</div>
+                <div class="party">
+                    <div class="party-label">Defendant(s)</div>
+                    <div class="party-name parties-display" id="display-defendant"></div>
+                </div>
+            </div>
+
+            <div class="case-property">
+                <div class="property-item">
+                    <span class="icon">📍</span>
+                    <div>
+                        <div class="label">Property</div>
+                        <div class="value" id="display-address">123 Main St, Apt 4B, Minneapolis, MN 55401</div>
+                    </div>
+                </div>
+                <div class="property-item">
+                    <span class="icon">🏛️</span>
+                    <div>
+                        <div class="label">Court</div>
+                        <div class="value" id="display-court">Hennepin County District Court</div>
+                    </div>
+                </div>
+                <div class="property-item">
+                    <span class="icon">📅</span>
+                    <div>
+                        <div class="label">Filed</div>
+                        <div class="value" id="display-filed">Dec 15, 2024</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Deadline Alert -->
+        <div class="deadline-alert urgent" id="deadline-alert">
+            <span class="icon">⚠️</span>
+            <div class="content">
+                <div class="title">Answer Due</div>
+                <div class="date" id="deadline-date">December 22, 2024 (5 days)</div>
+            </div>
+            <a href="#" class="action" onclick="openTool('answer')">Draft Answer</a>
+        </div>
+
+        <!-- Case Tools -->
+        <div class="tools-section">
+            <h2>Case Actions</h2>
+            <div class="tools-grid">
+                <div class="tool-card" onclick="openTool('answer')">
+                    <div class="icon">📝</div>
+                    <h3>Draft Answer</h3>
+                    <p>Respond to complaint</p>
+                </div>
+                <div class="tool-card" onclick="openTool('counterclaim')">
+                    <div class="icon">⚖️</div>
+                    <h3>Counterclaim</h3>
+                    <p>File claims against plaintiff</p>
+                </div>
+                <div class="tool-card" onclick="openTool('motion')">
+                    <div class="icon">📋</div>
+                    <h3>File Motion</h3>
+                    <p>Request court action</p>
+                </div>
+                <div class="tool-card" onclick="openTool('discovery')">
+                    <div class="icon">🔍</div>
+                    <h3>Discovery</h3>
+                    <p>Request documents</p>
+                </div>
+                <div class="tool-card" onclick="openTool('timeline')">
+                    <div class="icon">📊</div>
+                    <h3>Build Timeline</h3>
+                    <p>Document events</p>
+                    <span class="badge" id="timeline-count">0 events</span>
+                </div>
+                <div class="tool-card" onclick="openTool('packet')">
+                    <div class="icon">📦</div>
+                    <h3>Court Packet</h3>
+                    <p>Prepare filing package</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Case Documents -->
+        <div class="documents-section">
+            <div class="section-header">
+                <h2>📁 Case Documents</h2>
+                <button class="btn btn-primary" onclick="showUploadDocModal()">+ Add Document</button>
+            </div>
+            
+            <div class="doc-list" id="doc-list">
+                <div class="empty-state" id="no-docs">
+                    <p>No documents yet. Upload the complaint or other case documents.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Case Modal -->
+    <div class="modal-overlay hidden" id="new-case-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Create New Case</h2>
+                <button class="modal-close" onclick="closeModal('new-case-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Case Number</label>
+                    <input type="text" id="case-number" placeholder="e.g., 27-CV-25-12345">
+                </div>
+                <div class="form-group">
+                    <label>Court</label>
+                    <select id="case-court">
+                        <option value="">Select Court...</option>
+                        <option value="Hennepin County District Court">Hennepin County District Court</option>
+                        <option value="Ramsey County District Court">Ramsey County District Court</option>
+                        <option value="Dakota County District Court">Dakota County District Court</option>
+                        <option value="Anoka County District Court">Anoka County District Court</option>
+                        <option value="Washington County District Court">Washington County District Court</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Case Type</label>
+                    <select id="case-type">
+                        <option value="eviction">Eviction / Unlawful Detainer</option>
+                        <option value="rent">Rent Dispute</option>
+                        <option value="deposit">Security Deposit</option>
+                        <option value="habitability">Habitability</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Plaintiffs (Who sued) <button type="button" class="btn-add" onclick="addParty('plaintiff')">+ Add</button></label>
+                    <div id="plaintiffs-list">
+                        <div class="party-input">
+                            <input type="text" class="plaintiff-input" placeholder="Landlord/Property name">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Defendants <button type="button" class="btn-add" onclick="addParty('defendant')">+ Add</button></label>
+                    <div id="defendants-list">
+                        <div class="party-input">
+                            <input type="text" class="defendant-input" placeholder="Your name">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Property Address</label>
+                    <input type="text" id="case-address" placeholder="Full address">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Date Filed</label>
+                        <input type="date" id="case-filed">
+                    </div>
+                    <div class="form-group">
+                        <label>Date Served</label>
+                        <input type="date" id="case-served">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Amount Claimed (if any)</label>
+                    <input type="text" id="case-amount" placeholder="$0.00">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeModal('new-case-modal')">Cancel</button>
+                <button class="btn btn-success btn-lg" onclick="createCase()">Create Case</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upload Document Modal -->
+    <div class="modal-overlay hidden" id="upload-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Upload Document</h2>
+                <button class="modal-close" onclick="closeModal('upload-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="upload-zone" onclick="document.getElementById('file-input').click()">
+                    <div class="icon">📄</div>
+                    <p><strong>Click to upload</strong> or drag and drop</p>
+                    <p style="font-size: 0.875rem; color: var(--muted);">PDF, DOC, JPG, PNG</p>
+                </div>
+                <input type="file" id="file-input" hidden accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                
+                <div class="form-group" style="margin-top: 1rem;">
+                    <label>Document Type</label>
+                    <select id="doc-type">
+                        <option value="complaint">Complaint / Summons</option>
+                        <option value="lease">Lease Agreement</option>
+                        <option value="notice">Notice (Pay or Quit, etc.)</option>
+                        <option value="communication">Communication / Letter</option>
+                        <option value="receipt">Receipt / Payment Record</option>
+                        <option value="photo">Photo Evidence</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeModal('upload-modal')">Cancel</button>
+                <button class="btn btn-success btn-lg" onclick="uploadDocument()">Upload</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Judgment/Close Case Modal -->
+    <div class="modal-overlay hidden" id="judgment-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Close Case</h2>
+                <button class="modal-close" onclick="closeModal('judgment-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="margin-bottom: 1rem; color: var(--muted);">Recording the case outcome allows you to start a new case.</p>
+                <div class="form-group">
+                    <label>Case Outcome</label>
+                    <select id="judgment-outcome">
+                        <option value="won">Won - Judgment in your favor</option>
+                        <option value="lost">Lost - Judgment against you</option>
+                        <option value="settled">Settled - Agreement reached</option>
+                        <option value="dismissed">Dismissed - Case thrown out</option>
+                        <option value="closed">Closed - Other reason</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeModal('judgment-modal')">Cancel</button>
+                <button class="btn btn-success btn-lg" onclick="recordJudgment()">Record Outcome</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add to Timeline Modal -->
+    <div class="modal-overlay hidden" id="timeline-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Add Document to Timeline</h2>
+                <button class="modal-close" onclick="closeModal('timeline-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="margin-bottom: 1rem; color: var(--muted);">Add this document as an event on your case timeline.</p>
+                <input type="hidden" id="timeline-doc-id">
+                <div class="form-group">
+                    <label>Document</label>
+                    <div id="timeline-doc-name" style="font-weight: 600; padding: 0.5rem; background: #f3f4f6; border-radius: 4px;"></div>
+                </div>
+                <div class="form-group">
+                    <label>Event Date *</label>
+                    <input type="date" id="timeline-event-date" required>
+                    <small style="color: var(--muted);">When did this event occur?</small>
+                </div>
+                <div class="form-group">
+                    <label>Event Type</label>
+                    <select id="timeline-event-type">
+                        <option value="document">Document Filed/Received</option>
+                        <option value="notice">Notice Sent/Received</option>
+                        <option value="payment">Payment Made/Received</option>
+                        <option value="communication">Communication</option>
+                        <option value="court">Court Event</option>
+                        <option value="incident">Incident</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Summary *</label>
+                    <textarea id="timeline-summary" rows="3" placeholder="Brief description of what happened..." required></textarea>
+                    <small style="color: var(--muted);">Describe what this document represents on your timeline</small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeModal('timeline-modal')">Cancel</button>
+                <button class="btn btn-success btn-lg" onclick="addDocToTimeline()">Add to Timeline</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Current case data
+        let currentCase = null;
+        let caseDocuments = [];
+        const API_BASE = '/api/cases';
+        const USER_ID = 'local';  // For local mode
+
+        // Check for existing case on load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadActiveCase();
+        });
+
+        // Load the user's active case
+        async function loadActiveCase() {
+            try {
+                const response = await fetch(`${API_BASE}/active?user_id=${USER_ID}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.has_active_case && data.case) {
+                        currentCase = data.case;
+                        displayCase();
+                        loadDocumentsFromAPI();
+                    }
+                }
+            } catch (e) {
+                console.log('API load failed, trying localStorage');
+                loadCaseFromLocalStorage();
+            }
+        }
+
+        // Load cases from API (fallback)
+        async function loadCases() {
+            try {
+                const response = await fetch(`${API_BASE}?user_id=${USER_ID}`);
+                if (response.ok) {
+                    const cases = await response.json();
+                    if (cases.length > 0) {
+                        // Load the most recent active case
+                        currentCase = cases[0];
+                        displayCase();
+                        loadDocumentsFromAPI();
+                    }
+                }
+            } catch (e) {
+                console.log('API load failed, trying localStorage');
+                loadCaseFromLocalStorage();
+            }
+        }
+
+        function loadCaseFromLocalStorage() {
+            const savedCase = localStorage.getItem('semptify_current_case');
+            if (savedCase) {
+                currentCase = JSON.parse(savedCase);
+                displayCase();
+            }
+        }
+
+        // Add party input
+        function addParty(type) {
+            const listId = type === 'plaintiff' ? 'plaintiffs-list' : 'defendants-list';
+            const inputClass = type === 'plaintiff' ? 'plaintiff-input' : 'defendant-input';
+            const placeholder = type === 'plaintiff' ? 'Additional plaintiff name' : 'Additional defendant name';
+            
+            const div = document.createElement('div');
+            div.className = 'party-input';
+            div.innerHTML = `
+                <input type="text" class="${inputClass}" placeholder="${placeholder}">
+                <button type="button" class="btn-remove" onclick="this.parentElement.remove()">×</button>
+            `;
+            document.getElementById(listId).appendChild(div);
+        }
+
+        // Get all parties from inputs
+        function getParties(type) {
+            const inputClass = type === 'plaintiff' ? 'plaintiff-input' : 'defendant-input';
+            const inputs = document.querySelectorAll(`.${inputClass}`);
+            const parties = [];
+            inputs.forEach(input => {
+                if (input.value.trim()) {
+                    parties.push(input.value.trim());
+                }
+            });
+            return parties;
+        }
+
+        function displayCase() {
+            if (!currentCase) return;
+            
+            document.getElementById('no-case-state').style.display = 'none';
+            document.getElementById('case-view').classList.add('active');
+
+            document.getElementById('display-case-number').textContent = `Case #${currentCase.case_number}`;
+            document.getElementById('display-case-title').textContent = getCaseTypeLabel(currentCase.case_type);
+            
+            // Display status
+            const status = currentCase.status || 'active';
+            const statusEl = document.getElementById('display-status');
+            statusEl.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+            statusEl.className = `status-badge status-${status}`;
+            
+            // Show/hide controls based on status
+            const controls = document.getElementById('case-controls');
+            const isActive = ['active', 'pending', 'in_progress', 'filed'].includes(status);
+            controls.style.display = isActive ? 'flex' : 'none';
+            
+            // Update new case button visibility
+            document.getElementById('new-case-btn').style.display = isActive ? 'none' : 'inline-block';
+            
+            // Display plaintiffs
+            const plaintiffs = Array.isArray(currentCase.plaintiffs) ? currentCase.plaintiffs : [currentCase.plaintiffs || currentCase.plaintiff];
+            document.getElementById('display-plaintiff').innerHTML = plaintiffs.filter(p => p).map(p => `<div>${p}</div>`).join('');
+            
+            // Display defendants
+            const defendants = Array.isArray(currentCase.defendants) ? currentCase.defendants : [currentCase.defendants || currentCase.defendant];
+            document.getElementById('display-defendant').innerHTML = defendants.filter(d => d).map(d => `<div>${d}</div>`).join('');
+            
+            // Display address
+            const address = currentCase.property_address || currentCase.address || '';
+            const unit = currentCase.property_unit ? `, ${currentCase.property_unit}` : '';
+            const city = currentCase.property_city || '';
+            const state = currentCase.property_state || '';
+            const zip = currentCase.property_zip || '';
+            const fullAddress = address + unit + (city ? `, ${city}` : '') + (state ? `, ${state}` : '') + (zip ? ` ${zip}` : '');
+            document.getElementById('display-address').textContent = fullAddress || 'Not specified';
+            
+            document.getElementById('display-court').textContent = currentCase.court || 'Not specified';
+            document.getElementById('display-filed').textContent = formatDate(currentCase.date_filed);
+
+            // Calculate and display deadline
+            updateDeadlineDisplay();
+        }
+
+        function updateDeadlineDisplay() {
+            const deadline = currentCase.answer_deadline || calculateDeadline(currentCase.date_served);
+            
+            if (deadline) {
+                const deadlineDate = new Date(deadline);
+                const today = new Date();
+                const daysLeft = Math.ceil((deadlineDate - today) / (1000 * 60 * 60 * 24));
+                
+                document.getElementById('deadline-date').textContent = 
+                    `${formatDate(deadline)} (${daysLeft} days left)`;
+                
+                const alert = document.getElementById('deadline-alert');
+                if (daysLeft <= 3) {
+                    alert.classList.add('urgent');
+                } else {
+                    alert.classList.remove('urgent');
+                }
+                alert.style.display = 'flex';
+            } else {
+                document.getElementById('deadline-alert').style.display = 'none';
+            }
+        }
+
+        function calculateDeadline(dateServed) {
+            if (!dateServed) return null;
+            const served = new Date(dateServed);
+            const deadline = new Date(served);
+            deadline.setDate(deadline.getDate() + 7); // 7 days to answer in MN
+            return deadline.toISOString().split('T')[0];
+        }
+
+        function getCaseTypeLabel(type) {
+            const labels = {
+                'eviction': 'Eviction Action',
+                'rent': 'Rent Dispute',
+                'deposit': 'Security Deposit Claim',
+                'habitability': 'Habitability Complaint',
+                'other': 'Legal Matter'
+            };
+            return labels[type] || 'Legal Matter';
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return 'Not set';
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        }
+
+        // Modal functions
+        // Check if user can create new case
+        async function canCreateNewCase() {
+            try {
+                const response = await fetch(`${API_BASE}/active?user_id=${USER_ID}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    return !data.has_active_case;
+                }
+            } catch (e) {
+                return true; // Allow if API unavailable
+            }
+            return true;
+        }
+
+        async function showNewCaseModal() {
+            // Check if user already has active case
+            try {
+                const response = await fetch(`${API_BASE}/active?user_id=${USER_ID}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.has_active_case) {
+                        alert(`You already have an active case: ${data.case.case_number}\n\nPlease pause or close your current case before creating a new one.`);
+                        return;
+                    }
+                }
+            } catch (e) {
+                // Continue if API unavailable
+            }
+            document.getElementById('new-case-modal').classList.remove('hidden');
+        }
+
+        function showUploadModal() {
+            document.getElementById('upload-modal').classList.remove('hidden');
+        }
+
+        function showUploadDocModal() {
+            document.getElementById('upload-modal').classList.remove('hidden');
+        }
+
+        function showJudgmentModal() {
+            document.getElementById('judgment-modal').classList.remove('hidden');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        // Pause current case
+        async function pauseCase() {
+            if (!currentCase || !currentCase.id) {
+                alert('No active case to pause');
+                return;
+            }
+            
+            if (!confirm('Pause this case? You can resume it later or start a new case.')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/${currentCase.id}/pause`, {
+                    method: 'POST'
+                });
+                
+                if (response.ok) {
+                    currentCase.status = 'paused';
+                    displayCase();
+                    alert('Case paused. You can now create a new case or resume this one later.');
+                } else {
+                    const error = await response.json();
+                    alert('Error: ' + (error.detail || 'Failed to pause case'));
+                }
+            } catch (e) {
+                console.error('Pause failed:', e);
+                alert('Failed to pause case');
+            }
+        }
+
+        // Record judgment/close case
+        async function recordJudgment() {
+            if (!currentCase || !currentCase.id) {
+                alert('No active case');
+                return;
+            }
+            
+            const outcome = document.getElementById('judgment-outcome').value;
+            
+            try {
+                const response = await fetch(`${API_BASE}/${currentCase.id}/judgment?outcome=${outcome}`, {
+                    method: 'POST'
+                });
+                
+                if (response.ok) {
+                    currentCase.status = outcome;
+                    displayCase();
+                    closeModal('judgment-modal');
+                    alert(`Case marked as ${outcome}. You can now create a new case.`);
+                } else {
+                    const error = await response.json();
+                    alert('Error: ' + (error.detail || 'Failed to record judgment'));
+                }
+            } catch (e) {
+                console.error('Judgment failed:', e);
+                alert('Failed to record judgment');
+            }
+        }
+
+        // Create case via API
+        async function createCase() {
+            const plaintiffs = getParties('plaintiff');
+            const defendants = getParties('defendant');
+            const address = document.getElementById('case-address').value;
+            
+            // Parse address into components
+            const addressParts = parseAddress(address);
+            
+            const caseData = {
+                case_number: document.getElementById('case-number').value,
+                court: document.getElementById('case-court').value,
+                case_type: document.getElementById('case-type').value,
+                plaintiffs: plaintiffs,
+                defendants: defendants,
+                property_address: addressParts.street,
+                property_unit: addressParts.unit,
+                property_city: addressParts.city,
+                property_state: addressParts.state,
+                property_zip: addressParts.zip,
+                date_filed: document.getElementById('case-filed').value || null,
+                date_served: document.getElementById('case-served').value || null,
+                amount_claimed: parseFloat(document.getElementById('case-amount').value.replace(/[^0-9.]/g, '')) || null,
+                user_id: USER_ID
+            };
+
+            // Calculate answer deadline if served date provided
+            if (caseData.date_served) {
+                caseData.answer_deadline = calculateDeadline(caseData.date_served);
+            }
+
+            // Validate required fields
+            if (!caseData.case_number || plaintiffs.length === 0 || defendants.length === 0) {
+                alert('Please fill in case number and at least one plaintiff and defendant.');
+                return;
+            }
+
+            try {
+                const response = await fetch(API_BASE, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(caseData)
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    // Fetch full case data
+                    const caseResponse = await fetch(`${API_BASE}/${result.case_id}`);
+                    if (caseResponse.ok) {
+                        currentCase = await caseResponse.json();
+                    } else {
+                        currentCase = { ...caseData, id: result.case_id, status: 'active' };
+                    }
+                    console.log('Case created:', currentCase);
+                } else {
+                    const error = await response.json();
+                    // Handle "already has active case" error
+                    if (error.detail && error.detail.error === 'active_case_exists') {
+                        alert(`You already have an active case: ${error.detail.existing_case_number}\n\nPlease pause or close it before creating a new case.`);
+                    } else {
+                        alert('Error creating case: ' + (typeof error.detail === 'string' ? error.detail : JSON.stringify(error.detail)));
+                    }
+                    return;
+                }
+            } catch (e) {
+                console.error('API save failed:', e);
+                // Fallback to localStorage
+                caseData.id = Date.now();
+                caseData.status = 'active';
+                caseData.created_at = new Date().toISOString();
+                currentCase = caseData;
+                localStorage.setItem('semptify_current_case', JSON.stringify(currentCase));
+            }
+
+            closeModal('new-case-modal');
+            displayCase();
+        }
+
+        // Parse address string into components
+        function parseAddress(fullAddress) {
+            const result = {
+                street: fullAddress,
+                unit: '',
+                city: '',
+                state: '',
+                zip: ''
+            };
+            
+            if (!fullAddress) return result;
+            
+            // Try to extract zip code
+            const zipMatch = fullAddress.match(/\b(\d{5}(-\d{4})?)\b/);
+            if (zipMatch) {
+                result.zip = zipMatch[1];
+            }
+            
+            // Try to extract state
+            const stateMatch = fullAddress.match(/,?\s*([A-Z]{2})\s*\d{5}/);
+            if (stateMatch) {
+                result.state = stateMatch[1];
+            }
+            
+            // Try to extract unit/apt
+            const unitMatch = fullAddress.match(/,?\s*(apt|unit|suite|#)\s*([a-z0-9]+)/i);
+            if (unitMatch) {
+                result.unit = unitMatch[2];
+            }
+            
+            // Extract street and city (simplified)
+            const parts = fullAddress.split(',').map(p => p.trim());
+            if (parts.length >= 1) {
+                result.street = parts[0].replace(/(apt|unit|suite|#)\s*[a-z0-9]+/i, '').trim();
+            }
+            if (parts.length >= 2) {
+                result.city = parts[1].replace(/(apt|unit|suite|#)\s*[a-z0-9]+/i, '').trim();
+            }
+            
+            return result;
+        }
+
+        // Load documents from API
+        async function loadDocumentsFromAPI() {
+            if (!currentCase || !currentCase.id) {
+                loadDocumentsFromLocalStorage();
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/${currentCase.id}/documents`);
+                if (response.ok) {
+                    caseDocuments = await response.json();
+                    renderDocuments();
+                }
+            } catch (e) {
+                console.log('Failed to load documents from API');
+                loadDocumentsFromLocalStorage();
+            }
+        }
+
+        function loadDocumentsFromLocalStorage() {
+            const saved = localStorage.getItem('semptify_case_documents');
+            if (saved) {
+                caseDocuments = JSON.parse(saved);
+            }
+            renderDocuments();
+        }
+
+        function renderDocuments() {
+            const docList = document.getElementById('doc-list');
+            const noDocs = document.getElementById('no-docs');
+
+            if (caseDocuments.length === 0) {
+                noDocs.style.display = 'block';
+                docList.innerHTML = '<div class="empty-state" id="no-docs"><p>No documents yet. Upload the complaint or other case documents.</p></div>';
+                return;
+            }
+
+            noDocs.style.display = 'none';
+            
+            docList.innerHTML = caseDocuments.map(doc => `
+                <div class="doc-item">
+                    <span class="icon">${getDocIcon(doc.document_type || doc.type)}</span>
+                    <div class="info">
+                        <div class="name">${doc.filename || doc.name}</div>
+                        <div class="meta">${getDocTypeLabel(doc.document_type || doc.type)} • ${formatDate(doc.uploaded_at || doc.created_at)}</div>
+                    </div>
+                    <div class="actions">
+                        <button onclick="viewDoc('${doc.id}')" title="View Document">View</button>
+                        <button onclick="showTimelineModal('${doc.id}', '${(doc.filename || doc.name).replace(/'/g, "\\'")}')" title="Add to Timeline" style="background: var(--primary);">📅 Timeline</button>
+                        <button onclick="deleteDoc('${doc.id}')" title="Delete Document">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Upload document via API
+        async function uploadDocument() {
+            const fileInput = document.getElementById('file-input');
+            const docType = document.getElementById('doc-type').value;
+            
+            if (!fileInput.files[0]) {
+                alert('Please select a file');
+                return;
+            }
+
+            const file = fileInput.files[0];
+            
+            if (currentCase && currentCase.id) {
+                // Upload to API
+                try {
+                    const formData = new FormData();
+                    formData.append('file', file);
+                    formData.append('document_type', docType);
+                    
+                    const response = await fetch(`${API_BASE}/${currentCase.id}/documents`, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    if (response.ok) {
+                        const doc = await response.json();
+                        caseDocuments.push(doc);
+                        renderDocuments();
+                        closeModal('upload-modal');
+                        fileInput.value = '';
+                        return;
+                    }
+                } catch (e) {
+                    console.error('Upload failed:', e);
+                }
+            }
+            
+            // Fallback to local storage
+            const doc = {
+                id: Date.now().toString(),
+                name: file.name,
+                filename: file.name,
+                type: docType,
+                document_type: docType,
+                size: file.size,
+                uploaded_at: new Date().toISOString()
+            };
+
+            caseDocuments.push(doc);
+            localStorage.setItem('semptify_case_documents', JSON.stringify(caseDocuments));
+            
+            closeModal('upload-modal');
+            fileInput.value = '';
+            renderDocuments();
+            
+            // If this is first document and no case, offer to extract case info
+            if (!currentCase && docType === 'complaint') {
+                if (confirm('Extract case details from this complaint?')) {
+                    showNewCaseModal();
+                }
+            }
+        }
+
+        function getDocIcon(type) {
+            const icons = {
+                'complaint': '⚖️',
+                'lease': '📜',
+                'notice': '📬',
+                'communication': '✉️',
+                'receipt': '🧾',
+                'photo': '📷',
+                'other': '📄'
+            };
+            return icons[type] || '📄';
+        }
+
+        function getDocTypeLabel(type) {
+            const labels = {
+                'complaint': 'Complaint/Summons',
+                'lease': 'Lease',
+                'notice': 'Notice',
+                'communication': 'Communication',
+                'receipt': 'Receipt',
+                'photo': 'Photo',
+                'other': 'Document'
+            };
+            return labels[type] || 'Document';
+        }
+
+        async function viewDoc(id) {
+            const doc = caseDocuments.find(d => d.id == id);
+            if (doc && doc.file_path) {
+                window.open(`/storage/${doc.file_path}`, '_blank');
+            } else {
+                alert('Document viewer coming soon');
+            }
+        }
+
+        async function deleteDoc(id) {
+            if (!confirm('Delete this document?')) return;
+            
+            if (currentCase && currentCase.id) {
+                try {
+                    const response = await fetch(`${API_BASE}/${currentCase.id}/documents/${id}`, {
+                        method: 'DELETE'
+                    });
+                    
+                    if (response.ok) {
+                        caseDocuments = caseDocuments.filter(d => d.id != id);
+                        renderDocuments();
+                        return;
+                    }
+                } catch (e) {
+                    console.error('Delete failed:', e);
+                }
+            }
+            
+            // Fallback to localStorage
+            caseDocuments = caseDocuments.filter(d => d.id != id);
+            localStorage.setItem('semptify_case_documents', JSON.stringify(caseDocuments));
+            renderDocuments();
+        }
+
+        // Open case tools
+        function openTool(tool) {
+            if (!currentCase) {
+                alert('Create a case first');
+                return;
+            }
+
+            const caseParam = encodeURIComponent(JSON.stringify(currentCase));
+            
+            switch(tool) {
+                case 'answer':
+                    window.location.href = `/static/eviction_answer.html?case=${caseParam}`;
+                    break;
+                case 'counterclaim':
+                    window.location.href = `/static/counterclaim.html?case=${caseParam}`;
+                    break;
+                case 'motion':
+                    window.location.href = `/static/motions.html?case=${caseParam}`;
+                    break;
+                case 'timeline':
+                    window.location.href = `/static/timeline.html?case=${caseParam}`;
+                    break;
+                case 'packet':
+                    window.location.href = `/static/court_packet.html?case=${caseParam}`;
+                    break;
+                case 'discovery':
+                    alert('Discovery tool coming soon');
+                    break;
+                default:
+                    console.log('Unknown tool:', tool);
+            }
+        }
+
+        // File input change handler
+        document.getElementById('file-input').addEventListener('change', (e) => {
+            if (e.target.files[0]) {
+                console.log('File selected:', e.target.files[0].name);
+            }
+        });
+
+        // Show timeline modal for adding document to timeline
+        function showTimelineModal(docId, docName) {
+            if (!currentCase || !currentCase.id) {
+                alert('No active case. Create a case first.');
+                return;
+            }
+            
+            document.getElementById('timeline-doc-id').value = docId;
+            document.getElementById('timeline-doc-name').textContent = docName;
+            document.getElementById('timeline-event-date').value = '';
+            document.getElementById('timeline-event-type').value = 'document';
+            document.getElementById('timeline-summary').value = '';
+            
+            showModal('timeline-modal');
+        }
+
+        // Add document to timeline as an event
+        async function addDocToTimeline() {
+            const docId = document.getElementById('timeline-doc-id').value;
+            const eventDate = document.getElementById('timeline-event-date').value;
+            const eventType = document.getElementById('timeline-event-type').value;
+            const summary = document.getElementById('timeline-summary').value.trim();
+            
+            if (!eventDate) {
+                alert('Please enter the event date');
+                return;
+            }
+            
+            if (!summary) {
+                alert('Please enter a summary of the event');
+                return;
+            }
+            
+            try {
+                const formData = new FormData();
+                formData.append('event_date', eventDate);
+                formData.append('summary', summary);
+                formData.append('event_type', eventType);
+                
+                const response = await fetch(`${API_BASE}/${currentCase.id}/documents/${docId}/to-timeline`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    closeModal('timeline-modal');
+                    alert('Document added to timeline successfully!');
+                    
+                    // Optionally navigate to timeline
+                    if (confirm('View timeline now?')) {
+                        openTool('timeline');
+                    }
+                } else {
+                    const error = await response.json();
+                    alert(error.detail || 'Failed to add to timeline');
+                }
+            } catch (e) {
+                console.error('Add to timeline failed:', e);
+                alert('Failed to add document to timeline. Please try again.');
+            }
+        }
+    </script>
+</body>
+</html>

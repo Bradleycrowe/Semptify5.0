@@ -831,3 +831,211 @@ def _doc_to_response(doc) -> IntakeDocumentResponse:
         uploaded_at=doc.uploaded_at.isoformat(),
         processed_at=doc.processed_at.isoformat() if doc.processed_at else None,
     )
+
+
+# =============================================================================
+# INTAKE ANALYSIS ENDPOINTS (for get_started.html)
+# =============================================================================
+
+class SituationAnalysisRequest(BaseModel):
+    """Request for analyzing user situation."""
+    situation_type: Optional[str] = None
+    description: Optional[str] = None
+    has_document: bool = False
+    timestamp: Optional[str] = None
+
+
+class SituationAnalysisResponse(BaseModel):
+    """Response with situation analysis."""
+    situation_summary: str
+    document_type: Optional[str] = None
+    key_dates: list[str] = []
+    recommended_actions: list[str] = []
+    urgency: str = "medium"
+    urgency_reason: Optional[str] = None
+
+
+@router.post("/analyze-situation", response_model=SituationAnalysisResponse)
+async def analyze_situation(
+    request: SituationAnalysisRequest,
+    user_id: str = Depends(get_user_id),
+):
+    """
+    Analyze user's described situation and provide guidance.
+    Used by the get_started.html intake page.
+    """
+    situation_type = request.situation_type or "unknown"
+    description = request.description or ""
+    
+    # Build situation-specific analysis
+    summaries = {
+        "notice": "You've received a notice from your landlord. This is often the first step in an eviction process, but you have rights and options.",
+        "lease": "You have questions about your lease agreement. Understanding your lease terms is crucial to knowing your rights and obligations.",
+        "repairs": "You're dealing with repair or habitability issues. Landlords have a legal duty to maintain safe and habitable conditions.",
+        "other": "You're facing a tenant-related concern. Let's help you organize your situation and understand your options."
+    }
+    
+    actions_map = {
+        "notice": [
+            "Read the notice carefully and note all dates",
+            "Don't ignore it - even if you disagree with it",
+            "Check if proper notice procedures were followed",
+            "Document everything related to this notice",
+            "Consider consulting with a tenant rights organization"
+        ],
+        "lease": [
+            "Review your entire lease document",
+            "Note any clauses you don't understand",
+            "Check for any potentially illegal provisions",
+            "Keep a copy of the signed lease in a safe place",
+            "Document any violations by either party"
+        ],
+        "repairs": [
+            "Document the repair issues with photos and dates",
+            "Send written repair requests to your landlord",
+            "Keep copies of all communications",
+            "Know your rights to habitability under MN law",
+            "Consider rent escrow if repairs aren't made"
+        ],
+        "other": [
+            "Document your concerns in writing",
+            "Gather any related documents or evidence",
+            "Keep records of all communications with landlord",
+            "Research your specific rights under MN tenant law",
+            "Consider seeking legal advice if needed"
+        ]
+    }
+    
+    urgency_map = {
+        "notice": ("high", "Notices often have strict deadlines. Acting quickly is important."),
+        "lease": ("low", "Lease questions are important but usually not urgent unless facing immediate action."),
+        "repairs": ("medium", "Repair issues should be addressed promptly, especially if affecting habitability."),
+        "other": ("medium", "Priority depends on your specific situation.")
+    }
+    
+    summary = summaries.get(situation_type, summaries["other"])
+    
+    # If user provided description, personalize the response
+    if description:
+        if len(description) > 50:
+            summary += f" Based on what you've shared, we can help you organize the details and determine your best course of action."
+    
+    actions = actions_map.get(situation_type, actions_map["other"])
+    urgency, urgency_reason = urgency_map.get(situation_type, urgency_map["other"])
+    
+    # Detect potential urgency from description
+    urgent_keywords = ["tomorrow", "eviction", "lockout", "court date", "emergency", "today", "asap", "immediately"]
+    if description and any(kw in description.lower() for kw in urgent_keywords):
+        urgency = "high"
+        urgency_reason = "Your situation may be time-sensitive. Please review deadlines carefully."
+    
+    return SituationAnalysisResponse(
+        situation_summary=summary,
+        document_type=f"{situation_type}_related" if situation_type != "unknown" else None,
+        key_dates=[],  # Would be extracted from description with NLP
+        recommended_actions=actions,
+        urgency=urgency,
+        urgency_reason=urgency_reason
+    )
+
+
+@router.post("/analyze-document", response_model=SituationAnalysisResponse)
+async def analyze_document_for_intake(
+    file: UploadFile = File(...),
+    situation_type: str = Form(None),
+    description: str = Form(None),
+    user_id: str = Depends(get_user_id),
+):
+    """
+    Analyze an uploaded document for the intake process.
+    Used by the get_started.html intake page.
+    """
+    # Read file content
+    content = await file.read()
+    filename = file.filename or "unknown"
+    
+    # Detect document type from filename
+    doc_type = "unknown"
+    if any(kw in filename.lower() for kw in ["notice", "eviction", "quit"]):
+        doc_type = "notice"
+    elif any(kw in filename.lower() for kw in ["lease", "rental", "agreement"]):
+        doc_type = "lease"
+    elif any(kw in filename.lower() for kw in ["repair", "maintenance", "fix"]):
+        doc_type = "repair_request"
+    elif any(kw in filename.lower() for kw in ["complaint", "violation"]):
+        doc_type = "complaint"
+    
+    # Use situation_type if provided
+    if situation_type and situation_type != "unknown":
+        doc_type = situation_type
+    
+    # Build analysis based on document type
+    type_labels = {
+        "notice": "Landlord Notice / Eviction Document",
+        "lease": "Lease Agreement / Rental Contract", 
+        "repair_request": "Repair Request / Maintenance Issue",
+        "complaint": "Complaint / Violation Notice",
+        "unknown": "General Document"
+    }
+    
+    summaries = {
+        "notice": f"We received your document '{filename}'. This appears to be a notice from your landlord. It's important to review this carefully and note any deadlines mentioned.",
+        "lease": f"We received your lease document '{filename}'. We can help you understand the key terms and identify any provisions to be aware of.",
+        "repair_request": f"We received your repair-related document '{filename}'. Documenting repair issues is important for protecting your rights.",
+        "complaint": f"We received your complaint document '{filename}'. We'll help you track this and understand your options.",
+        "unknown": f"We received your document '{filename}'. We'll help you organize it and determine how it relates to your situation."
+    }
+    
+    actions_by_type = {
+        "notice": [
+            "Check the notice date and any response deadlines",
+            "Verify the notice was properly served",
+            "Review the stated reason for the notice",
+            "Determine if you have grounds to contest",
+            "Add this document to your case timeline"
+        ],
+        "lease": [
+            "Note the lease term start and end dates",
+            "Review rent amount and due date",
+            "Check rules about security deposits",
+            "Look for any unusual or potentially illegal clauses",
+            "Save this lease in your document vault"
+        ],
+        "repair_request": [
+            "Document the date you reported the issue",
+            "Keep evidence of the repair problem (photos)",
+            "Track landlord's response or lack thereof",
+            "Know your rights if repairs aren't made",
+            "Add to timeline for tracking"
+        ],
+        "complaint": [
+            "Review the complaint details carefully",
+            "Gather evidence to support or refute claims",
+            "Note any deadlines for response",
+            "Document your side of the situation",
+            "Consider if legal assistance is needed"
+        ],
+        "unknown": [
+            "Review the document contents",
+            "Identify how it relates to your tenancy",
+            "Store it securely in your document vault",
+            "Add relevant events to your timeline",
+            "Consult with an advocate if unclear"
+        ]
+    }
+    
+    urgency = "medium"
+    urgency_reason = "Review your document carefully and note any time-sensitive items."
+    
+    if doc_type == "notice":
+        urgency = "high"
+        urgency_reason = "Notices often have strict deadlines. Check all dates immediately."
+    
+    return SituationAnalysisResponse(
+        situation_summary=summaries.get(doc_type, summaries["unknown"]),
+        document_type=type_labels.get(doc_type, "Document"),
+        key_dates=[],  # Would be extracted with document parsing
+        recommended_actions=actions_by_type.get(doc_type, actions_by_type["unknown"]),
+        urgency=urgency,
+        urgency_reason=urgency_reason
+    )

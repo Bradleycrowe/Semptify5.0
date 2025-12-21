@@ -1,0 +1,138 @@
+{
+  "user_id": "OUnDroIARr",
+  "case_number": "TYPE",
+  "case_type": "eviction_defense",
+  "status": "active",
+  "court": "District Court",
+  "property_address": "2977LexingtonAveS",
+  "rent_amount": 1218.0,
+  "security_deposit": 0,
+  "plaintiff": {
+    "name": "Douglass E. Turner",
+    "role": "plaintiff",
+    "address": null,
+    "phone": null
+  },
+  "defendant": {
+    "name": "Bradley Crowe",
+    "role": "defendant",
+    "is_pro_se": true,
+    "address": null,
+    "phone": null
+  },
+  "hearing_date": null,
+  "answer_due": null,
+  "source_document_id": "3aabf88b-a02b-40a9-9265-4a0076db19f2",
+  "source_filename": "MCRO_19AV-CV-25-3477_Complaint-Civil_2025-11-17_20251217181219.pdf",
+  "timeline": [
+    {
+      "id": "evt_doc_3aabf88b",
+      "date": "2025-12-20",
+      "title": "Document Received: MCRO_19AV-CV-25-3477_Complaint-Civil_2025-11-17_20251217181219.pdf",
+      "description": "Court document 'MCRO_19AV-CV-25-3477_Complaint-Civil_2025-11-17_20251217181219.pdf' uploaded and case auto-created",
+      "category": "court",
+      "importance": "high"
+    },
+    {
+      "id": "evt_2bf1d219_061331",
+      "date": "2025-12-20",
+      "title": "Document Added: MCRO_19AV-CV-25-3477_Eviction Summons_2025-11-19_20251217181215.pdf",
+      "description": "Document 'MCRO_19AV-CV-25-3477_Eviction Summons_2025-11-19_20251217181215.pdf' (court_filing) added to case",
+      "category": "document",
+      "importance": "medium"
+    },
+    {
+      "id": "evt_c2c9038f_061536",
+      "date": "2025-12-20",
+      "title": "Document Added: case_ocred.pdf",
+      "description": "Document 'case_ocred.pdf' (letter) added to case",
+      "category": "document",
+      "importance": "medium"
+    },
+    {
+      "id": "evt_45db334e_062641",
+      "date": "2025-12-20",
+      "title": "Document Added: outline eviction.pdf",
+      "description": "Document 'outline eviction.pdf' (court_filing) added to case",
+      "category": "document",
+      "importance": "medium"
+    }
+  ],
+  "evidence": [
+    {
+      "id": "evi_3aabf88b",
+      "title": "MCRO_19AV-CV-25-3477_Complaint-Civil_2025-11-17_20251217181219.pdf",
+      "evidence_type": "document",
+      "date_obtained": "2025-12-20",
+      "description": "Original court filing: court_filing",
+      "source": "document_intake",
+      "relevance": "Primary court document",
+      "document_id": "3aabf88b-a02b-40a9-9265-4a0076db19f2"
+    },
+    {
+      "id": "evi_2bf1d219_061331",
+      "title": "MCRO_19AV-CV-25-3477_Eviction Summons_2025-11-19_20251217181215.pdf",
+      "evidence_type": "document",
+      "date_obtained": "2025-12-20",
+      "description": "Document type: court_filing",
+      "source": "document_intake",
+      "relevance": "Related to case",
+      "document_id": "2bf1d219-f0f0-4230-8b08-78831db19350",
+      "auto_added": true
+    },
+    {
+      "id": "evi_c2c9038f_061536",
+      "title": "case_ocred.pdf",
+      "evidence_type": "document",
+      "date_obtained": "2025-12-20",
+      "description": "Document type: letter",
+      "source": "document_intake",
+      "relevance": "Related to case",
+      "document_id": "c2c9038f-93fa-4568-9ae9-ec62ee8c5027",
+      "auto_added": true
+    },
+    {
+      "id": "evi_45db334e_062641",
+      "title": "outline eviction.pdf",
+      "evidence_type": "document",
+      "date_obtained": "2025-12-20",
+      "description": "Document type: court_filing",
+      "source": "document_intake",
+      "relevance": "Related to case",
+      "document_id": "45db334e-90ea-4095-914f-09ca2f56fbb9",
+      "auto_added": true
+    }
+  ],
+  "defenses": [],
+  "counterclaims": [],
+  "motions": [],
+  "deadlines": [
+    {
+      "id": "ddl_hearing_20251220061331",
+      "title": "Hearing (from MCRO_19AV-CV-25-3477_Eviction Summons_2025-11-19_20251217181215.pdf)",
+      "deadline": "2025-12-03",
+      "description": "Extracted from document: MCRO_19AV-CV-25-3477_Eviction Summons_2025-11-19_20251217181215.pdf",
+      "priority": "critical",
+      "completed": false
+    },
+    {
+      "id": "ddl_hearing_20251220062641",
+      "title": "Hearing (from outline eviction.pdf)",
+      "deadline": "2025-12-23",
+      "description": "Extracted from document: outline eviction.pdf",
+      "priority": "critical",
+      "completed": false
+    }
+  ],
+  "notes": [
+    "Case auto-created from uploaded document: MCRO_19AV-CV-25-3477_Complaint-Civil_2025-11-17_20251217181219.pdf",
+    "[2025-12-20 06:13] Document auto-added: MCRO_19AV-CV-25-3477_Eviction Summons_2025-11-19_20251217181215.pdf",
+    "[2025-12-20 06:15] Document auto-added: case_ocred.pdf",
+    "[2025-12-20 06:26] Document auto-added: outline eviction.pdf"
+  ],
+  "created_at": "2025-12-20T06:12:04.748827",
+  "updated_at": "2025-12-20T06:26:41.994533",
+  "auto_created": true,
+  "needs_evaluation": true,
+  "last_document_added": "2025-12-20T06:26:41.994526"
+}

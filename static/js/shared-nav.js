@@ -15,7 +15,8 @@ const SemptifyNav = {
             title: '🎯 Mission Control',
             items: [
                 { icon: '🎯', label: 'Dashboard', href: '/static/dashboard.html' },
-                { icon: '�️', label: 'Command Center', href: '/static/command_center.html' },
+                { icon: '🧭', label: 'Smart Guide', href: '/static/situation-guide.html' },
+                { icon: '🕹️', label: 'Command Center', href: '/static/command_center.html' },
                 { icon: '🆘', label: 'Crisis Assessment', href: '/static/crisis_intake.html' },
             ]
         },

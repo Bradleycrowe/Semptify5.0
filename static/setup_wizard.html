@@ -1121,7 +1121,7 @@
         document.addEventListener('DOMContentLoaded', async () => {
             // First check if user is authenticated via storage
             try {
-                const sessionRes = await fetch('/storage/session');
+                const sessionRes = await fetch('/storage/session', { credentials: 'include' });
                 const session = await sessionRes.json();
                 
                 if (!session.authenticated && !session.user_id) {
@@ -1139,7 +1139,7 @@
 
             // Check existing setup status
             try {
-                const response = await fetch('/api/setup/status');
+                const response = await fetch('/api/setup/status', { credentials: 'include' });
                 const data = await response.json();
 
                 if (data.is_complete) {
@@ -1234,6 +1234,7 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data),
+                    credentials: 'include'
                 });
 
                 if (response.ok) {
@@ -1290,6 +1291,7 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data),
+                    credentials: 'include'
                 });
 
                 if (response.ok) {
@@ -1327,6 +1329,7 @@
                         provider: selectedStorage,
                         connected: selectedStorage === 'local',
                     }),
+                    credentials: 'include'
                 });
 
                 if (response.ok) {
@@ -1390,6 +1393,7 @@
                     const response = await fetch('/api/setup/documents/upload', {
                         method: 'POST',
                         body: formData,
+                        credentials: 'include'
                     });
 
                     if (response.ok) {
@@ -1408,7 +1412,7 @@
 
         async function loadDocuments() {
             try {
-                const response = await fetch('/api/setup/documents');
+                const response = await fetch('/api/setup/documents', { credentials: 'include' });
                 const data = await response.json();
                 uploadedDocuments = data.documents;
                 updateDocumentList();
@@ -1454,6 +1458,7 @@
             try {
                 const response = await fetch('/api/setup/documents/process', {
                     method: 'POST',
+                    credentials: 'include'
                 });
 
                 const data = await response.json();
@@ -1510,7 +1515,7 @@
             const container = document.getElementById('reviewContent');
             
             try {
-                const response = await fetch('/api/setup/summary');
+                const response = await fetch('/api/setup/summary', { credentials: 'include' });
                 const data = await response.json();
 
                 let html = '';
@@ -1595,6 +1600,7 @@
             try {
                 const response = await fetch('/api/setup/complete', {
                     method: 'POST',
+                    credentials: 'include'
                 });
 
                 if (response.ok) {

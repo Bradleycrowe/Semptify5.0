@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Semptify - Complete Tenancy Documentation</title>
+    <link rel="stylesheet" href="/static/css/shared-nav.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --primary: #1e3a5f;
+            --primary-light: #2d5a87;
+            --accent: #3b82f6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        #semptify-nav { position: sticky; top: 0; z-index: 1000; }
+
+        .page-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 2rem;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header-content h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .header-content p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .progress-bar-main {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            background: white;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-track {
+            height: 10px;
+            background: var(--border);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--success), #34d399);
+            border-radius: 5px;
+            transition: width 0.5s;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .quick-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .quick-btn:hover {
+            border-color: var(--accent);
+            background: #eff6ff;
+        }
+
+        .quick-btn.primary {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .quick-btn.primary:hover {
+            background: #2563eb;
+        }
+
+        /* Category Grid */
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .category-card {
+            background: white;
+            border-radius: 16px;
+            border: 2px solid var(--border);
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .category-card:hover {
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+
+        .category-header {
+            padding: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        }
+
+        .category-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .category-icon.blue { background: #dbeafe; }
+        .category-icon.green { background: #d1fae5; }
+        .category-icon.yellow { background: #fef3c7; }
+        .category-icon.red { background: #fee2e2; }
+        .category-icon.purple { background: #ede9fe; }
+        .category-icon.orange { background: #ffedd5; }
+        .category-icon.teal { background: #ccfbf1; }
+        .category-icon.pink { background: #fce7f3; }
+
+        .category-info h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .category-info span {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .category-toggle {
+            margin-left: auto;
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            transition: transform 0.3s;
+        }
+
+        .category-card.expanded .category-toggle {
+            transform: rotate(180deg);
+        }
+
+        .category-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out;
+        }
+
+        .category-card.expanded .category-content {
+            max-height: 2000px;
+        }
+
+        .document-list {
+            padding: 1rem;
+        }
+
+        .doc-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 0.75rem;
+            background: var(--bg);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .doc-item:hover {
+            background: #e0f2fe;
+        }
+
+        .doc-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .doc-checkbox {
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .doc-checkbox.checked {
+            background: var(--success);
+            border-color: var(--success);
+            color: white;
+        }
+
+        .doc-info {
+            flex: 1;
+        }
+
+        .doc-info h4 {
+            font-size: 0.95rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .doc-info p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        .doc-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .doc-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .doc-btn.upload {
+            background: #dbeafe;
+            color: var(--accent);
+        }
+
+        .doc-btn.upload:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        .doc-btn.view {
+            background: #d1fae5;
+            color: var(--success);
+        }
+
+        .doc-btn.view:hover {
+            background: var(--success);
+            color: white;
+        }
+
+        .doc-priority {
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+            margin-top: 0.5rem;
+            display: inline-block;
+        }
+
+        .doc-priority.critical { background: #fee2e2; color: #dc2626; }
+        .doc-priority.important { background: #fef3c7; color: #d97706; }
+        .doc-priority.recommended { background: #dbeafe; color: #2563eb; }
+        .doc-priority.optional { background: #f1f5f9; color: #64748b; }
+
+        /* Stats Summary */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.25rem;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+
+        .stat-card .number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-card .label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .stat-card.complete .number { color: var(--success); }
+        .stat-card.pending .number { color: var(--warning); }
+        .stat-card.missing .number { color: var(--danger); }
+
+        /* Upload Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal h2 {
+            margin-bottom: 1rem;
+        }
+
+        .upload-zone {
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            padding: 3rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 1rem;
+        }
+
+        .upload-zone:hover {
+            border-color: var(--accent);
+            background: #f8fafc;
+        }
+
+        .upload-zone .icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .modal-btns {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .modal-btns button {
+            flex: 1;
+            padding: 0.75rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .modal-btns .cancel {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        .modal-btns .save {
+            background: var(--accent);
+            border: none;
+            color: white;
+        }
+
+        /* Search and Filters */
+        .search-filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.875rem 1rem 0.875rem 3rem;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-size: 1rem;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .search-box .icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        .filter-btn {
+            padding: 0.875rem 1.25rem;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--accent);
+        }
+
+        .filter-btn.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 1rem; }
+            .categories-grid { grid-template-columns: 1fr; }
+            .stats-bar { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+    <div id="semptify-nav"></div>
+
+    <header class="page-header">
+        <div class="header-content">
+            <h1>📋 Complete Tenancy Documentation</h1>
+            <p>Track, upload, and organize every document related to your tenancy - from move-in to move-out</p>
+        </div>
+    </header>
+
+    <div class="progress-bar-main">
+        <div class="progress-info">
+            <span><strong id="completed-count">0</strong> of <strong id="total-count">0</strong> documents collected</span>
+            <span id="progress-percent">0%</span>
+        </div>
+        <div class="progress-track">
+            <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="stats-bar">
+            <div class="stat-card complete">
+                <div class="number" id="stat-complete">0</div>
+                <div class="label">Completed</div>
+            </div>
+            <div class="stat-card pending">
+                <div class="number" id="stat-pending">0</div>
+                <div class="label">In Progress</div>
+            </div>
+            <div class="stat-card missing">
+                <div class="number" id="stat-missing">0</div>
+                <div class="label">Missing Critical</div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="stat-total">0</div>
+                <div class="label">Total Documents</div>
+            </div>
+        </div>
+
+        <div class="quick-actions">
+            <button class="quick-btn primary" onclick="expandAll()">📂 Expand All Categories</button>
+            <button class="quick-btn" onclick="collapseAll()">📁 Collapse All</button>
+            <button class="quick-btn" onclick="showMissing()">⚠️ Show Missing Only</button>
+            <button class="quick-btn" onclick="exportChecklist()">📥 Export Checklist</button>
+            <button class="quick-btn" onclick="printChecklist()">🖨️ Print</button>
+        </div>
+
+        <div class="search-filters">
+            <div class="search-box">
+                <span class="icon">🔍</span>
+                <input type="text" id="search-input" placeholder="Search documents..." oninput="filterDocuments()">
+            </div>
+            <button class="filter-btn" onclick="filterByPriority('all')">All</button>
+            <button class="filter-btn" onclick="filterByPriority('critical')">🔴 Critical</button>
+            <button class="filter-btn" onclick="filterByPriority('important')">🟡 Important</button>
+            <button class="filter-btn" onclick="filterByPriority('recommended')">🔵 Recommended</button>
+        </div>
+
+        <div class="categories-grid" id="categories-container">
+            <!-- Categories will be populated by JavaScript -->
+        </div>
+    </div>
+
+    <!-- Upload Modal -->
+    <div class="modal-overlay" id="upload-modal">
+        <div class="modal">
+            <h2>📤 Upload Document</h2>
+            <p id="upload-doc-name" style="color: var(--text-muted); margin-bottom: 1rem;"></p>
+            <div class="upload-zone" onclick="document.getElementById('file-input').click()">
+                <div class="icon">📁</div>
+                <p><strong>Click to upload</strong> or drag and drop</p>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem;">PDF, JPG, PNG up to 10MB</p>
+            </div>
+            <input type="file" id="file-input" style="display: none;" accept=".pdf,.jpg,.jpeg,.png">
+            <div class="modal-btns">
+                <button class="cancel" onclick="closeModal()">Cancel</button>
+                <button class="save" onclick="saveUpload()">Upload</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/components/nav-loader.js"></script>
+    <script>
+        // Comprehensive Tenancy Document Categories
+        const documentCategories = [
+            {
+                id: 'pre-tenancy',
+                name: 'Pre-Tenancy & Application',
+                icon: '📝',
+                color: 'blue',
+                documents: [
+                    { id: 'rental-application', name: 'Rental Application', desc: 'Initial application submitted to landlord/property manager', priority: 'critical' },
+                    { id: 'credit-report', name: 'Credit Report/Score', desc: 'Credit check documentation', priority: 'important' },
+                    { id: 'background-check', name: 'Background Check Results', desc: 'Criminal and background screening results', priority: 'important' },
+                    { id: 'employment-verification', name: 'Employment Verification Letter', desc: 'Letter from employer confirming employment status and income', priority: 'critical' },
+                    { id: 'pay-stubs', name: 'Pay Stubs (3-6 months)', desc: 'Recent pay stubs showing income', priority: 'critical' },
+                    { id: 'bank-statements', name: 'Bank Statements', desc: 'Recent bank statements showing financial stability', priority: 'important' },
+                    { id: 'tax-returns', name: 'Tax Returns (1-2 years)', desc: 'W-2s or tax returns for income verification', priority: 'important' },
+                    { id: 'photo-id', name: 'Government Photo ID', desc: 'Driver\'s license, passport, or state ID', priority: 'critical' },
+                    { id: 'ssn-card', name: 'Social Security Card', desc: 'SSN card or documentation', priority: 'important' },
+                    { id: 'references', name: 'Personal/Professional References', desc: 'Reference letters or contact information', priority: 'recommended' },
+                    { id: 'landlord-references', name: 'Previous Landlord References', desc: 'Contact info and letters from previous landlords', priority: 'important' },
+                    { id: 'rental-history', name: 'Rental History Report', desc: 'Documentation of previous rental addresses', priority: 'recommended' },
+                    { id: 'application-fee-receipt', name: 'Application Fee Receipt', desc: 'Proof of application fee payment', priority: 'recommended' },
+                    { id: 'holding-deposit', name: 'Holding Deposit Receipt', desc: 'Receipt for any holding deposit paid', priority: 'recommended' }
+                ]
+            },
+            {
+                id: 'lease-agreement',
+                name: 'Lease & Rental Agreement',
+                icon: '📜',
+                color: 'green',
+                documents: [
+                    { id: 'lease-original', name: 'Original Lease Agreement', desc: 'The signed lease/rental agreement - KEEP ORIGINAL', priority: 'critical' },
+                    { id: 'lease-amendments', name: 'Lease Amendments/Addendums', desc: 'Any modifications or additions to original lease', priority: 'critical' },
+                    { id: 'lease-renewal', name: 'Lease Renewal Documents', desc: 'Renewal agreements for continued tenancy', priority: 'important' },
+                    { id: 'pet-addendum', name: 'Pet Addendum', desc: 'Pet policy agreement and deposits', priority: 'important' },
+                    { id: 'parking-agreement', name: 'Parking Agreement', desc: 'Assigned parking space documentation', priority: 'recommended' },
+                    { id: 'storage-agreement', name: 'Storage Unit Agreement', desc: 'Additional storage space rental', priority: 'optional' },
+                    { id: 'roommate-agreement', name: 'Roommate Agreement', desc: 'Agreement between co-tenants', priority: 'important' },
+                    { id: 'sublease-agreement', name: 'Sublease Agreement', desc: 'If subletting is permitted and used', priority: 'important' },
+                    { id: 'guarantor-agreement', name: 'Guarantor/Co-signer Agreement', desc: 'Documentation if a guarantor was required', priority: 'important' },
+                    { id: 'house-rules', name: 'House Rules/Community Guidelines', desc: 'Building or community rules and regulations', priority: 'recommended' },
+                    { id: 'move-in-date-confirm', name: 'Move-in Date Confirmation', desc: 'Written confirmation of move-in date', priority: 'recommended' }
+                ]
+            },
+            {
+                id: 'financial',
+                name: 'Financial & Payment Records',
+                icon: '💰',
+                color: 'yellow',
+                documents: [
+                    { id: 'security-deposit', name: 'Security Deposit Receipt', desc: 'Receipt showing security deposit amount and date paid', priority: 'critical' },
+                    { id: 'first-month-rent', name: 'First Month\'s Rent Receipt', desc: 'Proof of first month\'s rent payment', priority: 'critical' },
+                    { id: 'last-month-rent', name: 'Last Month\'s Rent Receipt', desc: 'If last month\'s rent was required upfront', priority: 'important' },
+                    { id: 'rent-receipts', name: 'Monthly Rent Payment Receipts', desc: 'All receipts/records of rent payments', priority: 'critical' },
+                    { id: 'bank-records', name: 'Bank Records of Payments', desc: 'Bank statements showing rent withdrawals', priority: 'important' },
+                    { id: 'money-order-stubs', name: 'Money Order/Cashier Check Stubs', desc: 'Stubs from money orders used for rent', priority: 'important' },
+                    { id: 'online-payment-confirm', name: 'Online Payment Confirmations', desc: 'Email confirmations of online rent payments', priority: 'important' },
+                    { id: 'late-fee-records', name: 'Late Fee Records', desc: 'Documentation of any late fees charged', priority: 'important' },
+                    { id: 'rent-increase-notices', name: 'Rent Increase Notices', desc: 'All notices of rent increases received', priority: 'critical' },
+                    { id: 'rent-ledger', name: 'Rent Ledger/Payment History', desc: 'Complete history of all payments made', priority: 'critical' },
+                    { id: 'pet-deposit', name: 'Pet Deposit Receipt', desc: 'Receipt for pet security deposit', priority: 'important' },
+                    { id: 'key-deposit', name: 'Key/Fob Deposit Receipt', desc: 'Deposit for keys or access devices', priority: 'recommended' },
+                    { id: 'utility-deposits', name: 'Utility Deposit Receipts', desc: 'Deposits paid to utility companies', priority: 'recommended' }
+                ]
+            },
+            {
+                id: 'move-in',
+                name: 'Move-In Documentation',
+                icon: '🏠',
+                color: 'teal',
+                documents: [
+                    { id: 'move-in-checklist', name: 'Move-In Inspection Checklist', desc: 'Detailed condition checklist completed at move-in', priority: 'critical' },
+                    { id: 'move-in-photos', name: 'Move-In Photos/Video', desc: 'Photographic evidence of unit condition at move-in', priority: 'critical' },
+                    { id: 'key-receipt', name: 'Key Receipt', desc: 'Receipt for all keys and access devices received', priority: 'important' },
+                    { id: 'utility-setup', name: 'Utility Setup Confirmations', desc: 'Confirmation of utilities transferred to your name', priority: 'important' },
+                    { id: 'parking-permit', name: 'Parking Permit/Pass', desc: 'Assigned parking documentation', priority: 'recommended' },
+                    { id: 'mailbox-key', name: 'Mailbox Key Receipt', desc: 'Receipt for mailbox key', priority: 'recommended' },
+                    { id: 'gate-code', name: 'Gate/Access Codes', desc: 'Documentation of access codes provided', priority: 'recommended' },
+                    { id: 'move-in-inventory', name: 'Furnished Items Inventory', desc: 'List of furniture/appliances included', priority: 'important' },
+                    { id: 'welcome-packet', name: 'Welcome Packet/Info', desc: 'Building information, contacts, emergency procedures', priority: 'recommended' },
+                    { id: 'appliance-manuals', name: 'Appliance Manuals', desc: 'Manuals for appliances in the unit', priority: 'optional' }
+                ]
+            },
+            {
+                id: 'maintenance',
+                name: 'Maintenance & Repairs',
+                icon: '🔧',
+                color: 'orange',
+                documents: [
+                    { id: 'maintenance-requests', name: 'Maintenance Request Forms', desc: 'All submitted maintenance requests (keep copies)', priority: 'critical' },
+                    { id: 'maintenance-responses', name: 'Landlord Responses to Requests', desc: 'Written responses to maintenance requests', priority: 'critical' },
+                    { id: 'work-orders', name: 'Work Order Copies', desc: 'Completed work orders from repairs', priority: 'important' },
+                    { id: 'repair-photos', name: 'Photos Before/After Repairs', desc: 'Photographic evidence of issues and repairs', priority: 'critical' },
+                    { id: 'repair-invoices', name: 'Repair Invoices/Receipts', desc: 'Invoices for any repairs performed', priority: 'important' },
+                    { id: 'tenant-repairs', name: 'Tenant-Made Repair Records', desc: 'Documentation of repairs you made with permission', priority: 'important' },
+                    { id: 'emergency-repairs', name: 'Emergency Repair Documentation', desc: 'Records of emergency maintenance situations', priority: 'critical' },
+                    { id: 'habitability-issues', name: 'Habitability Issue Reports', desc: 'Documentation of health/safety concerns', priority: 'critical' },
+                    { id: 'pest-control', name: 'Pest Control Records', desc: 'Pest inspection and treatment records', priority: 'important' },
+                    { id: 'hvac-service', name: 'HVAC Service Records', desc: 'Heating/cooling maintenance records', priority: 'recommended' },
+                    { id: 'appliance-repairs', name: 'Appliance Repair Records', desc: 'Repairs to provided appliances', priority: 'recommended' },
+                    { id: 'mold-reports', name: 'Mold Inspection/Remediation', desc: 'Mold testing and treatment documentation', priority: 'critical' },
+                    { id: 'plumbing-issues', name: 'Plumbing Issue Documentation', desc: 'Records of plumbing problems and repairs', priority: 'important' },
+                    { id: 'electrical-issues', name: 'Electrical Issue Documentation', desc: 'Records of electrical problems and repairs', priority: 'important' }
+                ]
+            },
+            {
+                id: 'communication',
+                name: 'Landlord Communications',
+                icon: '✉️',
+                color: 'purple',
+                documents: [
+                    { id: 'all-written-notices', name: 'All Written Notices Received', desc: 'Every notice received from landlord', priority: 'critical' },
+                    { id: 'email-correspondence', name: 'Email Correspondence', desc: 'All emails to/from landlord (save/print)', priority: 'critical' },
+                    { id: 'text-messages', name: 'Text Message Records', desc: 'Screenshots of text communications', priority: 'important' },
+                    { id: 'phone-call-log', name: 'Phone Call Log', desc: 'Record of all phone calls (date, time, topic)', priority: 'important' },
+                    { id: 'certified-mail', name: 'Certified Mail Receipts', desc: 'Receipts for certified mail sent/received', priority: 'critical' },
+                    { id: 'hand-delivered-notes', name: 'Hand-Delivered Notice Receipts', desc: 'Receipts for in-person delivered documents', priority: 'important' },
+                    { id: 'complaint-letters', name: 'Complaint Letters Sent', desc: 'Copies of formal complaints submitted', priority: 'critical' },
+                    { id: 'response-letters', name: 'Landlord Response Letters', desc: 'Written responses from landlord', priority: 'critical' },
+                    { id: 'entry-notices', name: 'Entry/Inspection Notices', desc: 'Notices of landlord entry into unit', priority: 'important' },
+                    { id: 'lease-violation-notices', name: 'Lease Violation Notices', desc: 'Any notices claiming lease violations', priority: 'critical' },
+                    { id: 'meeting-notes', name: 'In-Person Meeting Notes', desc: 'Notes from face-to-face meetings', priority: 'important' }
+                ]
+            },
+            {
+                id: 'utilities',
+                name: 'Utilities & Services',
+                icon: '💡',
+                color: 'yellow',
+                documents: [
+                    { id: 'electric-bills', name: 'Electric Bills', desc: 'Monthly electric bills and statements', priority: 'important' },
+                    { id: 'gas-bills', name: 'Gas Bills', desc: 'Monthly gas bills and statements', priority: 'important' },
+                    { id: 'water-bills', name: 'Water/Sewer Bills', desc: 'Water and sewer statements', priority: 'important' },
+                    { id: 'trash-bills', name: 'Trash Service Bills', desc: 'Waste collection bills if separate', priority: 'recommended' },
+                    { id: 'internet-bills', name: 'Internet/Cable Bills', desc: 'Internet and cable service bills', priority: 'recommended' },
+                    { id: 'utility-account-setup', name: 'Utility Account Setup Docs', desc: 'Account creation confirmations', priority: 'recommended' },
+                    { id: 'utility-disputes', name: 'Utility Dispute Records', desc: 'Documentation of billing disputes', priority: 'important' },
+                    { id: 'shared-utility-agreements', name: 'Shared Utility Agreements', desc: 'Agreements for shared utilities with landlord/neighbors', priority: 'important' },
+                    { id: 'rubs-statements', name: 'RUBS Statements', desc: 'Ratio Utility Billing System statements', priority: 'important' }
+                ]
+            },
+            {
+                id: 'insurance',
+                name: 'Insurance & Liability',
+                icon: '🛡️',
+                color: 'blue',
+                documents: [
+                    { id: 'renters-insurance', name: 'Renters Insurance Policy', desc: 'Current renters insurance policy document', priority: 'critical' },
+                    { id: 'insurance-declarations', name: 'Insurance Declarations Page', desc: 'Summary page of coverage', priority: 'important' },
+                    { id: 'insurance-receipts', name: 'Insurance Premium Receipts', desc: 'Proof of insurance payments', priority: 'recommended' },
+                    { id: 'insurance-claims', name: 'Insurance Claim Records', desc: 'Any claims filed and outcomes', priority: 'important' },
+                    { id: 'liability-waivers', name: 'Liability Waivers Signed', desc: 'Any liability waivers from landlord', priority: 'recommended' },
+                    { id: 'incident-reports', name: 'Incident Reports', desc: 'Reports of accidents or incidents on property', priority: 'critical' },
+                    { id: 'property-damage-reports', name: 'Property Damage Reports', desc: 'Documentation of damage to property', priority: 'critical' }
+                ]
+            },
+            {
+                id: 'legal-notices',
+                name: 'Legal Notices & Disputes',
+                icon: '⚖️',
+                color: 'red',
+                documents: [
+                    { id: 'eviction-notices', name: 'Eviction Notices', desc: 'Any eviction notices received (all types)', priority: 'critical' },
+                    { id: 'pay-quit-notice', name: 'Pay or Quit Notices', desc: 'Notices demanding payment', priority: 'critical' },
+                    { id: 'cure-quit-notice', name: 'Cure or Quit Notices', desc: 'Notices to correct lease violations', priority: 'critical' },
+                    { id: 'unconditional-quit', name: 'Unconditional Quit Notices', desc: 'Notices to vacate without option to cure', priority: 'critical' },
+                    { id: 'court-filings', name: 'Court Filings/Summons', desc: 'Any legal filings or court summons', priority: 'critical' },
+                    { id: 'court-responses', name: 'Court Response Documents', desc: 'Your responses to court filings', priority: 'critical' },
+                    { id: 'court-orders', name: 'Court Orders', desc: 'Any orders issued by the court', priority: 'critical' },
+                    { id: 'judgment-documents', name: 'Judgment Documents', desc: 'Final court judgments', priority: 'critical' },
+                    { id: 'appeal-documents', name: 'Appeal Documents', desc: 'Records of any appeals filed', priority: 'critical' },
+                    { id: 'attorney-correspondence', name: 'Attorney Correspondence', desc: 'Letters from landlord\'s attorney', priority: 'critical' },
+                    { id: 'your-attorney-docs', name: 'Your Attorney Documents', desc: 'Your legal representation documents', priority: 'critical' },
+                    { id: 'mediation-records', name: 'Mediation/Arbitration Records', desc: 'Alternative dispute resolution documents', priority: 'important' },
+                    { id: 'settlement-agreements', name: 'Settlement Agreements', desc: 'Any settlement agreements reached', priority: 'critical' },
+                    { id: 'restraining-orders', name: 'Restraining Orders', desc: 'Protective orders if applicable', priority: 'critical' },
+                    { id: 'police-reports', name: 'Police Reports', desc: 'Any police reports related to tenancy', priority: 'critical' },
+                    { id: 'code-enforcement', name: 'Code Enforcement Reports', desc: 'City/county code violation reports', priority: 'important' },
+                    { id: 'housing-authority-complaints', name: 'Housing Authority Complaints', desc: 'Complaints filed with housing authorities', priority: 'important' }
+                ]
+            },
+            {
+                id: 'move-out',
+                name: 'Move-Out & Termination',
+                icon: '📦',
+                color: 'pink',
+                documents: [
+                    { id: 'notice-to-vacate-given', name: 'Notice to Vacate (Your Notice)', desc: 'Written notice you gave to landlord', priority: 'critical' },
+                    { id: 'notice-to-vacate-received', name: 'Notice to Vacate (Received)', desc: 'Notice from landlord to vacate', priority: 'critical' },
+                    { id: 'move-out-checklist', name: 'Move-Out Inspection Checklist', desc: 'Final inspection condition report', priority: 'critical' },
+                    { id: 'move-out-photos', name: 'Move-Out Photos/Video', desc: 'Photographic evidence at move-out', priority: 'critical' },
+                    { id: 'key-return-receipt', name: 'Key Return Receipt', desc: 'Proof of key return', priority: 'critical' },
+                    { id: 'forwarding-address', name: 'Forwarding Address Notice', desc: 'Your forwarding address given to landlord', priority: 'important' },
+                    { id: 'security-deposit-demand', name: 'Security Deposit Demand Letter', desc: 'Written demand for deposit return', priority: 'critical' },
+                    { id: 'security-deposit-itemization', name: 'Security Deposit Itemization', desc: 'Landlord\'s itemized deductions list', priority: 'critical' },
+                    { id: 'security-deposit-return', name: 'Security Deposit Return', desc: 'Check/record of deposit returned', priority: 'critical' },
+                    { id: 'final-utility-bills', name: 'Final Utility Bills', desc: 'Final bills for all utilities', priority: 'important' },
+                    { id: 'utility-transfer-confirm', name: 'Utility Transfer Confirmations', desc: 'Confirmation utilities transferred out of your name', priority: 'important' },
+                    { id: 'cleaning-receipts', name: 'Professional Cleaning Receipts', desc: 'Receipts if professional cleaning was done', priority: 'recommended' },
+                    { id: 'repair-receipts-moveout', name: 'Move-Out Repair Receipts', desc: 'Receipts for any repairs before move-out', priority: 'recommended' },
+                    { id: 'walkthrough-notes', name: 'Final Walkthrough Notes', desc: 'Notes from final walkthrough with landlord', priority: 'important' },
+                    { id: 'lease-termination-agreement', name: 'Lease Termination Agreement', desc: 'Mutual agreement to end lease early', priority: 'critical' },
+                    { id: 'early-termination-fee', name: 'Early Termination Fee Receipt', desc: 'If early termination fee was paid', priority: 'important' }
+                ]
+            },
+            {
+                id: 'tenant-rights',
+                name: 'Tenant Rights & Protections',
+                icon: '🏛️',
+                color: 'purple',
+                documents: [
+                    { id: 'local-tenant-rights', name: 'Local Tenant Rights Summary', desc: 'Summary of tenant rights in your jurisdiction', priority: 'recommended' },
+                    { id: 'rent-control-docs', name: 'Rent Control Documents', desc: 'Rent control/stabilization documentation if applicable', priority: 'important' },
+                    { id: 'fair-housing-info', name: 'Fair Housing Information', desc: 'Fair housing rights documentation', priority: 'recommended' },
+                    { id: 'discrimination-complaints', name: 'Discrimination Complaints', desc: 'Any discrimination complaints filed', priority: 'critical' },
+                    { id: 'retaliation-evidence', name: 'Retaliation Evidence', desc: 'Evidence of landlord retaliation', priority: 'critical' },
+                    { id: 'habitability-complaints', name: 'Habitability Complaints', desc: 'Complaints about living conditions', priority: 'critical' },
+                    { id: 'rent-escrow-docs', name: 'Rent Escrow Documents', desc: 'If rent was placed in escrow', priority: 'important' },
+                    { id: 'repair-deduct-records', name: 'Repair and Deduct Records', desc: 'Records if repair and deduct remedy used', priority: 'important' },
+                    { id: 'tenant-union-docs', name: 'Tenant Union Documents', desc: 'Tenant organizing documents', priority: 'optional' },
+                    { id: 'legal-aid-records', name: 'Legal Aid Records', desc: 'Records from legal aid assistance', priority: 'important' },
+                    { id: 'section-8-docs', name: 'Section 8/Housing Voucher Docs', desc: 'Housing assistance program documents', priority: 'critical' },
+                    { id: 'ada-accommodation', name: 'ADA Accommodation Requests', desc: 'Disability accommodation documentation', priority: 'critical' }
+                ]
+            },
+            {
+                id: 'hoa-building',
+                name: 'HOA & Building Management',
+                icon: '🏢',
+                color: 'teal',
+                documents: [
+                    { id: 'hoa-rules', name: 'HOA Rules & Regulations', desc: 'Homeowners association rules', priority: 'important' },
+                    { id: 'hoa-notices', name: 'HOA Notices', desc: 'Notices from HOA', priority: 'important' },
+                    { id: 'hoa-violations', name: 'HOA Violation Notices', desc: 'Any HOA violation citations', priority: 'important' },
+                    { id: 'building-notices', name: 'Building Notices', desc: 'General building announcements', priority: 'recommended' },
+                    { id: 'emergency-procedures', name: 'Emergency Procedures', desc: 'Building emergency protocols', priority: 'recommended' },
+                    { id: 'amenity-rules', name: 'Amenity Rules/Access', desc: 'Pool, gym, common area rules', priority: 'optional' },
+                    { id: 'building-contacts', name: 'Building Management Contacts', desc: 'Contact information for building staff', priority: 'recommended' },
+                    { id: 'move-in-out-procedures', name: 'Move-In/Out Procedures', desc: 'Building requirements for moving', priority: 'recommended' }
+                ]
+            },
+            {
+                id: 'personal-records',
+                name: 'Personal Records & Notes',
+                icon: '📓',
+                color: 'orange',
+                documents: [
+                    { id: 'tenancy-journal', name: 'Tenancy Journal/Log', desc: 'Personal log of all tenancy events', priority: 'recommended' },
+                    { id: 'neighbor-witness-statements', name: 'Neighbor/Witness Statements', desc: 'Statements from neighbors about issues', priority: 'important' },
+                    { id: 'video-recordings', name: 'Video/Audio Recordings', desc: 'Any permitted recordings of issues', priority: 'important' },
+                    { id: 'calendar-records', name: 'Calendar/Timeline Records', desc: 'Timeline of events and deadlines', priority: 'recommended' },
+                    { id: 'expense-log', name: 'Expense Log', desc: 'Record of all tenancy-related expenses', priority: 'recommended' },
+                    { id: 'contact-list', name: 'Contact List', desc: 'All relevant contacts (landlord, management, utilities)', priority: 'recommended' },
+                    { id: 'important-dates', name: 'Important Dates Document', desc: 'Lease dates, renewal deadlines, etc.', priority: 'important' },
+                    { id: 'move-in-inventory-personal', name: 'Personal Property Inventory', desc: 'List of your belongings for insurance', priority: 'recommended' }
+                ]
+            }
+        ];
+
+        let documentStates = {};
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadSavedStates();
+            renderCategories();
+            updateStats();
+        });
+
+        function loadSavedStates() {
+            const saved = localStorage.getItem('tenancyDocumentStates');
+            if (saved) {
+                documentStates = JSON.parse(saved);
+            }
+        }
+
+        function saveStates() {
+            localStorage.setItem('tenancyDocumentStates', JSON.stringify(documentStates));
+        }
+
+        function renderCategories() {
+            const container = document.getElementById('categories-container');
+            container.innerHTML = documentCategories.map(cat => `
+                <div class="category-card" id="cat-${cat.id}">
+                    <div class="category-header" onclick="toggleCategory('${cat.id}')">
+                        <div class="category-icon ${cat.color}">${cat.icon}</div>
+                        <div class="category-info">
+                            <h3>${cat.name}</h3>
+                            <span>${cat.documents.length} documents • ${getCompletedCount(cat.documents)} completed</span>
+                        </div>
+                        <div class="category-toggle">▼</div>
+                    </div>
+                    <div class="category-content">
+                        <div class="document-list">
+                            ${cat.documents.map(doc => renderDocItem(doc)).join('')}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderDocItem(doc) {
+            const isChecked = documentStates[doc.id] === true;
+            return `
+                <div class="doc-item" data-priority="${doc.priority}" data-name="${doc.name.toLowerCase()}">
+                    <div class="doc-checkbox ${isChecked ? 'checked' : ''}" onclick="toggleDoc('${doc.id}', event)">
+                        ${isChecked ? '✓' : ''}
+                    </div>
+                    <div class="doc-info">
+                        <h4>${doc.name}</h4>
+                        <p>${doc.desc}</p>
+                        <span class="doc-priority ${doc.priority}">${doc.priority.toUpperCase()}</span>
+                    </div>
+                    <div class="doc-actions">
+                        <button class="doc-btn upload" onclick="openUpload('${doc.id}', '${doc.name}')" title="Upload">📤</button>
+                        <button class="doc-btn view" onclick="viewDoc('${doc.id}')" title="View">👁️</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function toggleCategory(catId) {
+            const card = document.getElementById('cat-' + catId);
+            card.classList.toggle('expanded');
+        }
+
+        function toggleDoc(docId, event) {
+            event.stopPropagation();
+            documentStates[docId] = !documentStates[docId];
+            saveStates();
+            renderCategories();
+            updateStats();
+        }
+
+        function getCompletedCount(documents) {
+            return documents.filter(doc => documentStates[doc.id] === true).length;
+        }
+
+        function getTotalDocs() {
+            return documentCategories.reduce((acc, cat) => acc + cat.documents.length, 0);
+        }
+
+        function getTotalCompleted() {
+            return Object.values(documentStates).filter(v => v === true).length;
+        }
+
+        function getMissingCritical() {
+            let count = 0;
+            documentCategories.forEach(cat => {
+                cat.documents.forEach(doc => {
+                    if (doc.priority === 'critical' && !documentStates[doc.id]) {
+                        count++;
+                    }
+                });
+            });
+            return count;
+        }
+
+        function updateStats() {
+            const total = getTotalDocs();
+            const completed = getTotalCompleted();
+            const percent = Math.round((completed / total) * 100);
+            
+            document.getElementById('completed-count').textContent = completed;
+            document.getElementById('total-count').textContent = total;
+            document.getElementById('progress-percent').textContent = percent + '%';
+            document.getElementById('progress-fill').style.width = percent + '%';
+            
+            document.getElementById('stat-complete').textContent = completed;
+            document.getElementById('stat-pending').textContent = total - completed;
+            document.getElementById('stat-missing').textContent = getMissingCritical();
+            document.getElementById('stat-total').textContent = total;
+        }
+
+        function expandAll() {
+            document.querySelectorAll('.category-card').forEach(card => {
+                card.classList.add('expanded');
+            });
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.category-card').forEach(card => {
+                card.classList.remove('expanded');
+            });
+        }
+
+        function showMissing() {
+            document.querySelectorAll('.doc-item').forEach(item => {
+                const checkbox = item.querySelector('.doc-checkbox');
+                if (checkbox.classList.contains('checked')) {
+                    item.style.display = 'none';
+                } else {
+                    item.style.display = 'flex';
+                }
+            });
+            expandAll();
+        }
+
+        function filterDocuments() {
+            const query = document.getElementById('search-input').value.toLowerCase();
+            document.querySelectorAll('.doc-item').forEach(item => {
+                const name = item.dataset.name;
+                item.style.display = name.includes(query) ? 'flex' : 'none';
+            });
+        }
+
+        function filterByPriority(priority) {
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            document.querySelectorAll('.doc-item').forEach(item => {
+                if (priority === 'all' || item.dataset.priority === priority) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+            expandAll();
+        }
+
+        function openUpload(docId, docName) {
+            document.getElementById('upload-doc-name').textContent = docName;
+            document.getElementById('upload-modal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('upload-modal').classList.remove('active');
+        }
+
+        function saveUpload() {
+            alert('Upload functionality would connect to your document storage system.');
+            closeModal();
+        }
+
+        function viewDoc(docId) {
+            alert('View functionality would show uploaded documents for: ' + docId);
+        }
+
+        function exportChecklist() {
+            let text = "COMPLETE TENANCY DOCUMENTATION CHECKLIST\n";
+            text += "Generated: " + new Date().toLocaleDateString() + "\n";
+            text += "=" .repeat(50) + "\n\n";
+            
+            documentCategories.forEach(cat => {
+                text += `\n${cat.icon} ${cat.name.toUpperCase()}\n`;
+                text += "-".repeat(40) + "\n";
+                cat.documents.forEach(doc => {
+                    const status = documentStates[doc.id] ? '✓' : '☐';
+                    text += `${status} ${doc.name} [${doc.priority.toUpperCase()}]\n`;
+                    text += `   ${doc.desc}\n`;
+                });
+            });
+            
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'tenancy-checklist.txt';
+            a.click();
+        }
+
+        function printChecklist() {
+            window.print();
+        }
+    </script>
+</body>
+</html>

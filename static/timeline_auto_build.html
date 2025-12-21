@@ -225,6 +225,11 @@ The system will automatically find:
                     <div style="color: var(--text-muted); font-size: 0.9rem;">TXT, PDF, DOC, DOCX (PDF requires OCR)</div>
                 </div>
                 <div id="uploadedFileName" style="margin-top: 1rem; display: none;"></div>
+                <div id="uploadSubmitSection" style="margin-top: 1rem; display: none;">
+                    <button class="btn btn-success btn-lg" onclick="submitUploadedFile()" id="uploadSubmitBtn">
+                        ⚡ Submit & Extract Timeline
+                    </button>
+                </div>
             </div>
             
             <!-- Vault Panel -->
@@ -349,16 +354,89 @@ The system will automatically find:
             
             const file = files[0];
             const fileName = document.getElementById('uploadedFileName');
+            const submitSection = document.getElementById('uploadSubmitSection');
+            
             fileName.style.display = 'block';
             fileName.innerHTML = `<strong>Selected:</strong> ${file.name}`;
+            
+            // Show submit button
+            submitSection.style.display = 'block';
+            
+            // Store the file for later submission
+            window.uploadedFile = file;
             
             // Read text files directly
             if (file.type === 'text/plain' || file.name.endsWith('.txt')) {
                 extractedText = await file.text();
+                fileName.innerHTML += '<br><span style="color: var(--success);">✅ Text file ready for extraction</span>';
             } else {
                 // For PDF/DOC, we'd need server-side processing
-                fileName.innerHTML += '<br><span style="color: var(--warning);">⚠️ PDF/DOC files require server processing. Text will be extracted on submit.</span>';
+                fileName.innerHTML += '<br><span style="color: var(--warning);">⚠️ PDF/DOC files require server processing. Click Submit to extract.</span>';
                 extractedText = ''; // Will upload to server
+            }
+        }
+        
+        async function submitUploadedFile() {
+            const file = window.uploadedFile;
+            if (!file) {
+                alert('Please select a file first');
+                return;
+            }
+            
+            const autoSave = document.getElementById('autoSave').checked;
+            const docType = document.getElementById('documentType').value;
+            
+            document.getElementById('loading').classList.add('show');
+            document.getElementById('results').classList.remove('show');
+            
+            try {
+                // If we already have the text (for .txt files), use the text endpoint
+                if (extractedText) {
+                    const endpoint = autoSave ? '/api/timeline/auto-build' : '/api/timeline/auto-build/preview';
+                    const response = await fetch(endpoint, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        credentials: 'include',
+                        body: JSON.stringify({
+                            text: extractedText,
+                            document_type: docType || null,
+                            auto_save: autoSave
+                        })
+                    });
+                    
+                    if (!response.ok) {
+                        const error = await response.json();
+                        throw new Error(error.detail || 'Extraction failed');
+                    }
+                    
+                    const result = await response.json();
+                    displayResults(result, autoSave);
+                } else {
+                    // For PDF/DOC, upload the file to the server
+                    const formData = new FormData();
+                    formData.append('file', file);
+                    formData.append('auto_save', autoSave);
+                    if (docType) formData.append('document_type', docType);
+                    
+                    const response = await fetch('/api/timeline/auto-build/from-file', {
+                        method: 'POST',
+                        credentials: 'include',
+                        body: formData
+                    });
+                    
+                    if (!response.ok) {
+                        const error = await response.json();
+                        throw new Error(error.detail || 'File processing failed');
+                    }
+                    
+                    const result = await response.json();
+                    displayResults(result, autoSave);
+                }
+            } catch (e) {
+                console.error('Upload extraction error:', e);
+                alert('Error: ' + e.message);
+            } finally {
+                document.getElementById('loading').classList.remove('show');
             }
         }
         
@@ -549,6 +627,14 @@ The system will automatically find:
             document.getElementById('documentText').value = '';
             extractedText = '';
             selectedDocumentId = null;
+            window.uploadedFile = null;
+            
+            // Reset upload section
+            document.getElementById('uploadedFileName').style.display = 'none';
+            document.getElementById('uploadedFileName').innerHTML = '';
+            document.getElementById('uploadSubmitSection').style.display = 'none';
+            document.getElementById('fileInput').value = '';
+            
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
         

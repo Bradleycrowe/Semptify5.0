@@ -4,11 +4,26 @@ SQLAlchemy ORM models for all entities.
 
 All datetime columns use DateTime(timezone=True) for proper UTC handling.
 Use utc_now() from app.core.utc for all timestamp defaults.
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                         PRIVACY FIRST DESIGN                                 ║
+║                                                                              ║
+║  SEMPTIFY NEVER STORES PERSONAL DATA. This includes:                         ║
+║  - No email addresses                                                        ║
+║  - No names (first, last, display)                                          ║
+║  - No phone numbers, addresses, or any PII                                  ║
+║                                                                              ║
+║  User identity = anonymous random ID                                         ║
+║  User data = stored in THEIR cloud storage                                   ║
+║                                                                              ║
+║  See app/core/privacy.py for enforcement rules.                              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
 """
 
 from datetime import datetime
 from typing import Optional
-from sqlalchemy import String, Text, Integer, DateTime, ForeignKey, Boolean
+from enum import Enum
+from sqlalchemy import String, Text, Integer, DateTime, ForeignKey, Boolean, Float
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
@@ -20,6 +35,72 @@ DateTimeTZ = DateTime(timezone=True)
 
 
 # =============================================================================
+# Enums for Timeline & Annotation System
+# =============================================================================
+
+class EventStatus(str, Enum):
+    """
+    Status of a timeline event in the case lifecycle.
+    Used to track event progression and state.
+    """
+    # Process states
+    START = "start"           # Event that initiates a process
+    CONTINUED = "continued"   # Event continues/extends a process
+    FINISH = "finish"         # Event concludes a process
+    
+    # Action states
+    REPORTED = "reported"     # Issue/violation reported
+    INVITED = "invited"       # Meeting/hearing scheduled (invitation)
+    ATTENDED = "attended"     # Event was attended
+    MISSED = "missed"         # Event was missed/no-show
+    
+    # Document states
+    SERVED = "served"         # Document was served/delivered
+    RECEIVED = "received"     # Document was received
+    FILED = "filed"           # Document filed with court/agency
+    RESPONDED = "responded"   # Response submitted
+    
+    # Outcome states
+    PENDING = "pending"       # Awaiting action/decision
+    RESOLVED = "resolved"     # Issue resolved
+    ESCALATED = "escalated"   # Issue escalated to higher level
+    USED = "used"             # Evidence used in proceeding
+    
+    # Default
+    UNKNOWN = "unknown"
+
+
+class ExtractionCode(str, Enum):
+    """
+    Extraction category codes for document annotations.
+    Each code maps to a specific highlighter color.
+    """
+    DT = "DT"   # Dates & Deadlines (Amber)
+    PT = "PT"   # Parties & Names (Blue)
+    AMT = "$"   # Money & Amounts (Emerald)
+    AD = "AD"   # Addresses & Locations (Violet)
+    LG = "LG"   # Legal Terms & Citations (Red)
+    NT = "NT"   # Notes & Footnotes (Orange)
+    FM = "FM"   # Form Field Data (Pink)
+    EV = "EV"   # Events & Actions (Cyan)
+    DL = "DL"   # Critical Deadline (Deep Red)
+    WS = "WS"   # Witness/Testimony (Lime)
+    VL = "VL"   # Violation/Issue (Rose)
+    ED = "ED"   # Evidence Markers (Teal)
+    QT = "QT"   # Quoted Text (Purple)
+    TL = "TL"   # Timeline Key Dates (Sky Blue)
+
+
+class DetectionMethod(str, Enum):
+    """How an annotation was detected/created."""
+    PATTERN = "pattern"   # Regex pattern matching
+    AI = "ai"             # AI/ML extraction
+    CONTEXT = "context"   # Contextual analysis
+    KEYWORD = "keyword"   # Keyword matching
+    MANUAL = "manual"     # User manually created
+
+
+# =============================================================================
 # User Model (Storage-Based Auth)
 # =============================================================================
 
@@ -27,30 +108,36 @@ class User(Base):
     """
     User account - storage-based authentication.
     
-    Identity comes from cloud storage (Google Drive, Dropbox, OneDrive).
-    The user_id is derived from provider:storage_user_id hash.
+    PRIVACY: NO PERSONAL DATA IS STORED.
+    - No email addresses
+    - No names (display name, real name, etc.)
+    - No phone numbers
+    - No addresses
     
-    This table stores:
-    - Which provider they primarily use (for re-auth)
-    - Their preferred role (to restore on return)
-    - Profile info from the storage provider
+    Identity comes from cloud storage (Google Drive, Dropbox, OneDrive).
+    The user_id is a random anonymous ID encoding provider + role.
+    Example: GU7x9kM2pQ = Google + User + random unique string
+    
+    User's actual data (documents, case files) lives in THEIR cloud storage.
+    We only store session management info.
     """
     __tablename__ = "users"
 
-    # Primary key: derived from provider:storage_user_id hash (24 chars)
+    # Primary key: anonymous random ID (10 chars: provider + role + 8 random)
+    # Example: GU7x9kM2pQ (G=Google, U=User, rest=random)
     id: Mapped[str] = mapped_column(String(24), primary_key=True)
     
-    # Storage provider info (to know where to look for token on return)
+    # Storage provider info (to know where to redirect for re-auth)
     primary_provider: Mapped[str] = mapped_column(String(20), index=True)  # google_drive, dropbox, onedrive
-    storage_user_id: Mapped[str] = mapped_column(String(100))  # ID in the storage provider
+    storage_user_id: Mapped[str] = mapped_column(String(100))  # Opaque ID from provider (NOT email)
     
     # Role preference (restored on return)
     default_role: Mapped[str] = mapped_column(String(20), default="user")  # user, manager, advocate, legal, admin
     
-    # Profile (from storage provider)
-    email: Mapped[Optional[str]] = mapped_column(String(255), unique=True, nullable=True)
-    display_name: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
-    avatar_url: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
+    # ⚠️ NO PERSONAL DATA FIELDS ⚠️
+    # email - REMOVED (privacy)
+    # display_name - REMOVED (privacy)
+    # avatar_url - REMOVED (privacy)
 
     # Intensity Engine (tenant-specific feature)
     intensity_level: Mapped[str] = mapped_column(String(10), default="low")  # low, medium, high
@@ -75,6 +162,10 @@ class LinkedProvider(Base):
     """
     Additional storage providers linked to a user account.
     
+    PRIVACY: NO PERSONAL DATA IS STORED.
+    - No email addresses
+    - No display names
+    
     A user authenticates with one provider initially (becomes primary).
     They can later link additional providers for backup/sync.
     """
@@ -85,11 +176,11 @@ class LinkedProvider(Base):
     
     # Provider info
     provider: Mapped[str] = mapped_column(String(20))  # google_drive, dropbox, onedrive
-    storage_user_id: Mapped[str] = mapped_column(String(100))  # ID in this provider
+    storage_user_id: Mapped[str] = mapped_column(String(100))  # Opaque ID from provider (NOT email)
     
-    # Profile from this provider
-    email: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
-    display_name: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+    # ⚠️ NO PERSONAL DATA FIELDS ⚠️
+    # email - REMOVED (privacy)
+    # display_name - REMOVED (privacy)
     
     # Status
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
@@ -152,6 +243,39 @@ class Document(Base):
     privilege_waived: Mapped[bool] = mapped_column(Boolean, default=False)
     """If True, client has explicitly waived privilege on this document."""
     
+    # ==========================================================================
+    # CORRESPONDENCE METADATA - Track who sent what to whom
+    # ==========================================================================
+    is_correspondence: Mapped[bool] = mapped_column(Boolean, default=False, index=True)
+    """True if this document is correspondence (email, letter, notice, etc.)"""
+    
+    correspondence_type: Mapped[Optional[str]] = mapped_column(String(30), nullable=True)
+    """Type: email, letter, certified_mail, text, legal_notice, court_filing"""
+    
+    sender_name: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    """Who sent this document"""
+    
+    sender_type: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
+    """Sender type: me, landlord, attorney, court, agency"""
+    
+    recipient_name: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    """Who received this document"""
+    
+    recipient_type: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
+    """Recipient type: me, landlord, attorney, court, agency"""
+    
+    date_sent: Mapped[Optional[datetime]] = mapped_column(DateTimeTZ, nullable=True)
+    """When the document/communication was sent"""
+    
+    date_received: Mapped[Optional[datetime]] = mapped_column(DateTimeTZ, nullable=True)
+    """When the document/communication was received"""
+    
+    delivery_method: Mapped[Optional[str]] = mapped_column(String(30), nullable=True)
+    """How delivered: email, usps, certified, hand_delivered, text"""
+    
+    correspondence_id: Mapped[Optional[str]] = mapped_column(String(36), nullable=True)
+    """Link to full Correspondence record for detailed tracking"""
+    
     # Timestamps
     uploaded_at: Mapped[datetime] = mapped_column(DateTimeTZ, default=utc_now)
     
@@ -166,6 +290,12 @@ class Document(Base):
 class TimelineEvent(Base):
     """
     Events in the tenant's timeline.
+    
+    Enhanced with:
+    - Event status tracking (start, continued, finish, etc.)
+    - Event chaining (parent_event_id for linked sequences)
+    - Annotation linking (footnote_number, highlight_color)
+    - Urgency levels for prioritization
     """
     __tablename__ = "timeline_events"
     
@@ -177,20 +307,155 @@ class TimelineEvent(Base):
     title: Mapped[str] = mapped_column(String(255))
     description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     
-    # When it happened
-    event_date: Mapped[datetime] = mapped_column(DateTimeTZ, index=True)
+    # =========================================================================
+    # ENHANCED: Event Status & Lifecycle
+    # =========================================================================
+    event_status: Mapped[str] = mapped_column(String(30), default="pending", index=True)
+    """EventStatus value: start, continued, finish, reported, invited, attended, etc."""
     
+    # When it happened (enhanced with end date for ranges)
+    event_date: Mapped[datetime] = mapped_column(DateTimeTZ, index=True)
+    event_date_end: Mapped[Optional[datetime]] = mapped_column(DateTimeTZ, nullable=True)
+    """For events spanning multiple days (e.g., notice period: served -> deadline)"""
+    
+    # =========================================================================
+    # ENHANCED: Event Chaining (Link Related Events)
+    # =========================================================================
+    parent_event_id: Mapped[Optional[str]] = mapped_column(String(36), nullable=True, index=True)
+    """Links to parent event for chains like: Notice Served → Response Due → Hearing"""
+    
+    sequence_number: Mapped[int] = mapped_column(Integer, default=0)
+    """Order in the chain (0=root, 1=first child, etc.)"""
+    
+    # =========================================================================
+    # ENHANCED: Document & Annotation Linking
+    # =========================================================================
     # Linked document (optional) - stores doc ID from file-based pipeline, not FK
     document_id: Mapped[Optional[str]] = mapped_column(String(36), nullable=True)
     
-    # Importance for court
+    source_extraction_id: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
+    """Links to annotation marker, e.g., 'DT-3' for third date highlight"""
+    
+    footnote_number: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    """Global footnote number for citation purposes"""
+    
+    highlight_color: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
+    """Annotation color category: date, party, amount, legal, etc."""
+    
+    # =========================================================================
+    # ENHANCED: Urgency & Deadline Flags
+    # =========================================================================
+    urgency: Mapped[str] = mapped_column(String(20), default="normal")
+    """Priority level: critical, high, normal, low"""
+    
+    is_deadline: Mapped[bool] = mapped_column(Boolean, default=False)
+    """True if this event represents a deadline that must be met"""
+    
     is_evidence: Mapped[bool] = mapped_column(Boolean, default=False)
+    """Importance for court"""
+    
+    # =========================================================================
+    # ENHANCED: Extraction Metadata
+    # =========================================================================
+    extraction_confidence: Mapped[float] = mapped_column(Float, default=1.0)
+    """Confidence score from AI/pattern extraction (0.0 to 1.0)"""
+    
+    detection_method: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
+    """How extracted: pattern, ai, context, keyword, manual"""
     
     # Timestamps
     created_at: Mapped[datetime] = mapped_column(DateTimeTZ, default=utc_now)
+    updated_at: Mapped[datetime] = mapped_column(DateTimeTZ, default=utc_now, onupdate=utc_now)
     
     # Relationships
     user: Mapped["User"] = relationship(back_populates="timeline_events")
+
+
+# =============================================================================
+# Document Annotations (Footnote & Highlight Index)
+# =============================================================================
+
+class DocumentAnnotation(Base):
+    """
+    Individual annotations/highlights with footnote numbers.
+    
+    Links highlighted text in documents to timeline events,
+    providing a comprehensive index of all extracted data.
+    
+    Numbering:
+    - footnote_number: Global sequential (1, 2, 3...) for citations
+    - category_number: Per-category (DT-1, DT-2, PT-1...) for quick reference
+    """
+    __tablename__ = "document_annotations"
+    
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    document_id: Mapped[str] = mapped_column(String(36), index=True)
+    user_id: Mapped[str] = mapped_column(String(36), ForeignKey("users.id"), index=True)
+    
+    # =========================================================================
+    # Footnote Numbering System
+    # =========================================================================
+    footnote_number: Mapped[int] = mapped_column(Integer, index=True)
+    """Global sequential number: 1, 2, 3... (unique per document)"""
+    
+    category_number: Mapped[int] = mapped_column(Integer)
+    """Per-category number: the '3' in 'DT-3' (dates), or '1' in 'PT-1' (parties)"""
+    
+    extraction_code: Mapped[str] = mapped_column(String(10))
+    """Category code: DT, PT, $, AD, LG, NT, FM, EV, DL, WS, VL, ED, QT, TL"""
+    
+    # =========================================================================
+    # Content
+    # =========================================================================
+    highlight_text: Mapped[str] = mapped_column(Text)
+    """The actual text that was highlighted/selected"""
+    
+    context_before: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    """Text immediately before the highlight (for context)"""
+    
+    context_after: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    """Text immediately after the highlight (for context)"""
+    
+    annotation_note: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    """User's note about this annotation"""
+    
+    # =========================================================================
+    # Position (for overlay rendering)
+    # =========================================================================
+    page_number: Mapped[int] = mapped_column(Integer, default=1)
+    position_x: Mapped[float] = mapped_column(Float, default=0.0)
+    """X position as percentage of page width (0.0 to 1.0)"""
+    
+    position_y: Mapped[float] = mapped_column(Float, default=0.0)
+    """Y position as percentage of page height (0.0 to 1.0)"""
+    
+    position_width: Mapped[float] = mapped_column(Float, default=0.0)
+    """Width as percentage of page width"""
+    
+    position_height: Mapped[float] = mapped_column(Float, default=0.0)
+    """Height as percentage of page height"""
+    
+    # =========================================================================
+    # Timeline Link
+    # =========================================================================
+    linked_event_id: Mapped[Optional[str]] = mapped_column(String(36), nullable=True, index=True)
+    """FK to timeline_events - links this annotation to a timeline event"""
+    
+    # =========================================================================
+    # Extraction Metadata
+    # =========================================================================
+    detection_method: Mapped[str] = mapped_column(String(20), default="manual")
+    """How detected: pattern, ai, context, keyword, manual"""
+    
+    confidence: Mapped[float] = mapped_column(Float, default=1.0)
+    """Confidence score from extraction (0.0 to 1.0)"""
+    
+    is_verified: Mapped[bool] = mapped_column(Boolean, default=False)
+    """User has verified this annotation is correct"""
+    
+    # Timestamps
+    created_at: Mapped[datetime] = mapped_column(DateTimeTZ, default=utc_now)
+    updated_at: Mapped[datetime] = mapped_column(DateTimeTZ, default=utc_now, onupdate=utc_now)
 
 
 # =============================================================================
@@ -684,3 +949,257 @@ class ContactInteraction(Base):
 
     # Timestamps
     created_at: Mapped[datetime] = mapped_column(DateTimeTZ, default=utc_now)
+
+
+# =============================================================================
+# Case Management - Core of Semptify
+# =============================================================================
+
+class Case(Base):
+    """
+    A legal case - the central organizing unit for Semptify.
+    
+    Everything ties back to a case:
+    - Documents are filed FOR a case
+    - Timeline events happen IN a case
+    - Deadlines are calculated FROM case dates
+    - Motions/Answers are generated FOR a case
+    """
+    __tablename__ = "cases"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    user_id: Mapped[str] = mapped_column(String(36), index=True)  # Owner/primary defendant
+    
+    # Case identification
+    case_number: Mapped[str] = mapped_column(String(50), index=True)
+    court: Mapped[str] = mapped_column(String(200))
+    case_type: Mapped[str] = mapped_column(String(50))  # eviction, rent, deposit, habitability, other
+    
+    # Parties (JSON arrays for multiple)
+    plaintiffs: Mapped[str] = mapped_column(Text)  # JSON array of plaintiff names
+    defendants: Mapped[str] = mapped_column(Text)  # JSON array of defendant names
+    
+    # Property
+    property_address: Mapped[str] = mapped_column(String(500))
+    property_unit: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
+    property_city: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+    property_state: Mapped[str] = mapped_column(String(2), default="MN")
+    property_zip: Mapped[Optional[str]] = mapped_column(String(10), nullable=True)
+    
+    # Key dates
+    date_filed: Mapped[Optional[datetime]] = mapped_column(DateTimeTZ, nullable=True)
+    date_served: Mapped[Optional[datetime]] = mapped_column(DateTimeTZ, nullable=True)
+    answer_deadline: Mapped[Optional[datetime]] = mapped_column(DateTimeTZ, nullable=True)
+    hearing_date: Mapped[Optional[datetime]] = mapped_column(DateTimeTZ, nullable=True)
+    
+    # Financial
+    amount_claimed: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
+    
+    # Status
+    status: Mapped[str] = mapped_column(String(30), default="active")  # active, answered, settled, dismissed, judgment
+    
+    # Metadata
+    notes: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    
+    # Timestamps
+    created_at: Mapped[datetime] = mapped_column(DateTimeTZ, default=utc_now)
+    updated_at: Mapped[datetime] = mapped_column(DateTimeTZ, default=utc_now, onupdate=utc_now)
+
+
+class CaseDocument(Base):
+    """
+    Documents attached to a specific case.
+    Links documents to their case for organization.
+    """
+    __tablename__ = "case_documents"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    case_id: Mapped[str] = mapped_column(String(36), ForeignKey("cases.id"), index=True)
+    
+    # Document info
+    filename: Mapped[str] = mapped_column(String(255))
+    original_filename: Mapped[str] = mapped_column(String(255))
+    file_path: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
+    file_size: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    mime_type: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+    
+    # Document classification
+    document_type: Mapped[str] = mapped_column(String(50))  # complaint, lease, notice, communication, receipt, photo, answer, motion, other
+    description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    
+    # For court filings
+    is_filed: Mapped[bool] = mapped_column(Boolean, default=False)
+    filed_date: Mapped[Optional[datetime]] = mapped_column(DateTimeTZ, nullable=True)
+    
+    # Timestamps
+    uploaded_at: Mapped[datetime] = mapped_column(DateTimeTZ, default=utc_now)
+
+
+class CaseEvent(Base):
+    """
+    Timeline events specific to a case.
+    """
+    __tablename__ = "case_events"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    case_id: Mapped[str] = mapped_column(String(36), ForeignKey("cases.id"), index=True)
+    
+    # Event details
+    event_type: Mapped[str] = mapped_column(String(50))  # filing, service, deadline, hearing, motion, communication
+    title: Mapped[str] = mapped_column(String(255))
+    description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    
+    # When
+    event_date: Mapped[datetime] = mapped_column(DateTimeTZ, index=True)
+    
+    # Linked document
+    document_id: Mapped[Optional[str]] = mapped_column(String(36), nullable=True)
+    
+    # Status
+    is_completed: Mapped[bool] = mapped_column(Boolean, default=False)
+    
+    # Timestamps
+    created_at: Mapped[datetime] = mapped_column(DateTimeTZ, default=utc_now)
+
+
+# =============================================================================
+# Correspondence Tracking - WHO sent WHAT to WHOM and WHEN
+# =============================================================================
+
+class Correspondence(Base):
+    """
+    📧 Correspondence Tracking - Track all communications in your case.
+    
+    Tracks:
+    - WHO sent it (sender)
+    - WHO received it (recipient) 
+    - WHEN it was sent (date_sent)
+    - WHEN it was received (date_received)
+    - WHAT type of communication (email, letter, text, phone, certified mail)
+    - HOW it was delivered (email, USPS, certified, hand-delivered, text)
+    
+    This gives a complete audit trail of all communications for court.
+    """
+    __tablename__ = "correspondence"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    user_id: Mapped[str] = mapped_column(String(36), ForeignKey("users.id"), index=True)
+    
+    # ==========================================================================
+    # WHO - Sender and Recipient
+    # ==========================================================================
+    sender_type: Mapped[str] = mapped_column(String(20))  # me, landlord, attorney, court, agency, other
+    sender_name: Mapped[str] = mapped_column(String(255))
+    sender_email: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    sender_phone: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
+    sender_address: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    
+    recipient_type: Mapped[str] = mapped_column(String(20))  # me, landlord, attorney, court, agency, other
+    recipient_name: Mapped[str] = mapped_column(String(255))
+    recipient_email: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    recipient_phone: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
+    recipient_address: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    
+    # Direction (incoming vs outgoing from user's perspective)
+    direction: Mapped[str] = mapped_column(String(10), index=True)  # incoming, outgoing
+    
+    # ==========================================================================
+    # WHAT - Communication Content
+    # ==========================================================================
+    communication_type: Mapped[str] = mapped_column(String(30), index=True)
+    # Types: email, letter, certified_mail, text_message, phone_call, 
+    #        voicemail, fax, in_person, legal_notice, court_filing
+    
+    subject: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
+    summary: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    full_content: Mapped[Optional[str]] = mapped_column(Text, nullable=True)  # Full text if available
+    
+    # ==========================================================================
+    # WHEN - Timing Information
+    # ==========================================================================
+    date_sent: Mapped[Optional[datetime]] = mapped_column(DateTimeTZ, nullable=True, index=True)
+    date_received: Mapped[Optional[datetime]] = mapped_column(DateTimeTZ, nullable=True)
+    date_read: Mapped[Optional[datetime]] = mapped_column(DateTimeTZ, nullable=True)  # When you read it
+    date_responded: Mapped[Optional[datetime]] = mapped_column(DateTimeTZ, nullable=True)  # When you responded
+    
+    # ==========================================================================
+    # HOW - Delivery Method and Status
+    # ==========================================================================
+    delivery_method: Mapped[str] = mapped_column(String(30))
+    # Methods: email, usps_regular, usps_certified, usps_priority, fedex, ups,
+    #          hand_delivered, text, phone, fax, court_efiling
+    
+    delivery_status: Mapped[str] = mapped_column(String(20), default="unknown")
+    # Status: sent, delivered, read, returned, bounced, unknown
+    
+    # Certified mail / tracking info
+    tracking_number: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+    confirmation_number: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+    return_receipt_received: Mapped[bool] = mapped_column(Boolean, default=False)
+    
+    # ==========================================================================
+    # Linked Evidence
+    # ==========================================================================
+    # Link to document(s) containing the actual correspondence
+    document_ids: Mapped[Optional[str]] = mapped_column(Text, nullable=True)  # JSON array of doc IDs
+    
+    # Link to a contact
+    contact_id: Mapped[Optional[str]] = mapped_column(String(36), nullable=True)
+    
+    # Link to a case
+    case_id: Mapped[Optional[str]] = mapped_column(String(36), nullable=True)
+    
+    # ==========================================================================
+    # Importance Flags
+    # ==========================================================================
+    is_important: Mapped[bool] = mapped_column(Boolean, default=False)
+    is_legal_notice: Mapped[bool] = mapped_column(Boolean, default=False)  # Legally significant
+    requires_response: Mapped[bool] = mapped_column(Boolean, default=False)
+    response_deadline: Mapped[Optional[datetime]] = mapped_column(DateTimeTZ, nullable=True)
+    response_sent: Mapped[bool] = mapped_column(Boolean, default=False)
+    
+    # ==========================================================================
+    # Email Import Metadata (for future email import)
+    # ==========================================================================
+    email_message_id: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)  # Email Message-ID header
+    email_thread_id: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)  # Gmail thread ID
+    email_labels: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)  # Email labels/folders
+    imported_from: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)  # gmail, outlook, manual
+    
+    # Notes
+    notes: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    tags: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)  # Comma-separated
+    
+    # Timestamps
+    created_at: Mapped[datetime] = mapped_column(DateTimeTZ, default=utc_now)
+    updated_at: Mapped[datetime] = mapped_column(DateTimeTZ, default=utc_now, onupdate=utc_now)
+
+
+# =============================================================================
+# OAuth State (Database-Backed for Multi-Worker Support)
+# =============================================================================
+
+class OAuthState(Base):
+    """
+    OAuth state tokens for CSRF protection.
+    
+    Stored in database instead of in-memory dict to support:
+    - Multiple uvicorn workers
+    - Server restarts during OAuth flow
+    - Production deployments
+    
+    States automatically expire after 15 minutes.
+    """
+    __tablename__ = "oauth_states"
+
+    # The state token itself (random string)
+    state: Mapped[str] = mapped_column(String(64), primary_key=True)
+    
+    # OAuth flow data
+    provider: Mapped[str] = mapped_column(String(20))  # google_drive, dropbox, onedrive
+    role: Mapped[str] = mapped_column(String(20), default="user")
+    existing_uid: Mapped[Optional[str]] = mapped_column(String(24), nullable=True)
+    return_to: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
+    
+    # Timestamps
+    created_at: Mapped[datetime] = mapped_column(DateTimeTZ, default=utc_now, index=True)

@@ -190,7 +190,12 @@ Your data lives in YOUR cloud storage - we never store your files.
     onedrive_client_id: str = ""
     onedrive_client_secret: str = ""
 
-    # Cloudflare R2 (System storage only)
+    # ==========================================================================
+    # Cloudflare R2 (SYSTEM STORAGE ONLY - NO USER DATA)
+    # ==========================================================================
+    # R2 is for internal system operations ONLY (e.g., static assets, logs).
+    # ⚠️ PRIVACY: User documents NEVER go to R2 - they stay in USER'S cloud.
+    # ==========================================================================
     r2_account_id: str = ""
     r2_access_key_id: str = ""
     r2_secret_access_key: str = ""

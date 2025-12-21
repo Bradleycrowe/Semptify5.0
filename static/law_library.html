@@ -968,9 +968,10 @@
             sources.innerHTML = '';
 
             try {
-                const res = await fetch('/api/law-library/ask', {
+                const res = await fetch('/api/law-library/librarian/ask', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
                     body: JSON.stringify({ question: query })
                 });
 
@@ -1083,7 +1084,10 @@
             const container = document.getElementById('statuteCards');
             
             try {
-                const res = await fetch('/api/law-library/statutes');
+                const res = await fetch('/api/law-library/statutes', {
+                    credentials: 'include'
+                });
+                if (!res.ok) throw new Error('Failed to load');
                 const data = await res.json();
                 
                 // Handle new response format with disclaimer
@@ -1116,6 +1120,7 @@
                     </div>
                 `).join('');
             } catch (err) {
+                console.log('Loading fallback statutes');
                 container.innerHTML = `
                     <div class="law-card" data-law-id="504B.321">
                         <div class="law-card-header">
@@ -1183,6 +1188,72 @@
                             </div>
                         </div>
                     </div>
+                    <div class="law-card" data-law-id="504B.285">
+                        <div class="law-card-header">
+                            <div>
+                                <div class="law-title">Retaliation Protection</div>
+                                <div class="law-citation">Minn. Stat. § 504B.285</div>
+                            </div>
+                            <span class="law-badge mn">MN</span>
+                        </div>
+                        <div class="law-summary">Protects tenants from retaliation when exercising legal rights.</div>
+                        <div class="law-card-popout">
+                            <div class="popout-header">⭐ Key Points</div>
+                            <ul class="popout-list">
+                                <li>Cannot evict for reporting code violations</li>
+                                <li>90-day presumption of retaliation</li>
+                                <li>Defense available in eviction actions</li>
+                            </ul>
+                            <div class="popout-actions">
+                                <button class="popout-btn primary" onclick="event.stopPropagation(); showLaw('504B.285')">📖 Full Details</button>
+                                <button class="popout-btn secondary" onclick="event.stopPropagation(); askAboutLaw('504B.285', 'Retaliation Protection')">🤖 Ask AI</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="law-card" data-law-id="fha_title_viii">
+                        <div class="law-card-header">
+                            <div>
+                                <div class="law-title">Fair Housing Act</div>
+                                <div class="law-citation">42 U.S.C. § 3601-3619</div>
+                            </div>
+                            <span class="law-badge federal">Federal</span>
+                        </div>
+                        <div class="law-summary">Prohibits discrimination in housing based on race, color, religion, national origin, sex, familial status, and disability.</div>
+                        <div class="law-card-popout">
+                            <div class="popout-header">⭐ Key Points</div>
+                            <ul class="popout-list">
+                                <li>Covers 7 protected classes</li>
+                                <li>Requires reasonable accommodations</li>
+                                <li>Enforced by HUD</li>
+                            </ul>
+                            <div class="popout-actions">
+                                <button class="popout-btn primary" onclick="event.stopPropagation(); showLaw('fha_title_viii')">📖 Full Details</button>
+                                <button class="popout-btn secondary" onclick="event.stopPropagation(); askAboutLaw('fha_title_viii', 'Fair Housing Act')">🤖 Ask AI</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="law-card" data-law-id="504B.385">
+                        <div class="law-card-header">
+                            <div>
+                                <div class="law-title">Rent Escrow</div>
+                                <div class="law-citation">Minn. Stat. § 504B.385</div>
+                            </div>
+                            <span class="law-badge mn">MN</span>
+                        </div>
+                        <div class="law-summary">Tenant remedy when landlord fails to maintain habitable conditions.</div>
+                        <div class="law-card-popout">
+                            <div class="popout-header">⭐ Key Points</div>
+                            <ul class="popout-list">
+                                <li>Deposit rent with court instead of landlord</li>
+                                <li>Court may order repairs or rent reduction</li>
+                                <li>Protection from eviction while case pending</li>
+                            </ul>
+                            <div class="popout-actions">
+                                <button class="popout-btn primary" onclick="event.stopPropagation(); showLaw('504B.385')">📖 Full Details</button>
+                                <button class="popout-btn secondary" onclick="event.stopPropagation(); askAboutLaw('504B.385', 'Rent Escrow')">🤖 Ask AI</button>
+                            </div>
+                        </div>
+                    </div>
                 `;
             }
         }
@@ -1192,7 +1263,10 @@
             const container = document.getElementById('caseCards');
             
             try {
-                const res = await fetch('/api/law-library/case-law');
+                const res = await fetch('/api/law-library/case-law', {
+                    credentials: 'include'
+                });
+                if (!res.ok) throw new Error('Failed to load');
                 const data = await res.json();
                 
                 // Handle new response format with disclaimer
@@ -1220,6 +1294,7 @@
                     </div>
                 `).join('');
             } catch (err) {
+                console.log('Loading fallback cases');
                 container.innerHTML = `
                     <div class="law-card" data-case-id="fritz-warthen">
                         <div class="law-card-header">
@@ -1243,6 +1318,50 @@
                             </div>
                         </div>
                     </div>
+                    <div class="law-card" data-case-id="thompson-becker">
+                        <div class="law-card-header">
+                            <div>
+                                <div class="law-title">Thompson v. Becker</div>
+                                <div class="law-citation">Minn. App. Case (2019)</div>
+                            </div>
+                            <span class="law-badge case">Case</span>
+                        </div>
+                        <div class="law-summary">Reaffirmed that procedural defects in eviction notices may be grounds for dismissal.</div>
+                        <div class="law-card-popout">
+                            <div class="popout-header">📋 Case Summary</div>
+                            <ul class="popout-list">
+                                <li>Proper notice is mandatory</li>
+                                <li>Technical defects can invalidate eviction</li>
+                                <li>Tenant's due process must be protected</li>
+                            </ul>
+                            <div class="popout-actions">
+                                <button class="popout-btn primary" onclick="event.stopPropagation(); showCase('thompson-becker')">📖 Full Details</button>
+                                <button class="popout-btn secondary" onclick="event.stopPropagation(); askAboutLaw('thompson-becker', 'Thompson v. Becker')">🤖 Ask AI</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="law-card" data-case-id="housing-v-fha">
+                        <div class="law-card-header">
+                            <div>
+                                <div class="law-title">Fair Housing Case Law</div>
+                                <div class="law-citation">Key Federal Cases</div>
+                            </div>
+                            <span class="law-badge case">Case</span>
+                        </div>
+                        <div class="law-summary">Collection of significant Fair Housing Act decisions protecting tenant rights.</div>
+                        <div class="law-card-popout">
+                            <div class="popout-header">📋 Key Principles</div>
+                            <ul class="popout-list">
+                                <li>Reasonable accommodations required</li>
+                                <li>Cannot discriminate based on protected classes</li>
+                                <li>Assistance animals are not pets</li>
+                            </ul>
+                            <div class="popout-actions">
+                                <button class="popout-btn primary" onclick="event.stopPropagation(); showCase('housing-v-fha')">📖 Full Details</button>
+                                <button class="popout-btn secondary" onclick="event.stopPropagation(); askAboutLaw('housing-v-fha', 'Fair Housing Cases')">🤖 Ask AI</button>
+                            </div>
+                        </div>
+                    </div>
                 `;
             }
         }
@@ -1260,7 +1379,9 @@
             body.innerHTML = '<div class="loading"><div class="spinner"></div> Loading...</div>';
 
             try {
-                const res = await fetch(`/api/law-library/statutes/${id}`);
+                const res = await fetch(`/api/law-library/statutes/${id}`, {
+                    credentials: 'include'
+                });
                 if (res.ok) {
                     const data = await res.json();
                     const statute = data.statute || data;

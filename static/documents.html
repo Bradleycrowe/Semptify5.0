@@ -776,7 +776,7 @@
 
         async function checkSession() {
             try {
-                const response = await fetch('/storage/status');
+                const response = await fetch('/storage/status', { credentials: 'include' });
                 if (response.ok) {
                     const data = await response.json();
                     if (data.authenticated) {
@@ -795,7 +795,7 @@
 
         async function loadDocuments() {
             try {
-                const response = await fetch('/api/documents/');
+                const response = await fetch('/api/documents/', { credentials: 'include' });
                 if (response.ok) {
                     allDocuments = await response.json();
                     renderDocuments(filterDocuments(allDocuments));
@@ -922,7 +922,7 @@
                     categorySelect.value = doc.doc_type || 'other';
                 }
                 
-                const response = await fetch(`/api/documents/${docId}/text`);
+                const response = await fetch(`/api/documents/${docId}/text`, { credentials: 'include' });
                 if (response.ok) {
                     const data = await response.json();
                     renderDocumentText(data.text || data.content || 'No text content available.');
@@ -1087,7 +1087,8 @@
                 const response = await fetch(`/api/documents/${currentDocId}/category`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ doc_type: category })
+                    body: JSON.stringify({ doc_type: category }),
+                    credentials: 'include'
                 });
                 
                 if (response.ok) {
@@ -1107,7 +1108,7 @@
             showToast('Extracting events from document...', 'success');
             
             try {
-                const response = await fetch(`/api/documents/${currentDocId}/auto-timeline`, { method: 'POST' });
+                const response = await fetch(`/api/documents/${currentDocId}/auto-timeline`, { method: 'POST', credentials: 'include' });
                 
                 if (response.ok) {
                     const data = await response.json();
@@ -1124,7 +1125,7 @@
             showToast('Extracting events from all documents...', 'success');
             
             try {
-                const response = await fetch('/api/documents/auto-timeline-all', { method: 'POST' });
+                const response = await fetch('/api/documents/auto-timeline-all', { method: 'POST', credentials: 'include' });
                 
                 if (response.ok) {
                     const data = await response.json();
@@ -1205,7 +1206,7 @@
                     const formData = new FormData();
                     formData.append('file', file);
 
-                    const response = await fetch('/api/documents/upload', { method: 'POST', body: formData });
+                    const response = await fetch('/api/documents/upload', { method: 'POST', body: formData, credentials: 'include' });
 
                     if (response.ok) {
                         uploaded++;

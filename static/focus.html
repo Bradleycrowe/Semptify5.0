@@ -265,12 +265,20 @@
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .next-check:hover:not(:has(i)) {
+            border-color: var(--accent);
+            background: var(--accent-light);
         }
 
         .next-item.done .next-check {
             background: var(--success);
             border-color: var(--success);
             color: white;
+            cursor: default;
         }
 
         .next-content {
@@ -285,6 +293,71 @@
         .next-meta {
             font-size: 0.8rem;
             color: var(--text-muted);
+        }
+
+        /* New user callout */
+        .new-here {
+            background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
+            border: 2px dashed var(--accent);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .new-here:hover {
+            border-style: solid;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(44, 95, 45, 0.15);
+        }
+
+        .new-here-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .new-here h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        .new-here p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .new-here-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--accent);
+            color: white;
+            padding: 0.75rem 1.25rem;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+        }
+
+        .new-here:hover .new-here-btn {
+            background: #234d24;
+        }
+
+        .new-here.hidden {
+            display: none;
         }
 
         /* Quick access - minimal */
@@ -397,6 +470,19 @@
             <p id="greetingMessage">One step at a time. You've got this.</p>
         </div>
 
+        <!-- New user smart guide prompt -->
+        <div class="new-here" id="newHereCard" onclick="location.href='situation-guide.html'">
+            <div class="new-here-icon">
+                <i class="bi bi-compass"></i>
+            </div>
+            <h3>Not sure where to start?</h3>
+            <p>Answer a few quick questions and we'll create a personalized action plan for your situation.</p>
+            <div class="new-here-btn">
+                <i class="bi bi-arrow-right"></i>
+                Start Smart Guide
+            </div>
+        </div>
+
         <!-- THE one thing to focus on -->
         <div class="focus-card">
             <div class="focus-label">Focus on this</div>
@@ -432,6 +518,9 @@
 
         <!-- Quick access - minimal -->
         <div class="quick-access">
+            <a href="situation-guide.html" class="quick-btn">
+                <i class="bi bi-compass"></i> Guide
+            </a>
             <a href="document_intake.html" class="quick-btn">
                 <i class="bi bi-upload"></i> Upload
             </a>
@@ -443,9 +532,6 @@
             </a>
             <a href="court_packet.html" class="quick-btn">
                 <i class="bi bi-folder"></i> Court Packet
-            </a>
-            <a href="help.html" class="quick-btn">
-                <i class="bi bi-question-circle"></i> Help
             </a>
         </div>
     </main>
@@ -461,16 +547,63 @@
 
     <script src="/static/js/emotion-integration.js"></script>
     <script>
-        // Simple focused data
-        const journey = {
+        // Default journey (used if no guide data)
+        let journey = {
             steps: [
-                { id: 'upload', title: 'Upload eviction notice', desc: 'Let AI find issues', page: 'document_intake.html', done: true },
-                { id: 'analyze', title: 'Review AI findings', desc: '3 violations found', page: 'legal_analysis.html', done: true },
+                { id: 'upload', title: 'Upload eviction notice', desc: 'Let AI find issues', page: 'document_intake.html', done: false },
+                { id: 'analyze', title: 'Review AI findings', desc: '3 violations found', page: 'legal_analysis.html', done: false },
                 { id: 'evidence', title: 'Add evidence photos', desc: 'Document conditions', page: 'document_intake.html', done: false },
                 { id: 'answer', title: 'Prepare your Answer', desc: 'Respond to complaint', page: 'court_packet.html', done: false },
                 { id: 'court', title: 'Get ready for court', desc: 'Final preparation', page: 'court_learning.html', done: false }
             ]
         };
+
+        // Build personalized journey from Smart Guide results
+        function loadPersonalizedJourney() {
+            const savedGuide = localStorage.getItem('semptify_adaptive');
+            const savedProgress = localStorage.getItem('semptify_journey_progress') || '{}';
+            const progress = JSON.parse(savedProgress);
+            
+            if (savedGuide) {
+                const guide = JSON.parse(savedGuide);
+                const steps = [];
+                
+                // Build steps based on guide responses
+                if (guide.category === 'eviction') {
+                    steps.push({ id: 'defense', title: 'Review your defense options', desc: 'Understand your rights', page: 'dakota_defense.html', done: progress.defense || false });
+                } else if (guide.category === 'habitability') {
+                    steps.push({ id: 'complaint', title: 'Document housing issues', desc: 'Build your complaint', page: 'complaints.html', done: progress.complaint || false });
+                }
+
+                if (guide.evidence_status !== 'comprehensive') {
+                    steps.push({ id: 'evidence', title: 'Gather documentation', desc: 'Upload and organize proof', page: 'briefcase.html', done: progress.evidence || false });
+                }
+
+                if (guide.court_status === 'active' || guide.deadline) {
+                    steps.push({ id: 'court', title: 'Prepare court response', desc: 'Create your court packet', page: 'court_packet.html', done: progress.court || false });
+                }
+
+                if (guide.conditions?.length > 0) {
+                    steps.push({ id: 'letter', title: 'Send repair demand', desc: 'Write formal letter', page: 'letter_builder.html', done: progress.letter || false });
+                }
+
+                if (!guide.assistance_received?.includes('legal_aid') && !guide.assistance_received?.includes('attorney')) {
+                    steps.push({ id: 'legal', title: 'Contact legal help', desc: 'Find assistance near you', page: 'legal-aid.html', done: progress.legal || false });
+                }
+
+                steps.push({ id: 'timeline', title: 'Build your timeline', desc: 'Track key events', page: 'timeline-builder.html', done: progress.timeline || false });
+                steps.push({ id: 'laws', title: 'Know your rights', desc: 'Review relevant laws', page: 'law_library.html', done: progress.laws || false });
+
+                if (steps.length > 0) {
+                    journey.steps = steps.slice(0, 5); // Limit to 5 steps for focus
+                }
+            }
+            
+            // Apply saved progress
+            journey.steps.forEach(step => {
+                if (progress[step.id]) step.done = true;
+            });
+        }
 
         // Set greeting based on time
         function setGreeting() {
@@ -515,11 +648,11 @@
         function renderUpNext() {
             const container = document.getElementById('upNextList');
             container.innerHTML = journey.steps.map(step => `
-                <div class="next-item ${step.done ? 'done' : ''}" onclick="goTo('${step.page}')">
-                    <div class="next-check">
+                <div class="next-item ${step.done ? 'done' : ''}">
+                    <div class="next-check" onclick="event.stopPropagation(); ${step.done ? '' : `markComplete('${step.id}')`}">
                         ${step.done ? '<i class="bi bi-check"></i>' : ''}
                     </div>
-                    <div class="next-content">
+                    <div class="next-content" onclick="goTo('${step.page}')">
                         <div class="next-title">${step.title}</div>
                         <div class="next-meta">${step.desc}</div>
                     </div>
@@ -535,13 +668,67 @@
             window.location.href = '/static/' + page;
         }
 
+        // Mark a step complete and save
+        function markComplete(stepId) {
+            const saved = JSON.parse(localStorage.getItem('semptify_journey_progress') || '{}');
+            saved[stepId] = true;
+            localStorage.setItem('semptify_journey_progress', JSON.stringify(saved));
+            
+            const step = journey.steps.find(s => s.id === stepId);
+            if (step) step.done = true;
+            
+            updateProgress();
+            renderUpNext();
+            setFocus();
+        }
+
         function showHelp() {
-            alert('Need help? Call 211 or visit your local Legal Aid office.');
+            const savedGuide = localStorage.getItem('semptify_adaptive');
+            if (savedGuide) {
+                const guide = JSON.parse(savedGuide);
+                alert(`Your situation: ${guide.category || 'General'}\nIntensity factored into your action plan.\n\nNeed to update? Click "Guide" below.`);
+            } else {
+                alert('Need help? Try the Smart Guide to get a personalized action plan.');
+            }
+        }
+
+        // Check if user has started their journey
+        function checkNewUser() {
+            const savedState = localStorage.getItem('semptify_adaptive');
+            const hasStarted = journey.steps.some(s => s.done);
+            const newHereCard = document.getElementById('newHereCard');
+            
+            // Hide the "new here" card if user has progress OR already used the guide
+            if (hasStarted || savedState) {
+                newHereCard.classList.add('hidden');
+            }
+        }
+
+        // Personalized greeting
+        function updateGreetingMessage() {
+            const savedGuide = localStorage.getItem('semptify_adaptive');
+            const msgEl = document.getElementById('greetingMessage');
+            
+            if (savedGuide) {
+                const guide = JSON.parse(savedGuide);
+                const messages = {
+                    eviction: 'Stay focused on your defense. Every step counts.',
+                    habitability: 'Document everything. Your living conditions matter.',
+                    rent: 'Let\'s sort out the financial situation together.',
+                    discrimination: 'Your rights are protected. Let\'s build your case.',
+                    lease: 'Understanding your agreement is key.',
+                    default: 'One step at a time. You\'ve got this.'
+                };
+                msgEl.textContent = messages[guide.category] || messages.default;
+            }
         }
 
         // Init
         document.addEventListener('DOMContentLoaded', () => {
+            loadPersonalizedJourney();
             setGreeting();
+            updateGreetingMessage();
+            checkNewUser();
             setFocus();
             updateProgress();
             renderUpNext();

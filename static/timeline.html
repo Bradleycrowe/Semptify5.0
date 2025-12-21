@@ -708,33 +708,91 @@
         }
 
         // =====================================================================
-        // Auth Check
+        // Auth Check - Check storage status (matches dashboard pattern)
         // =====================================================================
+        let storageConnected = false;
+        let storageProvider = null;
+
         async function checkAuth() {
             const semptifyUid = getCookie('semptify_uid');
-            if (!semptifyUid) {
-                window.location.href = '/static/welcome.html';
-                return false;
-            }
-
-            const parsed = parseUserId(semptifyUid);
-            if (!parsed) {
+            
+            // If we have a valid cookie, use it
+            if (semptifyUid) {
+                const parsed = parseUserId(semptifyUid);
+                if (parsed) {
+                    currentUser = {
+                        id: semptifyUid,
+                        ...parsed
+                    };
+                    updateUserUI();
+                    storageConnected = true;
+                    return true;
+                }
+                // Invalid cookie - clear it
                 document.cookie = 'semptify_uid=; path=/; max-age=0';
-                window.location.href = '/static/welcome.html';
-                return false;
             }
+            
+            // No valid cookie - check storage status (like dashboard)
+            try {
+                const response = await fetch('/storage/status', { credentials: 'include' });
+                if (response.ok) {
+                    const data = await response.json();
+                    storageConnected = data.authenticated;
+                    storageProvider = data.provider;
+                    if (storageConnected && data.user_id) {
+                        const parsed = parseUserId(data.user_id);
+                        if (parsed) {
+                            currentUser = { id: data.user_id, ...parsed };
+                            updateUserUI();
+                            return true;
+                        }
+                    }
+                }
+            } catch (e) {
+                console.error('Storage status check failed:', e);
+            }
+            
+            // Not connected - show storage connect message (don't redirect)
+            showStorageRequired();
+            return false;
+        }
+        
+        function showStorageRequired() {
+            const container = document.getElementById('timelineContent');
+            container.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">☁️</div>
+                    <h3 class="empty-title">Connect Your Storage</h3>
+                    <p class="empty-text">To use Timeline, please connect your cloud storage first.</p>
+                    <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-top: 20px;">
+                        <button class="btn btn-primary" onclick="connectStorage('google_drive')" style="display: flex; align-items: center; gap: 8px;">
+                            📁 Google Drive
+                        </button>
+                        <button class="btn btn-primary" onclick="connectStorage('dropbox')" style="display: flex; align-items: center; gap: 8px;">
+                            📦 Dropbox
+                        </button>
+                        <button class="btn btn-primary" onclick="connectStorage('onedrive')" style="display: flex; align-items: center; gap: 8px;">
+                            ☁️ OneDrive
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
 
-            currentUser = {
-                id: semptifyUid,
-                ...parsed
-            };
-
-            // Update UI
-            document.getElementById('userIcon').textContent = parsed.roleIcon;
-            document.getElementById('userRole').textContent = parsed.roleName;
-            document.getElementById('userId').textContent = semptifyUid;
-
-            return true;
+        function connectStorage(provider) {
+            // Redirect to OAuth flow
+            window.location.href = '/storage/auth/' + provider;
+        }
+        
+        function updateUserUI() {
+            if (currentUser) {
+                const userIcon = document.getElementById('userIcon');
+                const userRole = document.getElementById('userRole');
+                const userId = document.getElementById('userId');
+                if (userIcon) userIcon.textContent = currentUser.roleIcon || '👤';
+                if (userRole) userRole.textContent = currentUser.roleName || 'User';
+                if (userId) userId.textContent = currentUser.id || '';
+            }
         }
 
         // =====================================================================

@@ -1,0 +1,68 @@
+{
+  "user_id": "OUlJLIj9UT",
+  "case_number": "19AV-CV-25-3477",
+  "case_type": "eviction_defense",
+  "status": "active",
+  "court": "Dakota County District Court",
+  "property_address": "",
+  "rent_amount": 0,
+  "security_deposit": 0,
+  "plaintiff": {
+    "name": "Douglass Turner",
+    "role": "plaintiff",
+    "address": null,
+    "phone": null
+  },
+  "defendant": {
+    "name": "Jane Doe",
+    "role": "defendant",
+    "is_pro_se": true,
+    "address": null,
+    "phone": null
+  },
+  "hearing_date": "2025-12-03",
+  "answer_due": null,
+  "source_document_id": "ae52d256-b6ad-422a-b772-fbe3c954b8fb",
+  "source_filename": "MCRO_19AV-CV-25-3477_Eviction Summons_2025-11-19_20251127030717.pdf",
+  "timeline": [
+    {
+      "id": "evt_doc_ae52d256",
+      "date": "2025-12-18",
+      "title": "Document Received: MCRO_19AV-CV-25-3477_Eviction Summons_2025-11-19_20251127030717.pdf",
+      "description": "Court document 'MCRO_19AV-CV-25-3477_Eviction Summons_2025-11-19_20251127030717.pdf' uploaded and case auto-created",
+      "category": "court",
+      "importance": "high"
+    }
+  ],
+  "evidence": [
+    {
+      "id": "evi_ae52d256",
+      "title": "MCRO_19AV-CV-25-3477_Eviction Summons_2025-11-19_20251127030717.pdf",
+      "evidence_type": "document",
+      "date_obtained": "2025-12-18",
+      "description": "Original court filing: court_filing",
+      "source": "document_intake",
+      "relevance": "Primary court document",
+      "document_id": "ae52d256-b6ad-422a-b772-fbe3c954b8fb"
+    }
+  ],
+  "defenses": [],
+  "counterclaims": [],
+  "motions": [],
+  "deadlines": [
+    {
+      "id": "ddl_hearing_20251218095422",
+      "title": "Court Hearing",
+      "deadline": "2025-12-03",
+      "description": "Court hearing date",
+      "priority": "critical",
+      "completed": false
+    }
+  ],
+  "notes": [
+    "Case auto-created from uploaded document: MCRO_19AV-CV-25-3477_Eviction Summons_2025-11-19_20251127030717.pdf"
+  ],
+  "created_at": "2025-12-18T09:54:22.798410",
+  "updated_at": "2025-12-18T09:54:22.798421",
+  "auto_created": true
+}

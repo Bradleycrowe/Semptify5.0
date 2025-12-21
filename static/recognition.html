@@ -3,1721 +3,956 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🔍 Document Recognition Engine - Semptify</title>
+    <title>Document Recognition - Semptify</title>
+    <link rel="stylesheet" href="/static/css/app.css">
     <style>
         :root {
-            --primary: #2563eb;
-            --primary-dark: #1d4ed8;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-            --critical: #dc2626;
-            --gray-50: #f9fafb;
-            --gray-100: #f3f4f6;
-            --gray-200: #e5e7eb;
-            --gray-300: #d1d5db;
-            --gray-400: #9ca3af;
-            --gray-500: #6b7280;
-            --gray-600: #4b5563;
-            --gray-700: #374151;
-            --gray-800: #1f2937;
-            --gray-900: #111827;
+            --primary-color: #2563eb;
+            --primary-hover: #1d4ed8;
+            --success-color: #10b981;
+            --error-color: #ef4444;
+            --warning-color: #f59e0b;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --purple: #7c3aed;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 50%, #1a365d 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--bg-color);
+            color: var(--text-primary);
             min-height: 100vh;
-            padding: 20px;
-            color: #333;
+            display: flex;
+            flex-direction: column;
         }
 
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        /* Header */
         .header {
-            text-align: center;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--primary-color), var(--purple));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             color: white;
-            margin-bottom: 30px;
+            font-size: 1.25rem;
         }
 
-        .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
         }
 
-        .header p {
-            font-size: 1.1rem;
-            opacity: 0.9;
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
         }
 
-        /* Main Grid */
-        .main-grid {
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--primary-color);
+        }
+
+        .main-content {
+            flex: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            width: 100%;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .page-title-icon {
+            font-size: 2rem;
+        }
+
+        .page-subtitle {
+            color: var(--text-secondary);
+        }
+
+        .content-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
+            gap: 2rem;
         }
 
-        @media (max-width: 1024px) {
-            .main-grid {
+        @media (max-width: 768px) {
+            .content-grid {
                 grid-template-columns: 1fr;
             }
         }
 
-        /* Cards */
         .card {
-            background: white;
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
         }
 
-        .card h2 {
-            font-size: 1.25rem;
-            color: var(--gray-800);
-            margin-bottom: 16px;
+        .card-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 0.5rem;
         }
 
-        .card h2 .icon {
-            font-size: 1.5rem;
+        /* Upload Area */
+        .upload-zone {
+            border: 2px dashed var(--border-color);
+            border-radius: 12px;
+            padding: 3rem 2rem;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            background: #f9fafb;
         }
 
-        /* Input Area */
-        .input-area {
-            grid-column: 1 / -1;
+        .upload-zone:hover,
+        .upload-zone.dragover {
+            border-color: var(--primary-color);
+            background: #eff6ff;
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .upload-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+
+        .upload-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .upload-btn:hover {
+            background: var(--primary-hover);
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        /* Text Analysis Area */
+        .text-area-container {
+            margin-top: 1rem;
         }
 
         .text-input {
             width: 100%;
             min-height: 200px;
-            padding: 16px;
-            border: 2px solid var(--gray-200);
-            border-radius: 12px;
-            font-size: 14px;
-            font-family: 'Consolas', 'Monaco', monospace;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.875rem;
             resize: vertical;
-            transition: border-color 0.3s;
         }
 
         .text-input:focus {
             outline: none;
-            border-color: var(--primary);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
         }
 
-        .input-actions {
-            display: flex;
-            gap: 12px;
-            margin-top: 16px;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            padding: 12px 24px;
+        .analyze-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary-color), var(--purple));
+            color: white;
             border: none;
+            padding: 1rem;
             border-radius: 8px;
-            font-size: 14px;
+            font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            margin-top: 1rem;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
 
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: white;
-        }
-
-        .btn-primary:hover {
+        .analyze-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
         }
 
-        .btn-secondary {
-            background: var(--gray-100);
-            color: var(--gray-700);
-        }
-
-        .btn-secondary:hover {
-            background: var(--gray-200);
-        }
-
-        .btn:disabled {
-            opacity: 0.6;
+        .analyze-btn:disabled {
+            opacity: 0.5;
             cursor: not-allowed;
             transform: none;
         }
 
-        /* Options */
-        .options {
-            display: flex;
-            gap: 20px;
-            margin-top: 12px;
-            flex-wrap: wrap;
-        }
-
-        .option {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 14px;
-            color: var(--gray-600);
-        }
-
-        .option input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            accent-color: var(--primary);
-        }
-
-        /* Results Section */
-        .results-section {
-            display: none;
-        }
-
-        .results-section.active {
-            display: block;
-        }
-
-        /* Document Type Badge */
-        .doc-type-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: white;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 14px;
-        }
-
-        /* Confidence Meter */
-        .confidence-meter {
-            margin: 20px 0;
-        }
-
-        .meter-label {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-            font-size: 14px;
-        }
-
-        .meter-bar {
-            height: 12px;
-            background: var(--gray-200);
-            border-radius: 6px;
+        /* Results Panel */
+        .results-panel {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
             overflow: hidden;
         }
 
-        .meter-fill {
+        .results-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--purple));
+            color: white;
+            padding: 1rem 1.5rem;
+        }
+
+        .results-header h3 {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .results-body {
+            padding: 1.5rem;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .empty-results {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-results-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* Result Items */
+        .result-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .result-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .result-section-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+            letter-spacing: 0.05em;
+        }
+
+        .classification-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #eff6ff;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        .confidence-bar {
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+
+        .confidence-fill {
             height: 100%;
-            border-radius: 6px;
+            background: linear-gradient(90deg, var(--success-color), var(--primary-color));
+            border-radius: 4px;
             transition: width 0.5s ease;
         }
 
-        .meter-fill.high { background: linear-gradient(90deg, var(--success), #34d399); }
-        .meter-fill.medium { background: linear-gradient(90deg, var(--warning), #fbbf24); }
-        .meter-fill.low { background: linear-gradient(90deg, var(--danger), #f87171); }
-
-        /* Entity Grid */
-        .entity-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 12px;
-            margin-top: 16px;
+        .confidence-text {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
         }
 
-        .entity-card {
-            background: var(--gray-50);
-            border-radius: 10px;
-            padding: 12px;
-            border: 1px solid var(--gray-200);
+        .entity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .entity-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: #f9fafb;
+            border-radius: 8px;
+        }
+
+        .entity-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--primary-color);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.875rem;
+        }
+
+        .entity-details {
+            flex: 1;
         }
 
         .entity-type {
-            font-size: 11px;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
             text-transform: uppercase;
-            color: var(--gray-500);
-            letter-spacing: 0.5px;
-            margin-bottom: 4px;
         }
 
         .entity-value {
-            font-weight: 600;
-            color: var(--gray-800);
-            word-break: break-word;
+            font-weight: 500;
         }
 
-        .entity-confidence {
-            font-size: 12px;
-            color: var(--gray-400);
-            margin-top: 4px;
-        }
-
-        /* Legal Issues */
         .issue-list {
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            margin-top: 16px;
+            gap: 0.75rem;
         }
 
-        .issue-card {
-            padding: 16px;
-            border-radius: 10px;
+        .issue-item {
+            padding: 1rem;
+            border-radius: 8px;
             border-left: 4px solid;
         }
 
-        .issue-card.critical {
+        .issue-item.critical {
             background: #fef2f2;
-            border-color: var(--critical);
+            border-color: var(--error-color);
         }
 
-        .issue-card.high {
-            background: #fef2f2;
-            border-color: var(--danger);
+        .issue-item.high {
+            background: #fff7ed;
+            border-color: var(--warning-color);
         }
 
-        .issue-card.medium {
+        .issue-item.medium {
             background: #fffbeb;
-            border-color: var(--warning);
+            border-color: #eab308;
         }
 
-        .issue-card.low {
-            background: #eff6ff;
-            border-color: var(--primary);
-        }
-
-        .issue-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 8px;
+        .issue-item.low {
+            background: #f0fdf4;
+            border-color: var(--success-color);
         }
 
         .issue-title {
             font-weight: 600;
-            color: var(--gray-800);
+            margin-bottom: 0.25rem;
+        }
+
+        .issue-description {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
         }
 
         .issue-severity {
-            font-size: 11px;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-weight: 600;
+            font-size: 0.75rem;
             text-transform: uppercase;
-        }
-
-        .issue-severity.critical { background: var(--critical); color: white; }
-        .issue-severity.high { background: var(--danger); color: white; }
-        .issue-severity.medium { background: var(--warning); color: white; }
-        .issue-severity.low { background: var(--primary); color: white; }
-
-        .issue-desc {
-            font-size: 14px;
-            color: var(--gray-600);
-            margin-bottom: 8px;
-        }
-
-        .issue-statute {
-            font-size: 12px;
-            color: var(--gray-500);
-            font-family: monospace;
-        }
-
-        .issue-defense {
-            margin-top: 8px;
-            padding: 8px 12px;
-            background: rgba(16, 185, 129, 0.1);
-            border-radius: 6px;
-            font-size: 13px;
-            color: #065f46;
-        }
-
-        /* Forgery Section */
-        .forgery-section {
-            margin-top: 24px;
-        }
-
-        .risk-indicator {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            padding: 16px;
-            border-radius: 12px;
-            margin-bottom: 16px;
-        }
-
-        .risk-indicator.none { background: #d1fae5; }
-        .risk-indicator.low { background: #dbeafe; }
-        .risk-indicator.medium { background: #fef3c7; }
-        .risk-indicator.high { background: #fee2e2; }
-        .risk-indicator.critical { background: #fecaca; }
-
-        .risk-icon {
-            font-size: 2.5rem;
-        }
-
-        .risk-info h3 {
-            font-size: 1.1rem;
-            margin-bottom: 4px;
-        }
-
-        .risk-info p {
-            font-size: 14px;
-            opacity: 0.8;
-        }
-
-        .risk-score {
-            margin-left: auto;
-            text-align: center;
-        }
-
-        .risk-score .score {
-            font-size: 2rem;
-            font-weight: 700;
-        }
-
-        .risk-score .label {
-            font-size: 12px;
-            opacity: 0.7;
-        }
-
-        /* Signatures */
-        .signature-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-top: 16px;
-        }
-
-        .signature-card {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            padding: 16px;
-            background: var(--gray-50);
-            border-radius: 10px;
-            border: 1px solid var(--gray-200);
-        }
-
-        .signature-icon {
-            font-size: 2rem;
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, var(--gray-100), var(--gray-200));
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .signature-info {
-            flex: 1;
-        }
-
-        .signature-name {
             font-weight: 600;
-            color: var(--gray-800);
-            margin-bottom: 4px;
+            margin-top: 0.5rem;
         }
 
-        .signature-location {
-            font-size: 13px;
-            color: var(--gray-500);
-        }
-
-        .signature-confidence {
-            text-align: right;
-        }
-
-        .signature-confidence .value {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--success);
-        }
-
-        .signature-confidence .label {
-            font-size: 11px;
-            color: var(--gray-400);
-        }
-
-        /* Forgery Indicators */
-        .forgery-indicators {
-            margin-top: 20px;
-        }
-
-        .forgery-card {
-            padding: 16px;
-            border-radius: 10px;
-            margin-bottom: 12px;
-            border-left: 4px solid;
-        }
-
-        .forgery-card.critical {
-            background: #fef2f2;
-            border-color: var(--critical);
-        }
-
-        .forgery-card.high {
-            background: #fee2e2;
-            border-color: var(--danger);
-        }
-
-        .forgery-card.medium {
-            background: #fef3c7;
-            border-color: var(--warning);
-        }
-
-        .forgery-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-
-        .forgery-type {
-            font-weight: 600;
-            color: var(--gray-800);
-        }
-
-        .forgery-desc {
-            font-size: 14px;
-            color: var(--gray-600);
-            margin-bottom: 8px;
-        }
-
-        .forgery-evidence {
-            font-size: 13px;
-            color: var(--gray-500);
-            background: rgba(0,0,0,0.05);
-            padding: 8px 12px;
-            border-radius: 6px;
-            margin-bottom: 8px;
-        }
-
-        .forgery-action {
-            font-size: 13px;
-            padding: 8px 12px;
-            background: rgba(37, 99, 235, 0.1);
-            border-radius: 6px;
-            color: var(--primary-dark);
-        }
-
-        /* Recommendations */
-        .recommendations {
-            margin-top: 20px;
-        }
-
-        .recommendation-list {
-            list-style: none;
-            padding: 0;
-        }
-
-        .recommendation-list li {
-            padding: 12px 16px;
-            background: var(--gray-50);
-            border-radius: 8px;
-            margin-bottom: 8px;
-            font-size: 14px;
-            color: var(--gray-700);
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-        }
-
-        .recommendation-list li::before {
-            content: "→";
-            color: var(--primary);
-            font-weight: bold;
-        }
-
-        /* Statutes */
-        .statutes-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 12px;
-        }
-
-        .statute-tag {
-            padding: 6px 12px;
-            background: var(--gray-100);
-            border-radius: 20px;
-            font-size: 13px;
-            color: var(--gray-700);
-            font-family: monospace;
-        }
-
-        /* Defense Options */
-        .defense-list {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-top: 12px;
-        }
-
-        .defense-item {
-            padding: 12px 16px;
-            background: rgba(16, 185, 129, 0.1);
-            border-radius: 8px;
-            font-size: 14px;
-            color: #065f46;
-            border-left: 3px solid var(--success);
-        }
-
-        /* Loading */
+        /* Loading State */
         .loading {
-            display: none;
             text-align: center;
-            padding: 40px;
-        }
-
-        .loading.active {
-            display: block;
+            padding: 3rem;
         }
 
         .spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid var(--gray-200);
-            border-top-color: var(--primary);
+            width: 48px;
+            height: 48px;
+            border: 4px solid var(--border-color);
+            border-top-color: var(--primary-color);
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
+            margin: 0 auto 1rem;
         }
 
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
 
-        /* Stats Grid */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 16px;
-            margin: 20px 0;
+        .loading-text {
+            color: var(--text-secondary);
         }
 
-        @media (max-width: 768px) {
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        .stat-card {
-            text-align: center;
-            padding: 16px;
-            background: var(--gray-50);
-            border-radius: 12px;
-        }
-
-        .stat-value {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--primary);
-        }
-
-        .stat-label {
-            font-size: 12px;
-            color: var(--gray-500);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        /* Empty State */
-        .empty-state {
-            text-align: center;
-            padding: 40px;
-            color: var(--gray-400);
-        }
-
-        .empty-state .icon {
-            font-size: 48px;
-            margin-bottom: 16px;
-        }
-
-        /* Toast */
-        .toast-container {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 1000;
-        }
-
-        .toast {
-            padding: 16px 24px;
-            border-radius: 10px;
-            margin-top: 10px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-            animation: slideIn 0.3s ease;
-            color: white;
-        }
-
-        .toast-success { background: var(--success); }
-        .toast-error { background: var(--danger); }
-        .toast-warning { background: var(--warning); }
-
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateX(100px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
-        /* Tab Navigation */
-        .tab-nav {
+        /* Document History */
+        .history-list {
             display: flex;
-            gap: 4px;
-            margin-bottom: 20px;
-            background: var(--gray-100);
-            padding: 4px;
-            border-radius: 10px;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-top: 1rem;
         }
 
-        .tab-btn {
+        .history-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem;
+            background: #f9fafb;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .history-item:hover {
+            background: #f1f5f9;
+        }
+
+        .history-icon {
+            font-size: 1.5rem;
+        }
+
+        .history-details {
             flex: 1;
-            padding: 12px 20px;
-            border: none;
-            background: transparent;
-            border-radius: 8px;
-            font-size: 14px;
+        }
+
+        .history-name {
             font-weight: 500;
-            color: var(--gray-600);
-            cursor: pointer;
-            transition: all 0.3s;
+            font-size: 0.875rem;
         }
 
-        .tab-btn.active {
-            background: white;
-            color: var(--primary);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        .history-meta {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
         }
 
-        .tab-content {
-            display: none;
+        .history-badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            background: #e2e8f0;
         }
 
-        .tab-content.active {
-            display: block;
-        }
-
-        /* Navigation */
-        .nav-link {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            padding: 10px 20px;
-            background: rgba(255,255,255,0.2);
+        /* Handwriting Section */
+        .handwriting-result {
+            padding: 1rem;
+            background: #f9fafb;
             border-radius: 8px;
-            color: white;
-            text-decoration: none;
-            font-size: 14px;
-            transition: background 0.3s;
+            margin-top: 0.75rem;
         }
 
-        .nav-link:hover {
-            background: rgba(255,255,255,0.3);
+        .handwriting-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 0.75rem;
         }
-        
-        /* Document type selector styling */
-        .document-type-selector select:hover {
-            border-color: var(--blue-400);
+
+        .handwriting-stat {
+            text-align: center;
         }
-        .document-type-selector select:focus {
-            outline: none;
-            border-color: var(--blue-500);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+
+        .handwriting-stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
         }
-        .quick-templates {
+
+        .handwriting-stat-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .forgery-alert {
+            background: #fef2f2;
+            border: 1px solid var(--error-color);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        .forgery-alert-title {
+            color: var(--error-color);
+            font-weight: 600;
             display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 12px;
-        }
-        .quick-template-btn {
-            padding: 6px 12px;
-            font-size: 12px;
-            border: 1px solid var(--gray-200);
-            border-radius: 20px;
-            background: white;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .quick-template-btn:hover {
-            background: var(--blue-50);
-            border-color: var(--blue-300);
-            color: var(--blue-600);
+            align-items: center;
+            gap: 0.5rem;
         }
     </style>
-    
-    <!-- Celebration Libraries -->
-    <script src="/static/js/notification-toast.js"></script>
-    <script src="/static/js/confetti.js"></script>
-    <script src="/static/js/emotion-integration.js"></script>
 </head>
 <body>
-    <!-- Site-wide header -->
-    <script src="/static/js/header.js"></script>
+    <!-- Header -->
+    <header class="header">
+        <a href="/static/dashboard.html" class="logo">
+            <div class="logo-icon">⚖️</div>
+            Semptify
+        </a>
+        <nav class="nav-links">
+            <a href="/static/dashboard.html">Dashboard</a>
+            <a href="/static/documents.html">Documents</a>
+            <a href="/static/recognition.html" class="active">Recognition</a>
+            <a href="/static/timeline.html">Timeline</a>
+        </nav>
+    </header>
 
-    <a href="/static/document_intake.html" class="nav-link">← Back to Document Intake</a>
-
-    <div class="container">
-        <header class="header">
-            <h1>🔍 Document Recognition Engine</h1>
-            <p>Advanced AI-powered document analysis with handwriting recognition and forgery detection</p>
-        </header>
-
-        <!-- Input Section -->
-        <div class="main-grid">
-            <div class="card input-area">
-                <h2><span class="icon">📄</span> Document Text</h2>
-                <textarea 
-                    id="documentText" 
-                    class="text-input" 
-                    placeholder="Paste your document text here for analysis...
-
-Example documents:
-- Eviction notices
-- Lease agreements
-- Court summons
-- Payment receipts
-- Correspondence
-
-The engine will automatically:
-✓ Identify document type
-✓ Extract key entities (parties, dates, amounts)
-✓ Detect legal issues under Minnesota tenant law
-✓ Check for forgery indicators
-✓ Verify signatures"
-                ></textarea>
-
-                <!-- Document Type Selector -->
-                <div class="document-type-selector" style="margin-top: 16px; margin-bottom: 16px;">
-                    <label for="documentTypeSelect" style="display: block; font-size: 14px; font-weight: 600; color: var(--gray-700); margin-bottom: 8px;">
-                        📋 Select Document Type to Load Template:
-                    </label>
-                    <select id="documentTypeSelect" onchange="loadDocumentTemplate(this.value)" style="width: 100%; padding: 12px 16px; border: 2px solid var(--gray-200); border-radius: 12px; font-size: 14px; background: white; cursor: pointer; transition: all 0.2s;">
-                        <option value="">-- Choose a document type --</option>
-                        <optgroup label="🏠 Housing & Eviction">
-                            <option value="eviction_notice">Eviction Notice (3-Day, 14-Day, etc.)</option>
-                            <option value="lease_agreement">Lease Agreement</option>
-                            <option value="lease_violation">Lease Violation Notice</option>
-                            <option value="rent_increase">Rent Increase Notice</option>
-                            <option value="move_out_notice">Move-Out / Non-Renewal Notice</option>
-                            <option value="security_deposit">Security Deposit Statement</option>
-                        </optgroup>
-                        <optgroup label="⚖️ Court Documents">
-                            <option value="court_summons">Court Summons</option>
-                            <option value="complaint">Complaint / Petition</option>
-                            <option value="answer">Answer to Complaint</option>
-                            <option value="motion">Motion</option>
-                            <option value="court_order">Court Order</option>
-                            <option value="judgment">Judgment</option>
-                            <option value="writ_of_recovery">Writ of Recovery</option>
-                        </optgroup>
-                        <optgroup label="💰 Financial">
-                            <option value="payment_receipt">Payment Receipt</option>
-                            <option value="ledger">Rent Ledger / Payment History</option>
-                            <option value="demand_letter">Demand Letter</option>
-                            <option value="fee_notice">Late Fee / Charge Notice</option>
-                        </optgroup>
-                        <optgroup label="📝 Correspondence">
-                            <option value="landlord_letter">Letter from Landlord/Property Manager</option>
-                            <option value="tenant_letter">Letter to Landlord (Template)</option>
-                            <option value="repair_request">Repair Request</option>
-                            <option value="habitability_complaint">Habitability Complaint</option>
-                        </optgroup>
-                        <optgroup label="📄 Other Legal">
-                            <option value="affidavit">Affidavit</option>
-                            <option value="declaration">Declaration</option>
-                            <option value="stipulation">Stipulation Agreement</option>
-                            <option value="settlement">Settlement Agreement</option>
-                        </optgroup>
-                    </select>
-                    
-                    <!-- Quick template buttons -->
-                    <div class="quick-templates">
-                        <span style="font-size: 12px; color: var(--gray-500); margin-right: 8px;">Quick:</span>
-                        <button class="quick-template-btn" onclick="loadDocumentTemplate('eviction_notice')">🏠 Eviction</button>
-                        <button class="quick-template-btn" onclick="loadDocumentTemplate('court_summons')">⚖️ Summons</button>
-                        <button class="quick-template-btn" onclick="loadDocumentTemplate('repair_request')">🔧 Repair</button>
-                        <button class="quick-template-btn" onclick="loadDocumentTemplate('demand_letter')">📨 Demand</button>
-                        <button class="quick-template-btn" onclick="loadDocumentTemplate('security_deposit')">💰 Deposit</button>
-                    </div>
-                </div>
-
-                <div class="options">
-                    <label class="option">
-                        <input type="checkbox" id="includeHandwriting" checked>
-                        Include handwriting/forgery analysis
-                    </label>
-                    <label class="option">
-                        <input type="checkbox" id="includeLegal" checked>
-                        Include Minnesota legal analysis
-                    </label>
-                </div>
-
-                <div class="input-actions">
-                    <button class="btn btn-primary" id="analyzeBtn" onclick="analyzeDocument()">
-                        🔍 Analyze Document
-                    </button>
-                    <button class="btn btn-secondary" onclick="loadSample('eviction')">
-                        Load Sample: Eviction Notice
-                    </button>
-                    <button class="btn btn-secondary" onclick="loadSample('lease')">
-                        Load Sample: Lease
-                    </button>
-                    <button class="btn btn-secondary" onclick="clearAll()">
-                        Clear
-                    </button>
-                </div>
-            </div>
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="page-header">
+            <h1 class="page-title">
+                <span class="page-title-icon">🔍</span>
+                Document Recognition
+            </h1>
+            <p class="page-subtitle">AI-powered analysis to identify document types, extract key information, and detect issues.</p>
         </div>
 
-        <!-- Loading -->
-        <div class="loading" id="loadingSection">
-            <div class="spinner"></div>
-            <p>Analyzing document...</p>
-            <p style="font-size: 13px; color: var(--gray-400);">Multi-pass reasoning in progress</p>
-        </div>
-
-        <!-- Results Section -->
-        <div class="results-section" id="resultsSection">
-            <!-- Stats -->
-            <div class="card" style="margin-bottom: 20px;">
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-value" id="statEntities">0</div>
-                        <div class="stat-label">Entities Found</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="statIssues">0</div>
-                        <div class="stat-label">Legal Issues</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="statSignatures">0</div>
-                        <div class="stat-label">Signatures</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="statProcessing">0</div>
-                        <div class="stat-label">Processing (ms)</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="main-grid">
-                <!-- Left Column: Document Analysis -->
+        <div class="content-grid">
+            <!-- Left Panel: Input -->
+            <div>
                 <div class="card">
-                    <h2><span class="icon">📋</span> Document Analysis</h2>
-                    
-                    <div id="docTypeSection">
-                        <span class="doc-type-badge" id="docTypeBadge">
-                            <span>📄</span> <span id="docTypeText">Unknown</span>
-                        </span>
+                    <h2 class="card-title">📄 Upload Document</h2>
+                    <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
+                        <div class="upload-icon">📁</div>
+                        <div class="upload-title">Drop your document here</div>
+                        <div class="upload-subtitle">or click to browse • PDF, images, text files</div>
+                        <button class="upload-btn">Choose File</button>
                     </div>
+                    <input type="file" id="fileInput" accept=".pdf,.png,.jpg,.jpeg,.txt,.doc,.docx">
+                </div>
 
-                    <div class="confidence-meter">
-                        <div class="meter-label">
-                            <span>Confidence</span>
-                            <span id="confidenceValue">0%</span>
-                        </div>
-                        <div class="meter-bar">
-                            <div class="meter-fill high" id="confidenceFill" style="width: 0%"></div>
-                        </div>
-                    </div>
-
-                    <!-- Tab Navigation -->
-                    <div class="tab-nav">
-                        <button class="tab-btn active" onclick="showTab('entities')">Entities</button>
-                        <button class="tab-btn" onclick="showTab('legal')">Legal Issues</button>
-                        <button class="tab-btn" onclick="showTab('defenses')">Defenses</button>
-                    </div>
-
-                    <!-- Entities Tab -->
-                    <div class="tab-content active" id="entitiesTab">
-                        <div class="entity-grid" id="entityGrid">
-                            <div class="empty-state">
-                                <div class="icon">🔍</div>
-                                <p>No entities extracted yet</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Legal Issues Tab -->
-                    <div class="tab-content" id="legalTab">
-                        <div class="issue-list" id="issueList">
-                            <div class="empty-state">
-                                <div class="icon">⚖️</div>
-                                <p>No legal issues detected</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Defenses Tab -->
-                    <div class="tab-content" id="defensesTab">
-                        <h3 style="margin-bottom: 12px; color: var(--gray-700);">Applicable Statutes</h3>
-                        <div class="statutes-list" id="statutesList"></div>
-
-                        <h3 style="margin: 20px 0 12px; color: var(--gray-700);">Defense Options</h3>
-                        <div class="defense-list" id="defenseList">
-                            <div class="empty-state">
-                                <div class="icon">🛡️</div>
-                                <p>No defense options identified</p>
-                            </div>
-                        </div>
+                <div class="card" style="margin-top: 1.5rem;">
+                    <h2 class="card-title">📝 Or Paste Text</h2>
+                    <div class="text-area-container">
+                        <textarea id="textInput" class="text-input" placeholder="Paste your document text here for analysis..."></textarea>
+                        <button class="analyze-btn" id="analyzeBtn" onclick="analyzeText()">
+                            🔍 Analyze Document
+                        </button>
                     </div>
                 </div>
 
-                <!-- Right Column: Handwriting & Forgery -->
-                <div class="card">
-                    <h2><span class="icon">✍️</span> Handwriting & Forgery Analysis</h2>
-
-                    <!-- Risk Indicator -->
-                    <div class="risk-indicator none" id="riskIndicator">
-                        <div class="risk-icon" id="riskIcon">✅</div>
-                        <div class="risk-info">
-                            <h3 id="riskTitle">No Risk Detected</h3>
-                            <p id="riskDesc">Document appears authentic</p>
-                        </div>
-                        <div class="risk-score">
-                            <div class="score" id="riskScoreValue">0</div>
-                            <div class="label">Risk Score</div>
+                <!-- Recent History -->
+                <div class="card" style="margin-top: 1.5rem;">
+                    <h2 class="card-title">📋 Recent Analyses</h2>
+                    <div class="history-list" id="historyList">
+                        <div class="empty-results">
+                            <p>No recent analyses</p>
                         </div>
                     </div>
+                </div>
+            </div>
 
-                    <!-- Signatures -->
-                    <h3 style="margin: 20px 0 12px; color: var(--gray-700);">Signatures Detected</h3>
-                    <div class="signature-list" id="signatureList">
-                        <div class="empty-state">
-                            <div class="icon">✒️</div>
-                            <p>No signatures detected</p>
-                        </div>
+            <!-- Right Panel: Results -->
+            <div>
+                <div class="results-panel">
+                    <div class="results-header">
+                        <h3>🧠 Analysis Results</h3>
                     </div>
-
-                    <!-- Forgery Indicators -->
-                    <div class="forgery-indicators" id="forgerySection">
-                        <h3 style="margin: 20px 0 12px; color: var(--gray-700);">Forgery Indicators</h3>
-                        <div id="forgeryList">
-                            <div class="empty-state">
-                                <div class="icon">🔒</div>
-                                <p>No forgery indicators found</p>
-                            </div>
+                    <div class="results-body" id="resultsBody">
+                        <div class="empty-results">
+                            <div class="empty-results-icon">🔍</div>
+                            <p>Upload a document or paste text to see analysis results</p>
                         </div>
-                    </div>
-
-                    <!-- Recommendations -->
-                    <div class="recommendations" id="recommendationsSection">
-                        <h3 style="margin: 20px 0 12px; color: var(--gray-700);">Recommendations</h3>
-                        <ul class="recommendation-list" id="recommendationList"></ul>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-
-    <div class="toast-container" id="toastContainer"></div>
+    </main>
 
     <script>
         const API_BASE = window.location.origin;
-        let currentResult = null;
-
-        // Sample documents
-        const SAMPLES = {
-            eviction: `JOHNSON PROPERTY MANAGEMENT LLC
-1234 Main Street, Suite 200
-Minneapolis, MN 55401
-Phone: (612) 555-1234
-
-January 15, 2024
-
-NOTICE TO TENANT
-
-To: Sarah Williams
-    456 Oak Avenue, Apt 3B
-    Minneapolis, MN 55403
-
-RE: 14-DAY NOTICE TO PAY RENT OR QUIT
-
-Dear Ms. Williams,
-
-This notice is to inform you that you are in violation of your lease agreement dated 
-March 1, 2023 for the premises located at 456 Oak Avenue, Apartment 3B, Minneapolis, 
-Minnesota 55403.
-
-As of the date of this notice, you owe the following amounts:
-
-    Rent for December 2023:     $1,200.00
-    Rent for January 2024:      $1,200.00
-    Late Fee (December):        $   75.00
-    Late Fee (January):         $   75.00
-    TOTAL AMOUNT DUE:           $2,550.00
-
-Pursuant to Minnesota Statutes Section 504B.291, you have fourteen (14) days from 
-the date of this notice to pay the full amount owed or vacate the premises.
-
-If you fail to pay the full amount or vacate within 14 days, legal proceedings will 
-be initiated to recover possession of the premises and any amounts owed.
-
-Sincerely,
-
-_______________________
-Robert Johnson
-Property Manager
-Johnson Property Management LLC`,
-
-            lease: `RESIDENTIAL LEASE AGREEMENT
-
-This Lease Agreement ("Lease") is made and entered into this 1st day of March, 2023,
-by and between:
-
-LANDLORD:    Johnson Property Management LLC
-             1234 Main Street, Suite 200
-             Minneapolis, MN 55401
-
-TENANT:      Sarah Williams
-             Previous Address: 123 Former St, St. Paul, MN 55101
-
-PREMISES:    456 Oak Avenue, Apartment 3B
-             Minneapolis, Minnesota 55403
-
-TERM: The term of this Lease shall be for a period of twelve (12) months, 
-commencing on March 1, 2023 and ending on February 28, 2024.
-
-RENT: Tenant agrees to pay Landlord the sum of $1,200.00 per month as rent 
-for the Premises. Rent is due on the first day of each month.
-
-SECURITY DEPOSIT: Upon execution of this Lease, Tenant shall deposit with 
-Landlord the sum of $1,200.00 as a security deposit.
-
-LATE FEE: If rent is not received by the 5th day of the month, Tenant shall 
-pay a late fee of $75.00.
-
-UTILITIES: Tenant shall be responsible for payment of electricity and gas. 
-Landlord shall provide water and trash removal.
-
-IN WITNESS WHEREOF, the parties have executed this Lease as of the date first 
-written above.
-
-LANDLORD:                          TENANT:
-_________________________          _________________________
-Robert Johnson                     Sarah Williams
-Johnson Property Management LLC
-
-Date: March 1, 2023                Date: March 1, 2023`,
-
-            // Additional document templates
-            eviction_notice: `NOTICE TO VACATE / EVICTION NOTICE
-
-Property Address: _______________________________
-Tenant Name(s): _________________________________
-Date: ________________
-
-☐ 3-Day Notice to Pay Rent or Quit
-☐ 14-Day Notice to Cure or Quit  
-☐ 30-Day Notice to Vacate (Month-to-Month)
-☐ Immediate Notice (Illegal Activity)
-
-AMOUNT DUE (if applicable):
-Rent: $__________
-Late Fees: $__________
-Other Charges: $__________
-TOTAL: $__________
-
-You are hereby notified that you must:
-☐ Pay the total amount due within ___ days
-☐ Cure the lease violation within ___ days
-☐ Vacate the premises by ________________
-
-Failure to comply will result in legal action to recover possession of the premises.
-
-Landlord/Agent Signature: _______________________
-Date Served: ________________
-Method of Service: ☐ Personal ☐ Posted ☐ Certified Mail`,
-
-            lease_violation: `NOTICE OF LEASE VIOLATION
-
-Date: ________________
-To: _________________________________ (Tenant)
-Property: _____________________________
-
-This notice is to inform you that you are in violation of your lease agreement.
-
-VIOLATION(S):
-☐ Unauthorized occupants
-☐ Unauthorized pets
-☐ Noise complaints
-☐ Damage to property
-☐ Failure to maintain premises
-☐ Other: _______________________________
-
-Description of violation:
-_________________________________________________
-_________________________________________________
-
-REQUIRED ACTION:
-You must cure this violation within ___ days by:
-_________________________________________________
-
-If you fail to cure this violation, further legal action may be taken, including termination of your tenancy.
-
-Landlord/Property Manager: _______________________
-Date: ________________`,
-
-            court_summons: `STATE OF MINNESOTA                    DISTRICT COURT
-COUNTY OF HENNEPIN                    FOURTH JUDICIAL DISTRICT
-
-________________________________,
-                    Plaintiff,        Case No.: ______________
-        vs.
-________________________________,     SUMMONS
-                    Defendant.
-
-THE STATE OF MINNESOTA TO THE ABOVE-NAMED DEFENDANT:
-
-You are hereby summoned and required to serve upon plaintiff's attorney an Answer to the Complaint which is herewith served upon you within twenty (20) days after service of this Summons upon you, exclusive of the day of service.
-
-If you fail to do so, judgment by default will be taken against you for the relief demanded in the Complaint.
-
-This action involves, affects, or brings into question real property situated in Hennepin County, Minnesota, described as follows:
-
-Property Address: _________________________________
-
-Dated: ________________
-
-_________________________________
-Plaintiff/Attorney for Plaintiff
-Address: _________________________
-Phone: __________________________`,
-
-            payment_receipt: `RENT PAYMENT RECEIPT
-
-Receipt #: ______________
-Date: ________________
-
-RECEIVED FROM: _________________________________
-               (Tenant Name)
-
-PROPERTY ADDRESS: ______________________________
-
-PAYMENT FOR:
-☐ Rent for month of: ________________
-☐ Security Deposit
-☐ Last Month's Rent
-☐ Late Fee
-☐ Other: _______________________________
-
-PAYMENT AMOUNT: $______________
-
-PAYMENT METHOD:
-☐ Cash  ☐ Check #________  ☐ Money Order  ☐ Electronic
-
-BALANCE DUE (if any): $______________
-
-_________________________________
-Landlord/Property Manager Signature
-
-_________________________________
-Print Name
-
-This receipt confirms payment. Keep for your records.`,
-
-            repair_request: `MAINTENANCE/REPAIR REQUEST
-
-Date: ________________
-Tenant Name: _________________________________
-Property Address: _____________________________
-Unit #: __________  Phone: ____________________
-
-NATURE OF PROBLEM:
-☐ Plumbing    ☐ Electrical    ☐ HVAC/Heating
-☐ Appliance   ☐ Structural    ☐ Pest Control
-☐ Safety Issue ☐ Other: _____________________
-
-LOCATION IN UNIT: _____________________________
-
-DESCRIPTION OF PROBLEM:
-_________________________________________________
-_________________________________________________
-_________________________________________________
-
-URGENCY:
-☐ Emergency (No heat, flooding, no electricity, security issue)
-☐ Urgent (Within 24-48 hours)
-☐ Routine (Within 1 week)
-
-PREFERRED CONTACT TIME: _______________________
-
-PERMISSION TO ENTER:
-☐ Yes, maintenance may enter when I'm not home
-☐ No, please schedule with me first
-
-Tenant Signature: _______________________________
-Date Submitted: ________________
-
---- FOR OFFICE USE ---
-Date Received: ________  Work Order #: __________
-Assigned To: ____________  Completed: __________`,
-
-            demand_letter: `DEMAND LETTER
-
-Date: ________________
-
-VIA CERTIFIED MAIL, RETURN RECEIPT REQUESTED
-
-To: _________________________________
-    _________________________________
-    _________________________________
-
-RE: Demand for Payment / Return of Security Deposit
-    Property: _____________________________
-
-Dear _________________:
-
-This letter serves as formal demand for the following:
-
-☐ Return of security deposit in the amount of: $__________
-☐ Payment of unpaid wages/amounts owed: $__________
-☐ Repair of the following conditions: ________________
-☐ Other: _________________________________________
-
-FACTS:
-_________________________________________________
-_________________________________________________
-
-LEGAL BASIS:
-Under Minnesota Statute § ________, you are required to:
-_________________________________________________
-
-DEMAND:
-You have FOURTEEN (14) DAYS from receipt of this letter to:
-_________________________________________________
-
-FAILURE TO COMPLY will result in legal action, and you may be liable for:
-• The amount demanded
-• Court costs and filing fees
-• Attorney's fees (if applicable)
-• Statutory penalties
-
-Please contact me immediately to resolve this matter.
-
-Sincerely,
-
-_________________________________
-Print Name
-Address: _________________________
-Phone: __________________________
-Email: __________________________`,
-
-            habitability_complaint: `COMPLAINT OF UNINHABITABLE CONDITIONS
-
-Date: ________________
-
-To: _________________________________ (Landlord/Property Manager)
-    _________________________________ (Address)
-    _________________________________
-
-From: _______________________________ (Tenant)
-Property Address: _____________________
-
-I am writing to formally notify you of serious habitability issues at the above property that require immediate attention under Minnesota law.
-
-CONDITIONS AFFECTING HABITABILITY:
-
-☐ No heat or inadequate heating
-☐ No hot water
-☐ Plumbing not working / sewage backup
-☐ No electricity
-☐ Broken windows or doors (security issue)
-☐ Roof leaks / water damage
-☐ Mold or mildew
-☐ Pest infestation (roaches, mice, bedbugs)
-☐ Structural damage
-☐ Lead paint hazards
-☐ Carbon monoxide / smoke detector issues
-☐ Other: _______________________________
-
-DETAILED DESCRIPTION:
-_________________________________________________
-_________________________________________________
-_________________________________________________
-
-DATE PROBLEM FIRST NOTICED: ________________
-PREVIOUS COMPLAINTS MADE ON: ________________
-
-Under Minnesota Statute § 504B.161, you are required to maintain the premises in reasonable repair and keep it fit for the use intended.
-
-I REQUEST that these conditions be repaired within ____ days.
-
-If repairs are not made, I reserve all rights under Minnesota law, including but not limited to rent escrow, repair and deduct, and lease termination.
-
-_________________________________
-Tenant Signature
-
-CC: Housing Inspector, Legal Aid`,
-
-            affidavit: `STATE OF MINNESOTA           )
-                             ) ss.
-COUNTY OF __________________ )
-
-AFFIDAVIT OF _________________________________
-
-I, _________________________________, being first duly sworn, depose and state as follows:
-
-1. I am over 18 years of age and competent to make this affidavit.
-
-2. I reside at _________________________________________.
-
-3. I have personal knowledge of the facts stated herein.
-
-4. _________________________________________________
-   _________________________________________________
-
-5. _________________________________________________
-   _________________________________________________
-
-6. _________________________________________________
-   _________________________________________________
-
-7. _________________________________________________
-   _________________________________________________
-
-I declare under penalty of perjury that the foregoing is true and correct.
-
-Executed on ________________, 20___, at ________________, Minnesota.
-
-
-_________________________________
-Affiant Signature
-
-
-SUBSCRIBED AND SWORN to before me this ____ day of _____________, 20___.
-
-
-_________________________________
-Notary Public
-My Commission Expires: ____________`,
-
-            security_deposit: `SECURITY DEPOSIT ITEMIZATION
-
-Date: ________________
-Tenant: _________________________________
-Property Address: _________________________
-Move-Out Date: ________________
-
-SECURITY DEPOSIT HELD: $______________
-
-ITEMIZED DEDUCTIONS:
-
-Description                              Amount
-─────────────────────────────────────────────────
-Unpaid Rent (_________ to _________)    $________
-Cleaning (beyond normal wear & tear)    $________
-Carpet cleaning/replacement             $________
-Wall damage/painting                    $________
-Broken fixtures/appliances              $________
-Key replacement                         $________
-Other: _____________________________    $________
-Other: _____________________________    $________
-─────────────────────────────────────────────────
-TOTAL DEDUCTIONS:                       $________
-
-AMOUNT RETURNED TO TENANT:              $________
-
-☐ Check enclosed  ☐ Mailed separately  ☐ Amount owed by tenant
-
-NOTE: Under Minnesota Statute § 504B.178, this itemization must be provided within 21 days after termination of tenancy.
-
-_________________________________
-Landlord/Property Manager Signature
-Date: ________________
-
-Forwarding Address for Tenant:
-_________________________________
-_________________________________`
-        };
-
-        // Load document template from dropdown
-        function loadDocumentTemplate(type) {
-            if (!type) return;
+        let analysisHistory = [];
+
+        // Drag and drop handling
+        const uploadZone = document.getElementById('uploadZone');
+        const fileInput = document.getElementById('fileInput');
+
+        uploadZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadZone.classList.add('dragover');
+        });
+
+        uploadZone.addEventListener('dragleave', () => {
+            uploadZone.classList.remove('dragover');
+        });
+
+        uploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadZone.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFile(files[0]);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFile(e.target.files[0]);
+            }
+        });
+
+        async function handleFile(file) {
+            showLoading('Processing file...');
             
-            const template = SAMPLES[type];
-            if (template) {
-                document.getElementById('documentText').value = template;
-                showToast(`📋 Loaded ${type.replace(/_/g, ' ')} template`, 'success');
-                
-                // Reset dropdown to placeholder
-                document.getElementById('documentTypeSelect').value = '';
-            } else {
-                showToast(`Template not found: ${type}`, 'error');
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                const response = await fetch(`${API_BASE}/api/recognition/analyze-file`, {
+                    method: 'POST',
+                    body: formData,
+                    credentials: 'include'
+                });
+
+                if (!response.ok) {
+                    throw new Error('Analysis failed');
+                }
+
+                const result = await response.json();
+                displayResults(result, file.name);
+                addToHistory(file.name, result);
+            } catch (error) {
+                console.error('Error:', error);
+                showError('Failed to analyze file. Please try again.');
             }
         }
 
-        function loadSample(type) {
-            document.getElementById('documentText').value = SAMPLES[type] || '';
-            showToast(`Loaded ${type} sample`, 'success');
-        }
-
-        function clearAll() {
-            document.getElementById('documentText').value = '';
-            document.getElementById('resultsSection').classList.remove('active');
-            currentResult = null;
-        }
-
-        async function analyzeDocument() {
-            const text = document.getElementById('documentText').value.trim();
-            if (text.length < 10) {
-                showToast('Please enter at least 10 characters of text', 'warning');
+        async function analyzeText() {
+            const text = document.getElementById('textInput').value.trim();
+            if (!text || text.length < 10) {
+                showError('Please enter at least 10 characters of text to analyze.');
                 return;
             }
 
-            const includeHandwriting = document.getElementById('includeHandwriting').checked;
-            const btn = document.getElementById('analyzeBtn');
-            
-            btn.disabled = true;
-            btn.innerHTML = '<span class="spinner" style="width:16px;height:16px;border-width:2px;margin-right:8px;"></span> Analyzing...';
-            
-            document.getElementById('loadingSection').classList.add('active');
-            document.getElementById('resultsSection').classList.remove('active');
+            showLoading('Analyzing text...');
 
             try {
                 const response = await fetch(`${API_BASE}/api/recognition/analyze`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    credentials: 'include',
-                    body: JSON.stringify({
-                        text: text,
-                        include_handwriting: includeHandwriting
-                    })
+                    body: JSON.stringify({ text, include_handwriting: true }),
+                    credentials: 'include'
                 });
 
                 if (!response.ok) {
-                    throw new Error(`Analysis failed: ${response.status}`);
+                    throw new Error('Analysis failed');
                 }
 
                 const result = await response.json();
-                currentResult = result;
-                displayResults(result);
-                showToast('Analysis complete!', 'success');
-
+                displayResults(result, 'Pasted text');
+                addToHistory('Text Analysis', result);
             } catch (error) {
-                console.error('Analysis error:', error);
-                showToast(`Error: ${error.message}`, 'error');
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = '🔍 Analyze Document';
-                document.getElementById('loadingSection').classList.remove('active');
+                console.error('Error:', error);
+                showError('Failed to analyze text. Please try again.');
             }
         }
 
-        function displayResults(result) {
-            document.getElementById('resultsSection').classList.add('active');
+        function showLoading(message) {
+            document.getElementById('resultsBody').innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p class="loading-text">${message}</p>
+                </div>
+            `;
+        }
 
-            // Stats
-            document.getElementById('statEntities').textContent = result.entities?.length || 0;
-            document.getElementById('statIssues').textContent = result.legal_issues?.length || 0;
-            document.getElementById('statSignatures').textContent = result.handwriting?.total_signatures || 0;
-            document.getElementById('statProcessing').textContent = Math.round(result.processing_time_ms || 0);
+        function showError(message) {
+            document.getElementById('resultsBody').innerHTML = `
+                <div class="empty-results">
+                    <div class="empty-results-icon">⚠️</div>
+                    <p style="color: var(--error-color);">${message}</p>
+                </div>
+            `;
+        }
 
-            // Document type
-            document.getElementById('docTypeText').textContent = formatDocType(result.document_type);
+        function displayResults(result, sourceName) {
+            const confidence = result.confidence || result.overall_confidence || 0;
+            const confidencePercent = (confidence * 100).toFixed(1);
+            
+            let html = `
+                <!-- Classification -->
+                <div class="result-section">
+                    <div class="result-section-title">Document Classification</div>
+                    <div class="classification-badge">
+                        <span>${getDocTypeIcon(result.document_type)}</span>
+                        <span>${formatDocType(result.document_type)}</span>
+                    </div>
+                    <div class="confidence-bar">
+                        <div class="confidence-fill" style="width: ${confidencePercent}%"></div>
+                    </div>
+                    <div class="confidence-text">${confidencePercent}% confidence</div>
+                </div>
+            `;
 
-            // Confidence
-            const confidence = result.confidence_score || 0;
-            document.getElementById('confidenceValue').textContent = `${Math.round(confidence)}%`;
-            const fill = document.getElementById('confidenceFill');
-            fill.style.width = `${confidence}%`;
-            fill.className = 'meter-fill ' + (confidence >= 70 ? 'high' : confidence >= 40 ? 'medium' : 'low');
+            // Summary
+            if (result.summary) {
+                html += `
+                    <div class="result-section">
+                        <div class="result-section-title">Summary</div>
+                        <p style="color: var(--text-secondary); font-size: 0.875rem; line-height: 1.6;">${result.summary}</p>
+                    </div>
+                `;
+            }
 
             // Entities
-            displayEntities(result.entities || []);
-
-            // Legal issues
-            displayLegalIssues(result.legal_issues || []);
-
-            // Statutes and defenses
-            displayStatutesAndDefenses(result.applicable_statutes || [], result.defense_options || []);
-
-            // Handwriting analysis
-            if (result.handwriting) {
-                displayHandwritingAnalysis(result.handwriting);
-            }
-        }
-
-        function displayEntities(entities) {
-            const grid = document.getElementById('entityGrid');
-            if (!entities.length) {
-                grid.innerHTML = `<div class="empty-state"><div class="icon">🔍</div><p>No entities extracted</p></div>`;
-                return;
-            }
-
-            grid.innerHTML = entities.map(e => `
-                <div class="entity-card">
-                    <div class="entity-type">${getEntityIcon(e.type)} ${e.type}</div>
-                    <div class="entity-value">${escapeHtml(e.value)}</div>
-                    <div class="entity-confidence">${Math.round(e.confidence * 100)}% confidence</div>
-                </div>
-            `).join('');
-        }
-
-        function displayLegalIssues(issues) {
-            const list = document.getElementById('issueList');
-            if (!issues.length) {
-                list.innerHTML = `<div class="empty-state"><div class="icon">⚖️</div><p>No legal issues detected</p></div>`;
-                return;
-            }
-
-            list.innerHTML = issues.map(i => `
-                <div class="issue-card ${i.severity}">
-                    <div class="issue-header">
-                        <span class="issue-title">${escapeHtml(i.title)}</span>
-                        <span class="issue-severity ${i.severity}">${i.severity}</span>
+            if (result.entities && result.entities.length > 0) {
+                html += `
+                    <div class="result-section">
+                        <div class="result-section-title">Extracted Information</div>
+                        <div class="entity-list">
+                            ${result.entities.slice(0, 10).map(entity => `
+                                <div class="entity-item">
+                                    <div class="entity-icon">${getEntityIcon(entity.type)}</div>
+                                    <div class="entity-details">
+                                        <div class="entity-type">${formatEntityType(entity.type)}</div>
+                                        <div class="entity-value">${entity.value}</div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
                     </div>
-                    <div class="issue-desc">${escapeHtml(i.description)}</div>
-                    ${i.statute ? `<div class="issue-statute">📜 ${escapeHtml(i.statute)}</div>` : ''}
-                    ${i.defense_available ? `<div class="issue-defense">✅ Defense may be available</div>` : ''}
+                `;
+            }
+
+            // Legal Issues
+            if (result.legal_issues && result.legal_issues.length > 0) {
+                html += `
+                    <div class="result-section">
+                        <div class="result-section-title">⚠️ Potential Issues Found</div>
+                        <div class="issue-list">
+                            ${result.legal_issues.map(issue => `
+                                <div class="issue-item ${issue.severity || 'medium'}">
+                                    <div class="issue-title">${issue.title || issue.type}</div>
+                                    <div class="issue-description">${issue.description}</div>
+                                    <div class="issue-severity" style="color: ${getSeverityColor(issue.severity)}">${issue.severity || 'Medium'} Severity</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Handwriting Analysis
+            if (result.handwriting_analysis) {
+                const hw = result.handwriting_analysis;
+                html += `
+                    <div class="result-section">
+                        <div class="result-section-title">✍️ Handwriting & Signature Analysis</div>
+                        <div class="handwriting-result">
+                            <div class="handwriting-grid">
+                                <div class="handwriting-stat">
+                                    <div class="handwriting-stat-value">${hw.signatures_found || 0}</div>
+                                    <div class="handwriting-stat-label">Signatures Found</div>
+                                </div>
+                                <div class="handwriting-stat">
+                                    <div class="handwriting-stat-value">${hw.initials_found || 0}</div>
+                                    <div class="handwriting-stat-label">Initials Found</div>
+                                </div>
+                            </div>
+                            ${hw.forgery_indicators && hw.forgery_indicators.length > 0 ? `
+                                <div class="forgery-alert">
+                                    <div class="forgery-alert-title">⚠️ Potential Forgery Indicators</div>
+                                    <ul style="margin-top: 0.5rem; padding-left: 1.25rem; font-size: 0.875rem;">
+                                        ${hw.forgery_indicators.map(ind => `<li>${ind}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Key Dates
+            if (result.key_dates && result.key_dates.length > 0) {
+                html += `
+                    <div class="result-section">
+                        <div class="result-section-title">📅 Key Dates</div>
+                        <div class="entity-list">
+                            ${result.key_dates.map(date => `
+                                <div class="entity-item">
+                                    <div class="entity-icon">📅</div>
+                                    <div class="entity-details">
+                                        <div class="entity-type">${date.label || 'Date'}</div>
+                                        <div class="entity-value">${formatDate(date.date || date.value)}</div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            document.getElementById('resultsBody').innerHTML = html;
+        }
+
+        function addToHistory(name, result) {
+            analysisHistory.unshift({
+                name,
+                type: result.document_type,
+                timestamp: new Date(),
+                confidence: result.confidence || result.overall_confidence || 0
+            });
+
+            // Keep only last 10
+            analysisHistory = analysisHistory.slice(0, 10);
+            renderHistory();
+        }
+
+        function renderHistory() {
+            const historyList = document.getElementById('historyList');
+            
+            if (analysisHistory.length === 0) {
+                historyList.innerHTML = '<div class="empty-results"><p>No recent analyses</p></div>';
+                return;
+            }
+
+            historyList.innerHTML = analysisHistory.map((item, index) => `
+                <div class="history-item">
+                    <div class="history-icon">${getDocTypeIcon(item.type)}</div>
+                    <div class="history-details">
+                        <div class="history-name">${item.name}</div>
+                        <div class="history-meta">${formatTime(item.timestamp)}</div>
+                    </div>
+                    <div class="history-badge">${formatDocType(item.type)}</div>
                 </div>
             `).join('');
         }
 
-        function displayStatutesAndDefenses(statutes, defenses) {
-            const statutesList = document.getElementById('statutesList');
-            statutesList.innerHTML = statutes.length 
-                ? statutes.map(s => `<span class="statute-tag">${escapeHtml(s)}</span>`).join('')
-                : '<span class="statute-tag">None identified</span>';
-
-            const defenseList = document.getElementById('defenseList');
-            if (!defenses.length) {
-                defenseList.innerHTML = `<div class="empty-state"><div class="icon">🛡️</div><p>No defense options identified</p></div>`;
-                return;
-            }
-            defenseList.innerHTML = defenses.map(d => `<div class="defense-item">${escapeHtml(d)}</div>`).join('');
-        }
-
-        function displayHandwritingAnalysis(hw) {
-            // Risk indicator
-            const indicator = document.getElementById('riskIndicator');
-            const riskLevel = hw.risk_level || 'none';
-            indicator.className = `risk-indicator ${riskLevel}`;
-            
-            const riskConfig = {
-                none: { icon: '✅', title: 'No Risk Detected', desc: 'Document appears authentic' },
-                low: { icon: '⚠️', title: 'Low Risk', desc: 'Minor concerns detected' },
-                medium: { icon: '⚠️', title: 'Medium Risk', desc: 'Some irregularities found' },
-                high: { icon: '🚨', title: 'High Risk', desc: 'Significant concerns detected' },
-                critical: { icon: '🚫', title: 'Critical Risk', desc: 'Strong forgery indicators!' }
+        function getDocTypeIcon(type) {
+            const icons = {
+                'eviction_notice': '📋',
+                'lease': '📄',
+                'court_filing': '⚖️',
+                'rent_receipt': '🧾',
+                'notice': '📬',
+                'letter': '✉️',
+                'inspection_report': '🔍',
+                'complaint': '📝',
+                'motion': '⚖️',
+                'order': '🔨',
+                'summons': '📨',
+                'default': '📄'
             };
-            
-            const config = riskConfig[riskLevel] || riskConfig.none;
-            document.getElementById('riskIcon').textContent = config.icon;
-            document.getElementById('riskTitle').textContent = config.title;
-            document.getElementById('riskDesc').textContent = config.desc;
-            document.getElementById('riskScoreValue').textContent = Math.round(hw.risk_score || 0);
-
-            // Signatures
-            const sigList = document.getElementById('signatureList');
-            if (!hw.signatures?.length) {
-                sigList.innerHTML = `<div class="empty-state"><div class="icon">✒️</div><p>No signatures detected</p></div>`;
-            } else {
-                sigList.innerHTML = hw.signatures.map(s => `
-                    <div class="signature-card">
-                        <div class="signature-icon">✍️</div>
-                        <div class="signature-info">
-                            <div class="signature-name">${escapeHtml(s.signer_name)}</div>
-                            <div class="signature-location">Location: ${escapeHtml(s.location)}</div>
-                        </div>
-                        <div class="signature-confidence">
-                            <div class="value">${Math.round(s.confidence * 100)}%</div>
-                            <div class="label">Confidence</div>
-                        </div>
-                    </div>
-                `).join('');
-            }
-
-            // Forgery indicators
-            const forgeryList = document.getElementById('forgeryList');
-            if (!hw.forgery_indicators?.length) {
-                forgeryList.innerHTML = `<div class="empty-state"><div class="icon">🔒</div><p>No forgery indicators found</p></div>`;
-            } else {
-                forgeryList.innerHTML = hw.forgery_indicators.map(f => `
-                    <div class="forgery-card ${f.risk_level}">
-                        <div class="forgery-header">
-                            <span class="forgery-type">${escapeHtml(f.type.replace(/_/g, ' '))}</span>
-                            <span class="issue-severity ${f.risk_level}">${f.risk_level}</span>
-                        </div>
-                        <div class="forgery-desc">${escapeHtml(f.description)}</div>
-                        ${f.evidence?.length ? `<div class="forgery-evidence">Evidence: ${f.evidence.map(e => escapeHtml(e)).join('; ')}</div>` : ''}
-                        ${f.recommended_action ? `<div class="forgery-action">💡 ${escapeHtml(f.recommended_action)}</div>` : ''}
-                    </div>
-                `).join('');
-            }
-
-            // Recommendations
-            const recList = document.getElementById('recommendationList');
-            if (hw.recommendations?.length) {
-                recList.innerHTML = hw.recommendations.map(r => `<li>${escapeHtml(r)}</li>`).join('');
-            } else {
-                recList.innerHTML = '<li>No specific recommendations</li>';
-            }
-        }
-
-        function showTab(tabName) {
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-            
-            document.querySelector(`[onclick="showTab('${tabName}')"]`).classList.add('active');
-            document.getElementById(`${tabName}Tab`).classList.add('active');
+            return icons[type?.toLowerCase()] || icons.default;
         }
 
         function formatDocType(type) {
             if (!type) return 'Unknown';
-            return type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+            return type.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
         }
 
         function getEntityIcon(type) {
             const icons = {
-                person: '👤',
-                organization: '🏢',
-                address: '📍',
-                date: '📅',
-                money: '💰',
-                phone: '📞',
-                email: '✉️',
-                court_case: '⚖️',
-                statute: '📜',
-                deadline: '⏰'
+                'person': '👤',
+                'organization': '🏢',
+                'address': '📍',
+                'date': '📅',
+                'money': '💰',
+                'phone': '📞',
+                'email': '📧',
+                'case_number': '🔢',
+                'default': '📋'
             };
-            return icons[type] || '📋';
+            return icons[type?.toLowerCase()] || icons.default;
         }
 
-        function escapeHtml(text) {
-            if (!text) return '';
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
+        function formatEntityType(type) {
+            if (!type) return 'Unknown';
+            return type.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
         }
 
-        function showToast(message, type = 'success') {
-            const container = document.getElementById('toastContainer');
-            const toast = document.createElement('div');
-            toast.className = `toast toast-${type}`;
-            toast.textContent = message;
-            container.appendChild(toast);
-            setTimeout(() => toast.remove(), 4000);
+        function getSeverityColor(severity) {
+            const colors = {
+                'critical': 'var(--error-color)',
+                'high': 'var(--warning-color)',
+                'medium': '#eab308',
+                'low': 'var(--success-color)'
+            };
+            return colors[severity?.toLowerCase()] || colors.medium;
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return 'Unknown';
+            try {
+                return new Date(dateStr).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+            } catch {
+                return dateStr;
+            }
+        }
+
+        function formatTime(date) {
+            return new Date(date).toLocaleString('en-US', {
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true
+            });
+        }
+
+        // Initialize
+        renderHistory();
+    </script>
+
+    <!-- Site-Wide Help System -->
+    <script src="/static/js/help-system.js"></script>
+    <script src="/static/js/help-content.js"></script>
+    <script>
+        if (typeof SemptifyHelp !== 'undefined') {
+            SemptifyHelp.init('recognition');
         }
     </script>
 </body>

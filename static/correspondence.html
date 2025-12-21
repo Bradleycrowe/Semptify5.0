@@ -1,0 +1,1447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Correspondence Tracker - Semptify</title>
+    <link rel="stylesheet" href="/static/shared-nav.css">
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #1a1a24;
+            --bg-card: #22222e;
+            --text-primary: #ffffff;
+            --text-secondary: #d0d0e0;
+            --accent-blue: #60a5fa;
+            --accent-purple: #a78bfa;
+            --accent-green: #34d399;
+            --accent-orange: #fbbf24;
+            --accent-red: #f87171;
+            --border-color: rgba(255,255,255,0.15);
+        }
+        
+        /* Force all text to be bright */
+        body, div, span, p, h1, h2, h3, h4, h5, h6, label, button, input, select, textarea, small, strong {
+            color: #ffffff !important;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding-top: 60px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+        
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .page-title span {
+            font-size: 32px;
+        }
+        
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .stat-card.incoming { border-left: 4px solid var(--accent-blue); }
+        .stat-card.outgoing { border-left: 4px solid var(--accent-green); }
+        .stat-card.pending { border-left: 4px solid var(--accent-orange); }
+        .stat-card.overdue { border-left: 4px solid var(--accent-red); }
+        .stat-card.important { border-left: 4px solid var(--accent-purple); }
+        
+        .stat-value {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        
+        .stat-label {
+            color: #c0c0d0;
+            font-size: 14px;
+        }
+        
+        /* Action Bar */
+        .action-bar {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
+        }
+        
+        /* Filter Tabs */
+        .filter-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-tab {
+            padding: 8px 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+        
+        .filter-tab.active {
+            background: var(--accent-blue);
+            border-color: var(--accent-blue);
+        }
+        
+        .filter-tab:hover:not(.active) {
+            border-color: var(--accent-blue);
+        }
+        
+        /* Search */
+        .search-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            max-width: 400px;
+        }
+        
+        .search-box input {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-size: 14px;
+            flex: 1;
+            outline: none;
+        }
+        
+        /* Correspondence List */
+        .correspondence-list {
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+        
+        .correspondence-item {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .correspondence-item:hover {
+            background: rgba(59, 130, 246, 0.1);
+        }
+        
+        .correspondence-item:last-child {
+            border-bottom: none;
+        }
+        
+        .direction-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        
+        .direction-icon.incoming {
+            background: rgba(59, 130, 246, 0.2);
+            color: var(--accent-blue);
+        }
+        
+        .direction-icon.outgoing {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--accent-green);
+        }
+        
+        .corr-content {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .corr-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+        
+        .corr-type {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            background: rgba(139, 92, 246, 0.2);
+            color: var(--accent-purple);
+        }
+        
+        .corr-subject {
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .corr-meta {
+            font-size: 13px;
+            color: #b0b0c0;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .corr-parties {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .corr-dates {
+            font-size: 12px;
+            color: #b0b0c0;
+            white-space: nowrap;
+        }
+        
+        .corr-flags {
+            display: flex;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+        
+        .flag {
+            font-size: 14px;
+        }
+        
+        .flag-important { color: var(--accent-orange); }
+        .flag-legal { color: var(--accent-red); }
+        .flag-response { color: var(--accent-blue); }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+        
+        .empty-state span {
+            font-size: 48px;
+            display: block;
+            margin-bottom: 16px;
+        }
+        
+        .empty-state h3 {
+            margin-bottom: 8px;
+        }
+        
+        .empty-state p {
+            color: #b0b0c0;
+        }
+        
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .modal-overlay.active {
+            display: flex;
+        }
+        
+        .modal {
+            background: var(--bg-card);
+            border-radius: 16px;
+            width: 90%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-header h2 {
+            font-size: 20px;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        .modal-body {
+            padding: 24px;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+        
+        .form-group label {
+            font-size: 13px;
+            color: #c0c0d0;
+            font-weight: 500;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            background: #1e1e2a;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 10px 12px;
+            color: #ffffff;
+            font-size: 14px;
+        }
+        
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: #888899;
+        }
+        
+        .form-group select option {
+            background: #1e1e2a;
+            color: #ffffff;
+        }
+        
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .form-section {
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .form-section-title {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--accent-blue);
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+        }
+        
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+        
+        /* Quick Log Buttons */
+        .quick-log-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        
+        .quick-log-btn {
+            padding: 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s;
+        }
+        
+        .quick-log-btn:hover {
+            border-color: var(--accent-blue);
+            background: rgba(59, 130, 246, 0.1);
+        }
+        
+        .quick-log-btn span {
+            font-size: 24px;
+            display: block;
+            margin-bottom: 8px;
+        }
+        
+        .quick-log-btn strong {
+            display: block;
+            margin-bottom: 4px;
+        }
+        
+        .quick-log-btn small {
+            color: #b0b0c0;
+            font-size: 12px;
+        }
+        
+        /* Pending Responses Section */
+        .pending-section {
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+        
+        .pending-section h3 {
+            font-size: 16px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .pending-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            background: #1e1e2a;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            color: #ffffff;
+        }
+        
+        .pending-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .pending-info {
+            flex: 1;
+        }
+        
+        .pending-subject {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .pending-from {
+            font-size: 13px;
+            color: #b0b0c0;
+        }
+        
+        .pending-deadline {
+            text-align: right;
+        }
+        
+        .pending-days {
+            font-weight: 700;
+            font-size: 18px;
+        }
+        
+        .pending-days.overdue {
+            color: var(--accent-red);
+        }
+        
+        .pending-days.urgent {
+            color: var(--accent-orange);
+        }
+        
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-group.full-width {
+                grid-column: span 1;
+            }
+            
+            .action-bar {
+                flex-direction: column;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="nav-container"></div>
+    <script src="/static/shared-nav.js"></script>
+    
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">
+                <span>📧</span>
+                Correspondence Tracker
+            </h1>
+            <button class="btn btn-primary" onclick="openNewCorrespondence()">
+                ➕ Log Correspondence
+            </button>
+        </div>
+        
+        <!-- Quick Log -->
+        <div class="quick-log-grid">
+            <button class="quick-log-btn" onclick="quickLogEmailReceived()">
+                <span>📥</span>
+                <strong>Email Received</strong>
+                <small>Log an incoming email</small>
+            </button>
+            <button class="quick-log-btn" onclick="quickLogEmailSent()">
+                <span>📤</span>
+                <strong>Email Sent</strong>
+                <small>Log an outgoing email</small>
+            </button>
+            <button class="quick-log-btn" onclick="quickLogLetterReceived()">
+                <span>📬</span>
+                <strong>Letter/Notice Received</strong>
+                <small>Log mail you received</small>
+            </button>
+            <button class="quick-log-btn" onclick="quickLogPhoneCall()">
+                <span>📞</span>
+                <strong>Phone Call</strong>
+                <small>Log a phone conversation</small>
+            </button>
+            <button class="quick-log-btn" onclick="document.getElementById('pdf-upload').click()" style="background: linear-gradient(135deg, #3b82f6, #8b5cf6); border-color: #3b82f6;">
+                <span>📄</span>
+                <strong>Import from PDF</strong>
+                <small>Upload email/conversation PDF</small>
+            </button>
+            <input type="file" id="pdf-upload" accept=".pdf,.txt,.eml" style="display: none;" onchange="importFromFile(event)">
+        </div>
+        
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card incoming">
+                <div class="stat-value" id="stat-incoming">0</div>
+                <div class="stat-label">Incoming</div>
+            </div>
+            <div class="stat-card outgoing">
+                <div class="stat-value" id="stat-outgoing">0</div>
+                <div class="stat-label">Outgoing</div>
+            </div>
+            <div class="stat-card pending">
+                <div class="stat-value" id="stat-pending">0</div>
+                <div class="stat-label">Need Response</div>
+            </div>
+            <div class="stat-card overdue">
+                <div class="stat-value" id="stat-overdue">0</div>
+                <div class="stat-label">Overdue</div>
+            </div>
+            <div class="stat-card important">
+                <div class="stat-value" id="stat-important">0</div>
+                <div class="stat-label">Important</div>
+            </div>
+        </div>
+        
+        <!-- Pending Responses -->
+        <div class="pending-section" id="pending-section" style="display: none;">
+            <h3>⏰ Needs Your Response</h3>
+            <div id="pending-list"></div>
+        </div>
+        
+        <!-- Filters -->
+        <div class="filter-tabs">
+            <button class="filter-tab active" data-filter="all">All</button>
+            <button class="filter-tab" data-filter="incoming">📥 Incoming</button>
+            <button class="filter-tab" data-filter="outgoing">📤 Outgoing</button>
+            <button class="filter-tab" data-filter="email">✉️ Emails</button>
+            <button class="filter-tab" data-filter="letter">📬 Letters</button>
+            <button class="filter-tab" data-filter="phone">📞 Phone</button>
+            <button class="filter-tab" data-filter="important">⭐ Important</button>
+        </div>
+        
+        <!-- Search -->
+        <div class="search-box">
+            <span>🔍</span>
+            <input type="text" id="search-input" placeholder="Search correspondence..." oninput="searchCorrespondence()">
+        </div>
+        
+        <!-- Correspondence List -->
+        <div class="correspondence-list" id="correspondence-list">
+            <div class="empty-state">
+                <span>📧</span>
+                <h3>No Correspondence Yet</h3>
+                <p>Start logging your emails, letters, and calls to build a complete record.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- New Correspondence Modal -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="modal-title">Log Correspondence</h2>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="correspondence-form">
+                    <!-- Direction -->
+                    <div class="form-group full-width">
+                        <label>Direction</label>
+                        <select name="direction" required onchange="updateFormForDirection()">
+                            <option value="incoming">📥 Incoming (I received this)</option>
+                            <option value="outgoing">📤 Outgoing (I sent this)</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Type -->
+                    <div class="form-group">
+                        <label>Type of Communication</label>
+                        <select name="communication_type" required>
+                            <option value="email">✉️ Email</option>
+                            <option value="letter">📬 Letter</option>
+                            <option value="certified_mail">📮 Certified Mail</option>
+                            <option value="text_message">💬 Text Message</option>
+                            <option value="phone_call">📞 Phone Call</option>
+                            <option value="voicemail">📱 Voicemail</option>
+                            <option value="in_person">🤝 In Person</option>
+                            <option value="legal_notice">⚖️ Legal Notice</option>
+                            <option value="court_filing">🏛️ Court Filing</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Delivery Method -->
+                    <div class="form-group">
+                        <label>Delivery Method</label>
+                        <select name="delivery_method">
+                            <option value="email">Email</option>
+                            <option value="usps_regular">USPS Regular Mail</option>
+                            <option value="usps_certified">USPS Certified Mail</option>
+                            <option value="usps_priority">USPS Priority</option>
+                            <option value="fedex">FedEx</option>
+                            <option value="ups">UPS</option>
+                            <option value="hand_delivered">Hand Delivered</option>
+                            <option value="text">Text Message</option>
+                            <option value="phone">Phone</option>
+                            <option value="fax">Fax</option>
+                            <option value="court_efiling">Court E-Filing</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-section">
+                        <div class="form-section-title">👤 Sender (Who Sent It)</div>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Sender Type</label>
+                                <select name="sender_type">
+                                    <option value="landlord">🏠 Landlord/Property Manager</option>
+                                    <option value="attorney">⚖️ Attorney</option>
+                                    <option value="court">🏛️ Court</option>
+                                    <option value="agency">🏢 Government Agency</option>
+                                    <option value="me">👤 Me</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Sender Name</label>
+                                <input type="text" name="sender_name" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Sender Email</label>
+                                <input type="email" name="sender_email">
+                            </div>
+                            <div class="form-group">
+                                <label>Sender Phone</label>
+                                <input type="tel" name="sender_phone">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <div class="form-section-title">📬 Recipient (Who Received It)</div>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Recipient Type</label>
+                                <select name="recipient_type">
+                                    <option value="me">👤 Me</option>
+                                    <option value="landlord">🏠 Landlord/Property Manager</option>
+                                    <option value="attorney">⚖️ Attorney</option>
+                                    <option value="court">🏛️ Court</option>
+                                    <option value="agency">🏢 Government Agency</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Recipient Name</label>
+                                <input type="text" name="recipient_name" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Recipient Email</label>
+                                <input type="email" name="recipient_email">
+                            </div>
+                            <div class="form-group">
+                                <label>Recipient Phone</label>
+                                <input type="tel" name="recipient_phone">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <div class="form-section-title">📝 Content</div>
+                        <div class="form-grid">
+                            <div class="form-group full-width">
+                                <label>Subject</label>
+                                <input type="text" name="subject">
+                            </div>
+                            <div class="form-group full-width">
+                                <label>Summary</label>
+                                <textarea name="summary" placeholder="Brief summary of what was communicated..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <div class="form-section-title">📅 Dates</div>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Date Sent</label>
+                                <input type="datetime-local" name="date_sent">
+                            </div>
+                            <div class="form-group">
+                                <label>Date Received</label>
+                                <input type="datetime-local" name="date_received">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <div class="form-section-title">🚨 Importance</div>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <div class="checkbox-group">
+                                    <input type="checkbox" name="is_important" id="is_important">
+                                    <label for="is_important">⭐ Important</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="checkbox-group">
+                                    <input type="checkbox" name="is_legal_notice" id="is_legal_notice">
+                                    <label for="is_legal_notice">⚖️ Legal Notice</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="checkbox-group">
+                                    <input type="checkbox" name="requires_response" id="requires_response" onchange="toggleResponseDeadline()">
+                                    <label for="requires_response">📨 Requires Response</label>
+                                </div>
+                            </div>
+                            <div class="form-group" id="response-deadline-group" style="display: none;">
+                                <label>Response Deadline</label>
+                                <input type="datetime-local" name="response_deadline">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <div class="form-section-title">📎 Tracking</div>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Tracking Number</label>
+                                <input type="text" name="tracking_number" placeholder="For certified/tracked mail">
+                            </div>
+                            <div class="form-group">
+                                <label>Notes</label>
+                                <input type="text" name="notes">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveCorrespondence()">💾 Save</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let correspondenceData = [];
+        let currentFilter = 'all';
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadStats();
+            await loadPendingResponses();
+            await loadCorrespondence();
+            setupFilterTabs();
+        });
+        
+        // Load Stats
+        async function loadStats() {
+            try {
+                const response = await fetch('/api/correspondence/stats/summary', {
+                    credentials: 'include'
+                });
+                if (response.ok) {
+                    const stats = await response.json();
+                    document.getElementById('stat-incoming').textContent = stats.incoming || 0;
+                    document.getElementById('stat-outgoing').textContent = stats.outgoing || 0;
+                    document.getElementById('stat-pending').textContent = stats.requires_response || 0;
+                    document.getElementById('stat-overdue').textContent = stats.overdue_responses || 0;
+                    document.getElementById('stat-important').textContent = stats.important || 0;
+                }
+            } catch (error) {
+                console.error('Failed to load stats:', error);
+            }
+        }
+        
+        // Load Pending Responses
+        async function loadPendingResponses() {
+            try {
+                const response = await fetch('/api/correspondence/pending/responses', {
+                    credentials: 'include'
+                });
+                if (response.ok) {
+                    const pending = await response.json();
+                    const section = document.getElementById('pending-section');
+                    const list = document.getElementById('pending-list');
+                    
+                    if (pending.length > 0) {
+                        section.style.display = 'block';
+                        list.innerHTML = pending.map(item => {
+                            let daysClass = '';
+                            let daysText = '';
+                            if (item.is_overdue) {
+                                daysClass = 'overdue';
+                                daysText = `${Math.abs(item.days_remaining)} days overdue`;
+                            } else if (item.days_remaining <= 3) {
+                                daysClass = 'urgent';
+                                daysText = `${item.days_remaining} days left`;
+                            } else {
+                                daysText = `${item.days_remaining} days left`;
+                            }
+                            
+                            return `
+                                <div class="pending-item" onclick="viewCorrespondence('${item.id}')">
+                                    <div class="pending-info">
+                                        <div class="pending-subject">${item.subject || 'No subject'}</div>
+                                        <div class="pending-from">From: ${item.sender_name}</div>
+                                    </div>
+                                    <div class="pending-deadline">
+                                        <div class="pending-days ${daysClass}">${daysText}</div>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('');
+                    } else {
+                        section.style.display = 'none';
+                    }
+                }
+            } catch (error) {
+                console.error('Failed to load pending:', error);
+            }
+        }
+        
+        // Load Correspondence
+        async function loadCorrespondence() {
+            try {
+                let url = '/api/correspondence/';
+                const params = new URLSearchParams();
+                
+                if (currentFilter !== 'all') {
+                    if (currentFilter === 'incoming' || currentFilter === 'outgoing') {
+                        params.append('direction', currentFilter);
+                    } else if (currentFilter === 'email') {
+                        params.append('communication_type', 'email');
+                    } else if (currentFilter === 'letter') {
+                        params.append('communication_type', 'letter');
+                    } else if (currentFilter === 'phone') {
+                        params.append('communication_type', 'phone_call');
+                    } else if (currentFilter === 'important') {
+                        params.append('is_important', 'true');
+                    }
+                }
+                
+                const searchTerm = document.getElementById('search-input')?.value;
+                if (searchTerm) {
+                    params.append('search', searchTerm);
+                }
+                
+                if (params.toString()) {
+                    url += '?' + params.toString();
+                }
+                
+                const response = await fetch(url, {
+                    credentials: 'include'
+                });
+                
+                if (response.ok) {
+                    correspondenceData = await response.json();
+                    renderCorrespondence();
+                }
+            } catch (error) {
+                console.error('Failed to load correspondence:', error);
+            }
+        }
+        
+        // Render Correspondence
+        function renderCorrespondence() {
+            const list = document.getElementById('correspondence-list');
+            
+            if (correspondenceData.length === 0) {
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <span>📧</span>
+                        <h3>No Correspondence Yet</h3>
+                        <p>Start logging your emails, letters, and calls to build a complete record.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            list.innerHTML = correspondenceData.map(item => {
+                const typeIcons = {
+                    'email': '✉️',
+                    'letter': '📬',
+                    'certified_mail': '📮',
+                    'text_message': '💬',
+                    'phone_call': '📞',
+                    'voicemail': '📱',
+                    'in_person': '🤝',
+                    'legal_notice': '⚖️',
+                    'court_filing': '🏛️'
+                };
+                
+                const icon = typeIcons[item.communication_type] || '📄';
+                const directionIcon = item.direction === 'incoming' ? '📥' : '📤';
+                const dateStr = item.date_sent ? new Date(item.date_sent).toLocaleDateString() : 
+                               (item.date_received ? new Date(item.date_received).toLocaleDateString() : '');
+                
+                let flags = '';
+                if (item.is_important) flags += '<span class="flag flag-important">⭐</span>';
+                if (item.is_legal_notice) flags += '<span class="flag flag-legal">⚖️</span>';
+                if (item.requires_response && !item.response_sent) flags += '<span class="flag flag-response">📨</span>';
+                
+                return `
+                    <div class="correspondence-item" onclick="viewCorrespondence('${item.id}')">
+                        <div class="direction-icon ${item.direction}">
+                            ${directionIcon}
+                        </div>
+                        <div class="corr-content">
+                            <div class="corr-header">
+                                <span class="corr-type">${icon} ${item.communication_type.replace('_', ' ')}</span>
+                                <span class="corr-subject">${item.subject || 'No subject'}</span>
+                            </div>
+                            <div class="corr-meta">
+                                <span class="corr-parties">
+                                    ${item.sender_name} → ${item.recipient_name}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="corr-dates">${dateStr}</div>
+                        <div class="corr-flags">${flags}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // Filter Tabs
+        function setupFilterTabs() {
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    currentFilter = tab.dataset.filter;
+                    loadCorrespondence();
+                });
+            });
+        }
+        
+        // Search
+        function searchCorrespondence() {
+            clearTimeout(window.searchTimeout);
+            window.searchTimeout = setTimeout(loadCorrespondence, 300);
+        }
+        
+        // Open New Correspondence Modal
+        function openNewCorrespondence() {
+            document.getElementById('modal-title').textContent = 'Log Correspondence';
+            document.getElementById('correspondence-form').reset();
+            document.getElementById('modal-overlay').classList.add('active');
+        }
+        
+        // Close Modal
+        function closeModal() {
+            document.getElementById('modal-overlay').classList.remove('active');
+        }
+        
+        // Update form for direction
+        function updateFormForDirection() {
+            const direction = document.querySelector('[name="direction"]').value;
+            if (direction === 'incoming') {
+                document.querySelector('[name="sender_type"]').value = 'landlord';
+                document.querySelector('[name="recipient_type"]').value = 'me';
+                document.querySelector('[name="recipient_name"]').value = 'Me';
+            } else {
+                document.querySelector('[name="sender_type"]').value = 'me';
+                document.querySelector('[name="sender_name"]').value = 'Me';
+                document.querySelector('[name="recipient_type"]').value = 'landlord';
+            }
+        }
+        
+        // Toggle response deadline
+        function toggleResponseDeadline() {
+            const checkbox = document.getElementById('requires_response');
+            const group = document.getElementById('response-deadline-group');
+            group.style.display = checkbox.checked ? 'flex' : 'none';
+        }
+        
+        // Save Correspondence
+        async function saveCorrespondence() {
+            const form = document.getElementById('correspondence-form');
+            const formData = new FormData(form);
+            
+            const data = {
+                direction: formData.get('direction'),
+                communication_type: formData.get('communication_type'),
+                delivery_method: formData.get('delivery_method'),
+                sender_type: formData.get('sender_type'),
+                sender_name: formData.get('sender_name'),
+                sender_email: formData.get('sender_email') || null,
+                sender_phone: formData.get('sender_phone') || null,
+                recipient_type: formData.get('recipient_type'),
+                recipient_name: formData.get('recipient_name'),
+                recipient_email: formData.get('recipient_email') || null,
+                recipient_phone: formData.get('recipient_phone') || null,
+                subject: formData.get('subject') || null,
+                summary: formData.get('summary') || null,
+                date_sent: formData.get('date_sent') ? new Date(formData.get('date_sent')).toISOString() : null,
+                date_received: formData.get('date_received') ? new Date(formData.get('date_received')).toISOString() : null,
+                is_important: formData.get('is_important') === 'on',
+                is_legal_notice: formData.get('is_legal_notice') === 'on',
+                requires_response: formData.get('requires_response') === 'on',
+                response_deadline: formData.get('response_deadline') ? new Date(formData.get('response_deadline')).toISOString() : null,
+                tracking_number: formData.get('tracking_number') || null,
+                notes: formData.get('notes') || null,
+                delivery_status: 'unknown'
+            };
+            
+            try {
+                const response = await fetch('/api/correspondence/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify(data)
+                });
+                
+                if (response.ok) {
+                    closeModal();
+                    await loadStats();
+                    await loadPendingResponses();
+                    await loadCorrespondence();
+                    alert('✅ Correspondence logged!');
+                } else {
+                    const error = await response.json();
+                    alert('Error: ' + (error.detail || 'Failed to save'));
+                }
+            } catch (error) {
+                console.error('Save failed:', error);
+                alert('Error saving correspondence');
+            }
+        }
+        
+        // Quick Log Functions
+        function quickLogEmailReceived() {
+            openNewCorrespondence();
+            document.querySelector('[name="direction"]').value = 'incoming';
+            document.querySelector('[name="communication_type"]').value = 'email';
+            document.querySelector('[name="delivery_method"]').value = 'email';
+            updateFormForDirection();
+        }
+        
+        function quickLogEmailSent() {
+            openNewCorrespondence();
+            document.querySelector('[name="direction"]').value = 'outgoing';
+            document.querySelector('[name="communication_type"]').value = 'email';
+            document.querySelector('[name="delivery_method"]').value = 'email';
+            updateFormForDirection();
+        }
+        
+        function quickLogLetterReceived() {
+            openNewCorrespondence();
+            document.querySelector('[name="direction"]').value = 'incoming';
+            document.querySelector('[name="communication_type"]').value = 'letter';
+            document.querySelector('[name="delivery_method"]').value = 'usps_regular';
+            updateFormForDirection();
+        }
+        
+        function quickLogPhoneCall() {
+            openNewCorrespondence();
+            document.querySelector('[name="direction"]').value = 'incoming';
+            document.querySelector('[name="communication_type"]').value = 'phone_call';
+            document.querySelector('[name="delivery_method"]').value = 'phone';
+            updateFormForDirection();
+        }
+        
+        // View Correspondence
+        async function viewCorrespondence(id) {
+            // For now, just alert - could open a view modal
+            const item = correspondenceData.find(c => c.id === id);
+            if (item) {
+                let details = `
+📧 ${item.communication_type.replace('_', ' ').toUpperCase()}
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+${item.direction === 'incoming' ? '📥 INCOMING' : '📤 OUTGOING'}
+
+From: ${item.sender_name}
+To: ${item.recipient_name}
+
+Subject: ${item.subject || 'No subject'}
+
+Summary: ${item.summary || 'No summary'}
+
+Date Sent: ${item.date_sent ? new Date(item.date_sent).toLocaleString() : 'N/A'}
+Date Received: ${item.date_received ? new Date(item.date_received).toLocaleString() : 'N/A'}
+                `;
+                alert(details);
+            }
+        }
+        
+        // ===============================================
+        // PDF/FILE IMPORT - Auto-extract correspondence
+        // ===============================================
+        
+        async function importFromFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const statusDiv = document.createElement('div');
+            statusDiv.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1a1a24;padding:40px;border-radius:16px;border:2px solid #3b82f6;z-index:9999;text-align:center;color:white;';
+            statusDiv.innerHTML = '<div style="font-size:48px;margin-bottom:16px;">📄</div><div>Extracting correspondence data...</div>';
+            document.body.appendChild(statusDiv);
+            
+            try {
+                let text = '';
+                
+                if (file.type === 'application/pdf') {
+                    // Use pdf.js to extract text
+                    text = await extractPdfText(file);
+                } else {
+                    // Plain text or .eml file
+                    text = await file.text();
+                }
+                
+                console.log('Extracted text:', text.substring(0, 500));
+                
+                // Parse the extracted text
+                const parsed = parseEmailText(text);
+                
+                // Remove status
+                statusDiv.remove();
+                
+                // Open modal and populate
+                openNewCorrespondence();
+                populateFormFromParsed(parsed);
+                
+                // Show what was found
+                let foundItems = [];
+                if (parsed.senderName) foundItems.push('Sender: ' + parsed.senderName);
+                if (parsed.senderEmail) foundItems.push('Email: ' + parsed.senderEmail);
+                if (parsed.recipientName) foundItems.push('To: ' + parsed.recipientName);
+                if (parsed.subject) foundItems.push('Subject: ' + parsed.subject);
+                if (parsed.date) foundItems.push('Date: ' + parsed.date);
+                
+                if (foundItems.length > 0) {
+                    alert('✅ Auto-extracted:\n\n' + foundItems.join('\n') + '\n\nPlease review and adjust as needed.');
+                } else {
+                    alert('📄 File loaded. Text extracted to summary field.\nPlease fill in the details manually.');
+                }
+                
+            } catch (error) {
+                statusDiv.remove();
+                console.error('Import error:', error);
+                alert('Error importing file: ' + error.message);
+            }
+            
+            // Clear file input
+            event.target.value = '';
+        }
+        
+        // Extract text from PDF using pdf.js
+        async function extractPdfText(file) {
+            // Load pdf.js if not already loaded
+            if (!window.pdfjsLib) {
+                await loadScript('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js');
+                pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+            }
+            
+            const arrayBuffer = await file.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+            
+            let fullText = '';
+            for (let i = 1; i <= pdf.numPages; i++) {
+                const page = await pdf.getPage(i);
+                const textContent = await page.getTextContent();
+                const pageText = textContent.items.map(item => item.str).join(' ');
+                fullText += pageText + '\n\n';
+            }
+            
+            return fullText;
+        }
+        
+        // Helper to load external scripts
+        function loadScript(src) {
+            return new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = src;
+                script.onload = resolve;
+                script.onerror = reject;
+                document.head.appendChild(script);
+            });
+        }
+        
+        // Parse email/conversation text to extract fields
+        function parseEmailText(text) {
+            const result = {
+                senderName: null,
+                senderEmail: null,
+                recipientName: null,
+                recipientEmail: null,
+                subject: null,
+                date: null,
+                summary: text.substring(0, 2000), // First 2000 chars as summary
+                direction: 'incoming'
+            };
+            
+            // Common email header patterns
+            const patterns = {
+                // From: Name <email@domain.com> or From: email@domain.com
+                from: /(?:From|Sender|De):\s*(?:"?([^"<\n]+)"?\s*)?<?([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})>?/i,
+                
+                // To: Name <email@domain.com>
+                to: /(?:To|Recipient|Para|À):\s*(?:"?([^"<\n]+)"?\s*)?<?([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})>?/i,
+                
+                // Subject: ...
+                subject: /(?:Subject|Re|Fw|Fwd|Asunto|Objet):\s*(.+?)(?:\n|$)/i,
+                
+                // Date patterns
+                date: /(?:Date|Sent|Received|Fecha|Datum):\s*(.+?)(?:\n|$)/i,
+                
+                // Alternative: look for email in any context
+                anyEmail: /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g,
+                
+                // Look for names before/after common words
+                nameAfterFrom: /(?:From|Sender):\s*([A-Z][a-z]+ [A-Z][a-z]+)/i,
+            };
+            
+            // Extract From
+            const fromMatch = text.match(patterns.from);
+            if (fromMatch) {
+                result.senderName = fromMatch[1]?.trim() || fromMatch[2]?.split('@')[0] || null;
+                result.senderEmail = fromMatch[2] || null;
+            }
+            
+            // Extract To
+            const toMatch = text.match(patterns.to);
+            if (toMatch) {
+                result.recipientName = toMatch[1]?.trim() || toMatch[2]?.split('@')[0] || null;
+                result.recipientEmail = toMatch[2] || null;
+            }
+            
+            // Extract Subject
+            const subjectMatch = text.match(patterns.subject);
+            if (subjectMatch) {
+                result.subject = subjectMatch[1]?.trim();
+            }
+            
+            // Extract Date
+            const dateMatch = text.match(patterns.date);
+            if (dateMatch) {
+                result.date = dateMatch[1]?.trim();
+                // Try to parse it
+                try {
+                    const parsed = new Date(result.date);
+                    if (!isNaN(parsed)) {
+                        result.dateObj = parsed;
+                    }
+                } catch (e) {}
+            }
+            
+            // If no From found, try to find any email
+            if (!result.senderEmail) {
+                const allEmails = text.match(patterns.anyEmail);
+                if (allEmails && allEmails.length > 0) {
+                    result.senderEmail = allEmails[0];
+                    result.senderName = allEmails[0].split('@')[0];
+                }
+            }
+            
+            // Determine direction based on content
+            const lowerText = text.toLowerCase();
+            if (lowerText.includes('you wrote') || lowerText.includes('your message') || 
+                lowerText.includes('in reply to') || lowerText.includes('on behalf of')) {
+                result.direction = 'incoming';
+            }
+            
+            // Look for landlord/property management keywords
+            const landlordKeywords = ['property management', 'landlord', 'rent', 'lease', 'tenant', 'eviction', 'notice'];
+            for (const kw of landlordKeywords) {
+                if (lowerText.includes(kw)) {
+                    result.isLandlordRelated = true;
+                    break;
+                }
+            }
+            
+            return result;
+        }
+        
+        // Populate form with parsed data
+        function populateFormFromParsed(parsed) {
+            const form = document.getElementById('correspondence-form');
+            
+            // Set direction
+            form.querySelector('[name="direction"]').value = parsed.direction;
+            
+            // Set type to email by default for imports
+            form.querySelector('[name="communication_type"]').value = 'email';
+            form.querySelector('[name="delivery_method"]').value = 'email';
+            
+            // Sender
+            if (parsed.senderName) {
+                form.querySelector('[name="sender_name"]').value = parsed.senderName;
+            }
+            if (parsed.senderEmail) {
+                form.querySelector('[name="sender_email"]').value = parsed.senderEmail;
+            }
+            
+            // If incoming, sender is likely landlord
+            if (parsed.direction === 'incoming') {
+                form.querySelector('[name="sender_type"]').value = parsed.isLandlordRelated ? 'landlord' : 'other';
+                form.querySelector('[name="recipient_type"]').value = 'me';
+                form.querySelector('[name="recipient_name"]').value = 'Me';
+            } else {
+                form.querySelector('[name="sender_type"]').value = 'me';
+                form.querySelector('[name="sender_name"]').value = 'Me';
+                form.querySelector('[name="recipient_type"]').value = parsed.isLandlordRelated ? 'landlord' : 'other';
+            }
+            
+            // Recipient
+            if (parsed.recipientName && parsed.direction === 'outgoing') {
+                form.querySelector('[name="recipient_name"]').value = parsed.recipientName;
+            }
+            if (parsed.recipientEmail) {
+                form.querySelector('[name="recipient_email"]').value = parsed.recipientEmail;
+            }
+            
+            // Subject
+            if (parsed.subject) {
+                form.querySelector('[name="subject"]').value = parsed.subject;
+            }
+            
+            // Date
+            if (parsed.dateObj) {
+                const dateStr = parsed.dateObj.toISOString().slice(0, 16);
+                if (parsed.direction === 'incoming') {
+                    form.querySelector('[name="date_received"]').value = dateStr;
+                }
+                form.querySelector('[name="date_sent"]').value = dateStr;
+            }
+            
+            // Summary - put the extracted text
+            if (parsed.summary) {
+                form.querySelector('[name="summary"]').value = parsed.summary;
+            }
+        }
+    </script>
+</body>
+</html>

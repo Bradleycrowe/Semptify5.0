@@ -2,6 +2,18 @@
 Semptify 5.0 - User Service
 Handles user persistence, lookup, and provider management.
 
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                         PRIVACY FIRST DESIGN                                 ║
+║                                                                              ║
+║  SEMPTIFY NEVER STORES PERSONAL DATA. This includes:                         ║
+║  - No email addresses                                                        ║
+║  - No names (first, last, display)                                          ║
+║  - No phone numbers, addresses, or any PII                                  ║
+║                                                                              ║
+║  User identity = anonymous random ID                                         ║
+║  User data = stored in THEIR cloud storage                                   ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
 Solves the "returning user" problem:
 1. Where to look for token? → Check user's primary_provider
 2. What role to load? → Check user's default_role
@@ -43,21 +55,22 @@ async def create_user(
     user_id: str,
     provider: str,
     storage_user_id: str,
-    email: Optional[str] = None,
-    display_name: Optional[str] = None,
     default_role: str = "tenant",
 ) -> User:
-    """Create a new user from storage provider auth."""
+    """
+    Create a new user from storage provider auth.
+    
+    PRIVACY: No personal data (email, name, etc.) is stored.
+    Only the anonymous user_id and provider info.
+    """
     async with get_db_session() as session:
         user = User(
             id=user_id,
             primary_provider=provider,
             storage_user_id=storage_user_id,
-            email=email,
-            display_name=display_name,
             default_role=default_role,
-            created_at=datetime.utcnow(),
-            last_login=datetime.utcnow(),
+            created_at=utc_now(),
+            last_login=utc_now(),
         )
         session.add(user)
         await session.commit()
@@ -69,23 +82,20 @@ async def get_or_create_user(
     user_id: str,
     provider: str,
     storage_user_id: str,
-    email: Optional[str] = None,
-    display_name: Optional[str] = None,
     default_role: str = "tenant",
 ) -> tuple[User, bool]:
     """
     Get existing user or create new one.
+    
+    PRIVACY: No personal data (email, name, etc.) is stored or updated.
+    
     Returns: (user, created: bool)
     """
     user = await get_user_by_id(user_id)
     if user:
-        # Update last login
+        # Update last login only - no personal data
         async with get_db_session() as session:
-            user.last_login = datetime.utcnow()
-            if email and not user.email:
-                user.email = email
-            if display_name and not user.display_name:
-                user.display_name = display_name
+            user.last_login = utc_now()
             session.add(user)
             await session.commit()
         return user, False
@@ -94,8 +104,6 @@ async def get_or_create_user(
         user_id=user_id,
         provider=provider,
         storage_user_id=storage_user_id,
-        email=email,
-        display_name=display_name,
         default_role=default_role,
     )
     return user, True
@@ -110,35 +118,14 @@ async def update_user_role(user_id: str, role: str) -> Optional[User]:
         user = result.scalar_one_or_none()
         if user:
             user.default_role = role
-            user.updated_at = datetime.utcnow()
+            user.updated_at = utc_now()
             await session.commit()
             await session.refresh(user)
         return user
 
 
-async def update_user_profile(
-    user_id: str,
-    email: Optional[str] = None,
-    display_name: Optional[str] = None,
-    avatar_url: Optional[str] = None,
-) -> Optional[User]:
-    """Update user profile info."""
-    async with get_db_session() as session:
-        result = await session.execute(
-            select(User).where(User.id == user_id)
-        )
-        user = result.scalar_one_or_none()
-        if user:
-            if email is not None:
-                user.email = email
-            if display_name is not None:
-                user.display_name = display_name
-            if avatar_url is not None:
-                user.avatar_url = avatar_url
-            user.updated_at = datetime.utcnow()
-            await session.commit()
-            await session.refresh(user)
-        return user
+# REMOVED: update_user_profile() - Semptify does not store personal data
+# Any profile info the user wants lives in THEIR cloud storage, not our DB.
 
 
 # =============================================================================
@@ -149,19 +136,20 @@ async def link_provider(
     user_id: str,
     provider: str,
     storage_user_id: str,
-    email: Optional[str] = None,
-    display_name: Optional[str] = None,
 ) -> LinkedProvider:
-    """Link an additional storage provider to user's account."""
+    """
+    Link an additional storage provider to user's account.
+    
+    PRIVACY: No personal data (email, name, etc.) is stored.
+    Only the anonymous provider identity.
+    """
     async with get_db_session() as session:
         linked = LinkedProvider(
             id=str(uuid.uuid4()),
             user_id=user_id,
             provider=provider,
             storage_user_id=storage_user_id,
-            email=email,
-            display_name=display_name,
-            linked_at=datetime.utcnow(),
+            linked_at=utc_now(),
         )
         session.add(linked)
         await session.commit()
@@ -204,12 +192,13 @@ async def get_user_auth_info(user_id: str) -> Optional[dict]:
     """
     Get the info needed to re-authenticate a returning user.
     
+    PRIVACY: No personal data is returned - only provider and role info.
+    
     Returns:
         {
-            "user_id": "abc123",
+            "user_id": "GU7x9kM2pQ",
             "primary_provider": "google_drive",
             "default_role": "tenant",
-            "email": "user@example.com",
             "linked_providers": ["google_drive", "dropbox"]
         }
     """
@@ -223,7 +212,5 @@ async def get_user_auth_info(user_id: str) -> Optional[dict]:
         "user_id": user.id,
         "primary_provider": user.primary_provider,
         "default_role": user.default_role,
-        "email": user.email,
-        "display_name": user.display_name,
         "linked_providers": [user.primary_provider] + [l.provider for l in linked],
     }

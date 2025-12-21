@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧭 Adaptive Guide - Semptify</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/shared-nav.css">
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --card-hover: #334155;
+            --primary: #3b82f6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --text: #f8fafc;
+            --muted: #94a3b8;
+            --border: rgba(255,255,255,0.1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        .main-content {
+            margin-left: 260px;
+            min-height: 100vh;
+            transition: margin-left 0.3s;
+        }
+
+        body:not(.nav-pinned) .main-content { margin-left: 60px; }
+        @media (max-width: 768px) { .main-content { margin-left: 0 !important; } }
+
+        .guide-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Intensity Meter */
+        .intensity-meter {
+            background: var(--card);
+            border-radius: 1rem;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border);
+        }
+
+        .intensity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .intensity-label { font-size: 0.85rem; color: var(--muted); }
+        .intensity-value { font-weight: 700; font-size: 1.1rem; }
+
+        .intensity-bar {
+            height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .intensity-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: all 0.5s ease;
+        }
+
+        .intensity-factors {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+        }
+
+        .factor-chip {
+            font-size: 0.7rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 1rem;
+            background: rgba(255,255,255,0.1);
+        }
+
+        /* Question Card */
+        .question-card {
+            background: var(--card);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border);
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .question-card h2 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+
+        .question-meta {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.8rem;
+            color: var(--muted);
+        }
+
+        .question-meta span { display: flex; align-items: center; gap: 0.25rem; }
+
+        .input-container { margin: 1.5rem 0; }
+
+        .option-btn {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.25rem;
+            background: rgba(255,255,255,0.03);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+            width: 100%;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        .option-btn:hover {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: rgba(59, 130, 246, 0.5);
+        }
+
+        .option-btn.selected {
+            background: rgba(59, 130, 246, 0.15);
+            border-color: var(--primary);
+        }
+
+        .option-btn .weight {
+            font-size: 0.7rem;
+            padding: 0.15rem 0.4rem;
+            border-radius: 0.25rem;
+            background: rgba(255,255,255,0.1);
+        }
+
+        .slider-container { padding: 1rem 0; }
+
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .slider-input {
+            width: 100%;
+            height: 8px;
+            -webkit-appearance: none;
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+            outline: none;
+        }
+
+        .slider-input::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            background: var(--primary);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .slider-value {
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-top: 0.5rem;
+        }
+
+        .date-input, .text-input {
+            padding: 1rem;
+            background: rgba(0,0,0,0.3);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 0.75rem;
+            color: var(--text);
+            font-size: 1rem;
+            width: 100%;
+        }
+
+        .date-input:focus, .text-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .context-panel {
+            border-radius: 0.75rem;
+            padding: 1rem 1.25rem;
+            margin-bottom: 1rem;
+            border: 1px solid;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .context-panel.info { background: rgba(59, 130, 246, 0.1); border-color: rgba(59, 130, 246, 0.3); }
+        .context-panel.warning { background: rgba(245, 158, 11, 0.1); border-color: rgba(245, 158, 11, 0.3); }
+        .context-panel.danger { background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.3); }
+        .context-panel.success { background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.3); }
+
+        .context-panel p { font-size: 0.9rem; line-height: 1.5; }
+
+        .action-card {
+            background: var(--card);
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            border: 1px solid var(--border);
+            margin-bottom: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .action-card:hover { border-color: var(--primary); transform: translateX(4px); }
+
+        .action-card .priority {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .action-card .priority.p1 { background: var(--danger); }
+        .action-card .priority.p2 { background: var(--warning); }
+        .action-card .priority.p3 { background: var(--primary); }
+        .action-card .priority.p4 { background: var(--success); }
+
+        .action-card .content { flex: 1; }
+        .action-card .title { font-weight: 600; margin-bottom: 0.25rem; }
+        .action-card .rationale { font-size: 0.85rem; color: var(--muted); }
+
+        .nav-row { display: flex; gap: 1rem; margin-top: 1.5rem; }
+
+        .nav-btn {
+            padding: 0.875rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-btn.secondary { background: var(--card); color: var(--text); border: 1px solid var(--border); }
+        .nav-btn.secondary:hover { background: var(--card-hover); }
+        .nav-btn.primary { background: var(--primary); color: white; flex: 1; justify-content: center; }
+        .nav-btn.primary:hover { background: #2563eb; }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: var(--card);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+
+        .stat-card .value { font-size: 1.5rem; font-weight: 700; }
+        .stat-card .label { font-size: 0.75rem; color: var(--muted); margin-top: 0.25rem; }
+
+        .reasoning-panel {
+            background: rgba(0,0,0,0.2);
+            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            color: var(--muted);
+        }
+
+        .reasoning-panel summary { cursor: pointer; font-weight: 500; }
+        .reasoning-panel .logic { margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid var(--border); }
+
+        .help-float {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            width: 48px;
+            height: 48px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--muted);
+            transition: all 0.2s;
+            z-index: 100;
+        }
+
+        .help-float:hover { border-color: var(--primary); color: var(--primary); }
+    </style>
+</head>
+<body class="nav-pinned">
+    <nav id="semptify-nav"></nav>
+
+    <main class="main-content">
+        <div class="guide-container">
+            <div class="intensity-meter" id="intensityMeter">
+                <div class="intensity-header">
+                    <span class="intensity-label">Situation Intensity</span>
+                    <span class="intensity-value" id="intensityValue">Analyzing...</span>
+                </div>
+                <div class="intensity-bar">
+                    <div class="intensity-fill" id="intensityFill" style="width: 0%; background: var(--muted);"></div>
+                </div>
+                <div class="intensity-factors" id="intensityFactors"></div>
+            </div>
+            <div id="guideContent"></div>
+        </div>
+    </main>
+
+    <div class="help-float" onclick="showHelp()">
+        <i class="fas fa-question"></i>
+    </div>
+
+    <script src="/static/js/shared-nav.js"></script>
+    <script>
+        // ============================================
+        // ADAPTIVE REASONING ENGINE v2
+        // Pure algorithmic - no presets, no repeats
+        // ============================================
+
+        // Semantic building blocks
+        const SEMANTICS = {
+            topics: {
+                eviction: ['eviction', 'removal', 'displacement', 'being forced out', 'losing housing', 'vacate situation'],
+                habitability: ['living conditions', 'property state', 'dwelling quality', 'housing conditions', 'unit maintenance'],
+                rent: ['rent matters', 'payment situation', 'financial obligations', 'rental costs', 'monetary concerns'],
+                court: ['court involvement', 'legal proceedings', 'judicial matters', 'litigation status', 'case status'],
+                evidence: ['documentation', 'proof', 'records', 'evidence', 'paper trail'],
+                timeline: ['deadlines', 'time constraints', 'schedule', 'key dates', 'timing'],
+                health: ['health impact', 'safety concerns', 'wellbeing effects', 'physical risk'],
+                communication: ['contact history', 'correspondence', 'exchanges', 'discussions']
+            },
+            verbs: {
+                gather: ['collect', 'gather', 'compile', 'assemble', 'obtain', 'accumulate', 'secure'],
+                prepare: ['prepare', 'draft', 'create', 'develop', 'construct', 'build', 'formulate'],
+                file: ['file', 'submit', 'lodge', 'present', 'deliver', 'register'],
+                review: ['review', 'examine', 'analyze', 'assess', 'evaluate', 'scrutinize'],
+                contact: ['contact', 'reach out to', 'connect with', 'communicate with', 'engage'],
+                document: ['document', 'record', 'log', 'chronicle', 'capture', 'note']
+            },
+            reasons: {
+                deadline: ['time is limited', 'deadlines approach', 'the clock is ticking', 'days are counting down', 'time constraints exist'],
+                protection: ['to protect yourself', 'for your defense', 'to safeguard your position', 'to secure your rights', 'for protection'],
+                strength: ['to strengthen your case', 'to bolster your position', 'to reinforce your standing', 'to support your claims'],
+                requirement: ['this is required', 'this is necessary', 'this is essential', 'this must happen', 'this is mandatory']
+            },
+            intensifiers: {
+                high: ['critical', 'urgent', 'vital', 'essential', 'imperative', 'crucial'],
+                medium: ['important', 'significant', 'notable', 'meaningful', 'substantial'],
+                low: ['helpful', 'useful', 'beneficial', 'worthwhile', 'advantageous']
+            }
+        };
+
+        // State
+        let state = {
+            responses: {},
+            intensity: 0,
+            factors: [],
+            questionIndex: 0,
+            usedPhrases: new Set(),
+            sessionSeed: Math.random(),
+            priorityActions: []
+        };
+
+        // Markov-like phrase tracking
+        const phraseHistory = {
+            questions: [],
+            suggestions: [],
+            contexts: []
+        };
+
+        // ============================================
+        // UNIQUE TEXT SYNTHESIS ENGINE
+        // ============================================
+
+        function synthesizeUnique(type, params = {}) {
+            let text;
+            let attempts = 0;
+            const maxAttempts = 100;
+
+            do {
+                text = buildPhrase(type, params);
+                attempts++;
+            } while (phraseHistory[type]?.includes(text) && attempts < maxAttempts);
+
+            if (phraseHistory[type]) phraseHistory[type].push(text);
+            return text;
+        }
+
+        function buildPhrase(type, p) {
+            const pick = arr => arr[Math.floor(seededRandom() * arr.length)];
+            const shuffle = arr => [...arr].sort(() => seededRandom() - 0.5);
+
+            switch(type) {
+                case 'questions':
+                    return buildQuestion(p, pick);
+                case 'suggestions':
+                    return buildSuggestion(p, pick);
+                case 'contexts':
+                    return buildContext(p, pick);
+                default:
+                    return '';
+            }
+        }
+
+        function buildQuestion(p, pick) {
+            const topicWords = SEMANTICS.topics[p.topic] || [p.topic];
+            const topic = pick(topicWords);
+            
+            const patterns = [
+                () => `What's happening with your ${topic}?`,
+                () => `Tell me about ${topic}`,
+                () => `Regarding ${topic} - what describes your situation?`,
+                () => `${capitalize(topic)}: where do you stand?`,
+                () => `How would you characterize ${topic}?`,
+                () => `Share your ${topic} circumstances`,
+                () => `Describe the ${topic} situation`,
+                () => `About ${topic} - what's occurring?`,
+                () => `What applies to your ${topic}?`,
+                () => `${capitalize(topic)} - select what fits`,
+                () => `Help me understand your ${topic}`,
+                () => `Clarify your ${topic} status`,
+                () => `${capitalize(topic)}: what's the reality?`,
+                () => `Walk me through ${topic}`,
+                () => `Concerning ${topic} - your situation?`
+            ];
+
+            return pick(patterns)();
+        }
+
+        function buildSuggestion(p, pick) {
+            const verb = pick(SEMANTICS.verbs[p.verbType] || SEMANTICS.verbs.prepare);
+            const reason = pick(SEMANTICS.reasons[p.reasonType] || SEMANTICS.reasons.strength);
+            const obj = p.object;
+
+            const patterns = [
+                () => `${capitalize(verb)} ${obj} - ${reason}`,
+                () => `${reason.charAt(0).toUpperCase() + reason.slice(1)}: ${verb} ${obj}`,
+                () => `${capitalize(verb)} your ${obj} now`,
+                () => `Priority: ${verb} ${obj}`,
+                () => `Take action - ${verb} ${obj}`,
+                () => `${capitalize(obj)}: ${verb} this ${reason}`,
+                () => `${reason} → ${verb} ${obj}`,
+                () => `Action item: ${verb} ${obj}`,
+                () => `${capitalize(verb)} ${obj} (${reason})`,
+                () => `Next step: ${verb} ${obj}`,
+                () => `Consider ${verb}ing ${obj}`,
+                () => `${capitalize(reason)}, so ${verb} ${obj}`,
+                () => `${capitalize(obj)} needs ${verb}ing`
+            ];
+
+            return pick(patterns)();
+        }
+
+        function buildContext(p, pick) {
+            const intensifier = pick(SEMANTICS.intensifiers[p.level] || SEMANTICS.intensifiers.medium);
+            const reason = p.reason || pick(SEMANTICS.reasons.protection);
+
+            const timePhrase = p.deadline ? 
+                pick([`${p.deadline} remaining`, `only ${p.deadline} left`, `${p.deadline} to act`, `deadline: ${p.deadline}`]) :
+                pick(['timing matters here', 'act promptly', 'don\'t delay', 'time factors in']);
+
+            const patterns = [
+                () => `${capitalize(intensifier)}: ${reason}. ${capitalize(timePhrase)}.`,
+                () => `${capitalize(timePhrase)}. This is ${intensifier} because ${reason}.`,
+                () => `Understanding: ${reason}. ${capitalize(intensifier)} - ${timePhrase}.`,
+                () => `${capitalize(reason)}. ${capitalize(timePhrase)}. ${capitalize(intensifier)} situation.`,
+                () => `${capitalize(intensifier)} point - ${reason}. ${capitalize(timePhrase)}.`,
+                () => `Note: ${timePhrase}. ${capitalize(reason)} makes this ${intensifier}.`,
+                () => `${capitalize(timePhrase)} - ${reason}. Marked as ${intensifier}.`
+            ];
+
+            return pick(patterns)();
+        }
+
+        function capitalize(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        }
+
+        // Seeded random for variation but consistency within session
+        let seedCounter = 0;
+        function seededRandom() {
+            seedCounter++;
+            const x = Math.sin(state.sessionSeed * 10000 + seedCounter) * 10000;
+            return x - Math.floor(x);
+        }
+
+        // ============================================
+        // DYNAMIC QUESTION DETERMINATION
+        // ============================================
+
+        const INFORMATION_DIMENSIONS = [
+            { id: 'category', weight: 100, topic: 'eviction', required: true, type: 'choice' },
+            { id: 'court_status', weight: 90, topic: 'court', type: 'choice', needs: ['category'] },
+            { id: 'deadline', weight: 85, topic: 'timeline', type: 'date', needs: ['court_status'] },
+            { id: 'notice_type', weight: 80, topic: 'eviction', type: 'choice', needs: ['category'] },
+            { id: 'conditions', weight: 75, topic: 'habitability', type: 'multi', needs: ['category'] },
+            { id: 'health_impact', weight: 70, topic: 'health', type: 'choice', needs: ['conditions'] },
+            { id: 'evidence_status', weight: 65, topic: 'evidence', type: 'choice' },
+            { id: 'financial_pressure', weight: 60, topic: 'rent', type: 'slider' },
+            { id: 'communication_type', weight: 55, topic: 'communication', type: 'choice' },
+            { id: 'assistance_received', weight: 50, topic: 'evidence', type: 'multi' }
+        ];
+
+        function determineNextQuestion() {
+            // Filter available questions
+            const available = INFORMATION_DIMENSIONS.filter(dim => {
+                // Already answered
+                if (state.responses[dim.id] !== undefined) return false;
+                
+                // Check dependencies
+                if (dim.needs) {
+                    for (const need of dim.needs) {
+                        if (state.responses[need] === undefined) return false;
+                    }
+                }
+
+                // Category-specific filtering
+                if (dim.id === 'notice_type' && state.responses.category !== 'eviction') return false;
+                if (dim.id === 'conditions' && state.responses.category !== 'habitability') return false;
+                if (dim.id === 'health_impact' && !state.responses.conditions?.length) return false;
+                if (dim.id === 'court_status' && !['eviction', 'discrimination'].includes(state.responses.category)) return false;
+                if (dim.id === 'deadline' && state.responses.court_status !== 'active') return false;
+                if (dim.id === 'financial_pressure' && !['eviction', 'rent'].includes(state.responses.category)) return false;
+
+                return true;
+            });
+
+            if (available.length === 0) return null;
+
+            // Score by information value + randomization
+            const scored = available.map(dim => ({
+                ...dim,
+                score: calculateInfoValue(dim)
+            }));
+
+            scored.sort((a, b) => b.score - a.score);
+            return scored[0];
+        }
+
+        function calculateInfoValue(dim) {
+            let score = dim.weight;
+            
+            // Boost based on intensity
+            if (state.intensity > 60 && dim.topic === 'timeline') score += 20;
+            if (state.intensity > 50 && dim.topic === 'court') score += 15;
+            if (state.intensity > 40 && dim.topic === 'evidence') score += 10;
+
+            // Add controlled randomness
+            score += seededRandom() * 15;
+
+            return score;
+        }
+
+        // ============================================
+        // OPTIONS GENERATION
+        // ============================================
+
+        function generateOptions(dimId) {
+            const generators = {
+                category: () => [
+                    { id: 'eviction', label: synthesizeOptionLabel('eviction'), impact: 70 },
+                    { id: 'habitability', label: synthesizeOptionLabel('habitability'), impact: 50 },
+                    { id: 'rent', label: synthesizeOptionLabel('rent'), impact: 40 },
+                    { id: 'discrimination', label: synthesizeOptionLabel('discrimination'), impact: 55 },
+                    { id: 'lease', label: synthesizeOptionLabel('lease'), impact: 30 },
+                    { id: 'other', label: synthesizeOptionLabel('other'), impact: 20 }
+                ],
+                court_status: () => [
+                    { id: 'active', label: synthesizeCourtLabel('active'), impact: 40 },
+                    { id: 'pending', label: synthesizeCourtLabel('pending'), impact: 25 },
+                    { id: 'none', label: synthesizeCourtLabel('none'), impact: 5 },
+                    { id: 'unsure', label: synthesizeCourtLabel('unsure'), impact: 15 }
+                ],
+                notice_type: () => [
+                    { id: '3day', label: synthesizeNoticeLabel('3day'), impact: 35 },
+                    { id: '30day', label: synthesizeNoticeLabel('30day'), impact: 25 },
+                    { id: '60day', label: synthesizeNoticeLabel('60day'), impact: 25 },
+                    { id: 'other', label: synthesizeNoticeLabel('other'), impact: 15 },
+                    { id: 'none', label: synthesizeNoticeLabel('none'), impact: 0 }
+                ],
+                conditions: () => shuffleOptions([
+                    { id: 'heat', label: synthesizeConditionLabel('heat'), impact: 30 },
+                    { id: 'water', label: synthesizeConditionLabel('water'), impact: 30 },
+                    { id: 'pests', label: synthesizeConditionLabel('pests'), impact: 25 },
+                    { id: 'mold', label: synthesizeConditionLabel('mold'), impact: 25 },
+                    { id: 'electrical', label: synthesizeConditionLabel('electrical'), impact: 30 },
+                    { id: 'structural', label: synthesizeConditionLabel('structural'), impact: 25 },
+                    { id: 'security', label: synthesizeConditionLabel('security'), impact: 20 }
+                ]),
+                health_impact: () => [
+                    { id: 'severe', label: synthesizeHealthLabel('severe'), impact: 30 },
+                    { id: 'moderate', label: synthesizeHealthLabel('moderate'), impact: 15 },
+                    { id: 'minimal', label: synthesizeHealthLabel('minimal'), impact: 5 }
+                ],
+                evidence_status: () => [
+                    { id: 'comprehensive', label: synthesizeEvidenceLabel('comprehensive'), impact: -15 },
+                    { id: 'partial', label: synthesizeEvidenceLabel('partial'), impact: 0 },
+                    { id: 'none', label: synthesizeEvidenceLabel('none'), impact: 20 }
+                ],
+                communication_type: () => [
+                    { id: 'written', label: synthesizeCommLabel('written'), impact: -10 },
+                    { id: 'verbal', label: synthesizeCommLabel('verbal'), impact: 10 },
+                    { id: 'none', label: synthesizeCommLabel('none'), impact: 20 }
+                ],
+                assistance_received: () => shuffleOptions([
+                    { id: 'legal_aid', label: synthesizeAssistLabel('legal_aid'), impact: -15 },
+                    { id: 'tenant_org', label: synthesizeAssistLabel('tenant_org'), impact: -10 },
+                    { id: 'attorney', label: synthesizeAssistLabel('attorney'), impact: -20 },
+                    { id: 'government', label: synthesizeAssistLabel('government'), impact: -5 },
+                    { id: 'none', label: synthesizeAssistLabel('none'), impact: 10 }
+                ])
+            };
+
+            return generators[dimId] ? generators[dimId]() : [];
+        }
+
+        function shuffleOptions(opts) {
+            return opts.sort(() => seededRandom() - 0.5);
+        }
+
+        // Label synthesizers - each generates unique text
+        function synthesizeOptionLabel(type) {
+            const pools = {
+                eviction: ['Facing eviction', 'Being removed', 'Displacement threat', 'Forced to leave', 'Losing my home', 'Eviction situation', 'Asked to vacate'],
+                habitability: ['Bad conditions', 'Property problems', 'Unsafe dwelling', 'Maintenance issues', 'Housing defects', 'Living conditions', 'Unit problems'],
+                rent: ['Rent concerns', 'Payment matters', 'Financial dispute', 'Rent increase', 'Cost issues', 'Monetary problems', 'Rent situation'],
+                discrimination: ['Unfair treatment', 'Discrimination', 'Bias issues', 'Rights violated', 'Unequal treatment', 'Prejudice faced'],
+                lease: ['Lease questions', 'Contract issues', 'Agreement problems', 'Terms dispute', 'Rental agreement'],
+                other: ['Something else', 'Different issue', 'Not listed', 'Other matter', 'Unique situation']
+            };
+            return pickUnused(pools[type] || [type]);
+        }
+
+        function synthesizeCourtLabel(status) {
+            const pools = {
+                active: ['Court case active', 'In litigation now', 'Legal proceedings ongoing', 'Currently in court', 'Case filed against me'],
+                pending: ['Might go to court', 'Court seems likely', 'Heading toward legal action', 'Court looming'],
+                none: ['No court involvement', 'Not in legal system', 'No lawsuit', 'Pre-litigation stage'],
+                unsure: ['Not certain', 'Unknown status', 'Need to verify', 'Unclear']
+            };
+            return pickUnused(pools[status] || [status]);
+        }
+
+        function synthesizeNoticeLabel(type) {
+            const pools = {
+                '3day': ['3-day notice', 'Three day warning', 'Pay/quit 3 days', '72-hour notice'],
+                '30day': ['30-day notice', 'One month notice', '30 days to leave'],
+                '60day': ['60-day notice', 'Two month warning', '60 days to vacate'],
+                other: ['Different type', 'Other notice', 'Something else'],
+                none: ['No notice received', 'Nothing yet', 'Haven\'t gotten one']
+            };
+            return pickUnused(pools[type] || [type]);
+        }
+
+        function synthesizeConditionLabel(cond) {
+            const pools = {
+                heat: ['No heating', 'Heat broken', 'Cold unit', 'HVAC failed', 'No warmth'],
+                water: ['Water issues', 'No hot water', 'Plumbing broken', 'Water off'],
+                pests: ['Pest problem', 'Infestation', 'Bugs/rodents', 'Vermin present'],
+                mold: ['Mold present', 'Fungus growth', 'Mildew issues', 'Mold visible'],
+                electrical: ['Electrical hazard', 'Wiring danger', 'Power problems', 'Electrical issues'],
+                structural: ['Structural damage', 'Building unsafe', 'Physical defects', 'Structure problems'],
+                security: ['Security broken', 'Locks failed', 'Entry compromised', 'Safety issues']
+            };
+            return pickUnused(pools[cond] || [cond]);
+        }
+
+        function synthesizeHealthLabel(level) {
+            const pools = {
+                severe: ['Serious health impact', 'Major risk', 'Significant danger', 'Health emergency'],
+                moderate: ['Some health effects', 'Moderate concern', 'Notable impact'],
+                minimal: ['Minor issues', 'Little health effect', 'Minimal concern']
+            };
+            return pickUnused(pools[level] || [level]);
+        }
+
+        function synthesizeEvidenceLabel(level) {
+            const pools = {
+                comprehensive: ['Well documented', 'Strong records', 'Extensive proof', 'Full documentation'],
+                partial: ['Some evidence', 'Partial records', 'Limited proof', 'A few documents'],
+                none: ['No documentation', 'Nothing recorded', 'No evidence yet', 'Undocumented']
+            };
+            return pickUnused(pools[level] || [level]);
+        }
+
+        function synthesizeCommLabel(type) {
+            const pools = {
+                written: ['Written records', 'Email/text', 'Documented talks', 'Paper trail exists'],
+                verbal: ['Verbal only', 'Spoken words', 'Phone/in-person', 'No written record'],
+                none: ['No contact', 'Haven\'t communicated', 'No discussion']
+            };
+            return pickUnused(pools[type] || [type]);
+        }
+
+        function synthesizeAssistLabel(type) {
+            const pools = {
+                legal_aid: ['Legal aid org', 'Free legal help', 'Pro bono assistance'],
+                tenant_org: ['Tenant group', 'Renter organization', 'Housing advocacy'],
+                attorney: ['Private lawyer', 'Hired counsel', 'Personal attorney'],
+                government: ['Government agency', 'Housing authority', 'City office'],
+                none: ['No help yet', 'Going alone', 'No assistance received']
+            };
+            return pickUnused(pools[type] || [type]);
+        }
+
+        function pickUnused(pool) {
+            const unused = pool.filter(p => !state.usedPhrases.has(p));
+            const choice = unused.length > 0 ? unused[Math.floor(seededRandom() * unused.length)] : pool[Math.floor(seededRandom() * pool.length)];
+            state.usedPhrases.add(choice);
+            return choice;
+        }
+
+        // ============================================
+        // INTENSITY CALCULATION
+        // ============================================
+
+        function calculateIntensity() {
+            let score = 0;
+            let factors = [];
+            const r = state.responses;
+
+            // Category base
+            const categoryScores = { eviction: 40, discrimination: 35, habitability: 30, rent: 20, lease: 15, other: 10 };
+            if (r.category) {
+                const catScore = categoryScores[r.category] || 10;
+                score += catScore;
+                factors.push({ label: r.category, val: catScore });
+            }
+
+            // Court status
+            if (r.court_status === 'active') { score += 35; factors.push({ label: 'court active', val: 35 }); }
+            else if (r.court_status === 'pending') { score += 15; factors.push({ label: 'court pending', val: 15 }); }
+
+            // Deadline proximity
+            if (r.deadline) {
+                const days = Math.ceil((new Date(r.deadline) - new Date()) / 86400000);
+                if (days <= 0) { score += 45; factors.push({ label: 'overdue', val: 45 }); }
+                else if (days <= 3) { score += 35; factors.push({ label: `${days}d left`, val: 35 }); }
+                else if (days <= 7) { score += 25; factors.push({ label: `${days}d left`, val: 25 }); }
+                else if (days <= 14) { score += 15; factors.push({ label: `${days}d left`, val: 15 }); }
+            }
+
+            // Notice type
+            if (r.notice_type === '3day') { score += 20; factors.push({ label: '3-day', val: 20 }); }
+
+            // Health
+            if (r.health_impact === 'severe') { score += 25; factors.push({ label: 'health risk', val: 25 }); }
+            else if (r.health_impact === 'moderate') { score += 10; factors.push({ label: 'health concern', val: 10 }); }
+
+            // Conditions count
+            if (r.conditions?.length >= 3) { score += 15; factors.push({ label: 'multiple issues', val: 15 }); }
+
+            // Evidence (negative = good)
+            if (r.evidence_status === 'comprehensive') { score -= 15; factors.push({ label: 'documented', val: -15 }); }
+            else if (r.evidence_status === 'none') { score += 15; factors.push({ label: 'undocumented', val: 15 }); }
+
+            // Financial
+            if (r.financial_pressure >= 8) { score += 15; factors.push({ label: 'financial stress', val: 15 }); }
+
+            // Assistance (negative = good)
+            if (r.assistance_received?.includes('attorney')) { score -= 20; factors.push({ label: 'has lawyer', val: -20 }); }
+            else if (r.assistance_received?.includes('legal_aid')) { score -= 10; factors.push({ label: 'has legal aid', val: -10 }); }
+
+            state.intensity = Math.max(0, Math.min(100, score));
+            state.factors = factors;
+            updateIntensityUI();
+        }
+
+        function updateIntensityUI() {
+            const s = state.intensity;
+            const fill = document.getElementById('intensityFill');
+            const val = document.getElementById('intensityValue');
+            const facts = document.getElementById('intensityFactors');
+
+            let color, label;
+            if (s >= 75) { color = 'linear-gradient(90deg, #ef4444, #b91c1c)'; label = 'Critical'; }
+            else if (s >= 50) { color = 'linear-gradient(90deg, #f59e0b, #d97706)'; label = 'Elevated'; }
+            else if (s >= 25) { color = 'linear-gradient(90deg, #3b82f6, #1d4ed8)'; label = 'Moderate'; }
+            else { color = 'linear-gradient(90deg, #10b981, #059669)'; label = 'Manageable'; }
+
+            fill.style.width = s + '%';
+            fill.style.background = color;
+            val.textContent = `${label} (${Math.round(s)})`;
+            val.style.color = s >= 75 ? '#f87171' : s >= 50 ? '#fbbf24' : s >= 25 ? '#60a5fa' : '#34d399';
+
+            facts.innerHTML = state.factors.map(f => 
+                `<span class="factor-chip" style="background:${f.val > 0 ? 'rgba(239,68,68,0.2)' : 'rgba(16,185,129,0.2)'}">
+                    ${f.val > 0 ? '↑' : '↓'} ${f.label}
+                </span>`
+            ).join('');
+        }
+
+        // ============================================
+        // RENDERING
+        // ============================================
+
+        function render() {
+            const dim = determineNextQuestion();
+            
+            if (!dim) {
+                renderResults();
+                return;
+            }
+
+            state.questionIndex++;
+            calculateIntensity();
+
+            const content = document.getElementById('guideContent');
+            const questionText = synthesizeUnique('questions', { topic: dim.topic });
+            const options = generateOptions(dim.id);
+
+            let html = `<div class="question-card">`;
+            html += `<h2>${questionText}</h2>`;
+            html += `<div class="question-meta">
+                <span><i class="fas fa-layer-group"></i> Q${state.questionIndex}</span>
+                <span><i class="fas fa-chart-line"></i> Weight: ${dim.weight}</span>
+            </div>`;
+
+            // Context if intensity warrants
+            if (state.intensity > 35) {
+                const level = state.intensity > 70 ? 'high' : state.intensity > 50 ? 'medium' : 'low';
+                const contextClass = state.intensity > 70 ? 'danger' : state.intensity > 50 ? 'warning' : 'info';
+                const deadline = state.responses.deadline ? formatDeadline() : null;
+                const contextText = synthesizeUnique('contexts', { level, deadline, reason: getContextReason() });
+                html += `<div class="context-panel ${contextClass}"><p>${contextText}</p></div>`;
+            }
+
+            html += `<div class="input-container">`;
+
+            if (dim.type === 'choice') {
+                options.forEach(opt => {
+                    html += `<button class="option-btn" data-id="${opt.id}" onclick="selectChoice('${dim.id}','${opt.id}')">
+                        <span style="flex:1">${opt.label}</span>
+                        <span class="weight">${opt.impact >= 0 ? '+' : ''}${opt.impact}</span>
+                    </button>`;
+                });
+            } else if (dim.type === 'multi') {
+                html += `<p style="font-size:0.85rem;color:var(--muted);margin-bottom:0.75rem">Select all applicable</p>`;
+                options.forEach(opt => {
+                    html += `<button class="option-btn" data-id="${opt.id}" onclick="toggleMulti(this,'${opt.id}')">
+                        <i class="far fa-square" style="width:20px"></i>
+                        <span style="flex:1">${opt.label}</span>
+                    </button>`;
+                });
+                html += `<button class="nav-btn primary" style="margin-top:1rem" onclick="submitMulti('${dim.id}')">Continue</button>`;
+            } else if (dim.type === 'slider') {
+                html += `<div class="slider-container">
+                    <div class="slider-labels"><span>1 - Minimal</span><span>10 - Severe</span></div>
+                    <input type="range" class="slider-input" min="1" max="10" value="5" 
+                           oninput="document.getElementById('sliderVal').textContent=this.value">
+                    <div class="slider-value" id="sliderVal">5</div>
+                </div>
+                <button class="nav-btn primary" onclick="submitSlider('${dim.id}')">Continue</button>`;
+            } else if (dim.type === 'date') {
+                html += `<input type="date" class="date-input" id="dateInput">
+                <button class="nav-btn primary" style="margin-top:1rem" onclick="submitDate('${dim.id}')">Continue</button>`;
+            }
+
+            html += `</div>`;
+            html += `<details class="reasoning-panel">
+                <summary><i class="fas fa-brain"></i> Algorithm reasoning</summary>
+                <div class="logic">Dimension: ${dim.id} | Topic: ${dim.topic} | Base weight: ${dim.weight} | Computed score: ${calculateInfoValue(dim).toFixed(1)} | Intensity: ${state.intensity}</div>
+            </details>`;
+            html += `</div>`;
+
+            content.innerHTML = html;
+        }
+
+        function getContextReason() {
+            const r = state.responses;
+            const reasons = [];
+            if (r.court_status === 'active') reasons.push('court involvement intensifies everything');
+            if (r.category === 'eviction') reasons.push('housing stability is at stake');
+            if (r.health_impact === 'severe') reasons.push('your health is being impacted');
+            if (r.notice_type === '3day') reasons.push('short notice deadlines are strict');
+            if (reasons.length === 0) reasons.push('your situation warrants careful attention');
+            return reasons[Math.floor(seededRandom() * reasons.length)];
+        }
+
+        function formatDeadline() {
+            const d = new Date(state.responses.deadline);
+            const days = Math.ceil((d - new Date()) / 86400000);
+            if (days <= 0) return 'PAST DUE';
+            return `${days} day${days !== 1 ? 's' : ''}`;
+        }
+
+        // ============================================
+        // INPUT HANDLERS
+        // ============================================
+
+        function selectChoice(dimId, value) {
+            state.responses[dimId] = value;
+            document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+            document.querySelector(`[data-id="${value}"]`)?.classList.add('selected');
+            setTimeout(render, 200);
+        }
+
+        let multiVals = [];
+        function toggleMulti(btn, val) {
+            btn.classList.toggle('selected');
+            const icon = btn.querySelector('i');
+            if (btn.classList.contains('selected')) {
+                icon.className = 'fas fa-check-square';
+                icon.style.color = 'var(--primary)';
+                if (!multiVals.includes(val)) multiVals.push(val);
+            } else {
+                icon.className = 'far fa-square';
+                icon.style.color = '';
+                multiVals = multiVals.filter(v => v !== val);
+            }
+        }
+
+        function submitMulti(dimId) {
+            state.responses[dimId] = [...multiVals];
+            multiVals = [];
+            render();
+        }
+
+        function submitSlider(dimId) {
+            state.responses[dimId] = parseInt(document.querySelector('.slider-input').value);
+            render();
+        }
+
+        function submitDate(dimId) {
+            const val = document.getElementById('dateInput').value;
+            if (val) { state.responses[dimId] = val; render(); }
+        }
+
+        // ============================================
+        // RESULTS - ALGORITHMICALLY GENERATED
+        // ============================================
+
+        function renderResults() {
+            calculateIntensity();
+            generateActions();
+
+            const content = document.getElementById('guideContent');
+            
+            let html = `
+                <div class="question-card" style="text-align:center">
+                    <h2>Analysis Complete</h2>
+                    <p style="color:var(--muted)">Processed ${state.questionIndex} dimensions</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="value" style="color:${state.intensity >= 70 ? 'var(--danger)' : state.intensity >= 40 ? 'var(--warning)' : 'var(--success)'}">${state.intensity}</div>
+                        <div class="label">Intensity</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="value">${state.priorityActions.length}</div>
+                        <div class="label">Actions</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="value">${Object.keys(state.responses).length}</div>
+                        <div class="label">Factors</div>
+                    </div>
+                </div>
+
+                <h3 style="margin:1.5rem 0 1rem;font-weight:600"><i class="fas fa-tasks text-blue-400"></i> Computed Action Plan</h3>
+            `;
+
+            state.priorityActions.forEach((a, i) => {
+                html += `<div class="action-card" onclick="location.href='${a.link}'">
+                    <div class="priority p${a.priority}">${a.priority}</div>
+                    <div class="content">
+                        <div class="title">${a.title}</div>
+                        <div class="rationale">${a.rationale}</div>
+                    </div>
+                    <i class="fas fa-chevron-right" style="color:var(--muted)"></i>
+                </div>`;
+            });
+
+            html += `<div class="nav-row">
+                <button class="nav-btn secondary" onclick="restart()"><i class="fas fa-redo"></i> Restart</button>
+                <button class="nav-btn primary" onclick="location.href='/static/focus.html'">Dashboard</button>
+            </div>`;
+
+            content.innerHTML = html;
+            localStorage.setItem('semptify_adaptive', JSON.stringify(state.responses));
+        }
+
+        function generateActions() {
+            state.priorityActions = [];
+            const r = state.responses;
+
+            // Action generation based on algorithmic rules
+            const actionRules = [
+                {
+                    test: () => r.court_status === 'active' || r.deadline,
+                    priority: 1,
+                    verbType: 'file',
+                    object: 'court response',
+                    reasonType: 'deadline',
+                    link: '/static/court_packet.html'
+                },
+                {
+                    test: () => r.evidence_status !== 'comprehensive',
+                    priority: r.evidence_status === 'none' ? 1 : 2,
+                    verbType: 'gather',
+                    object: 'supporting documentation',
+                    reasonType: 'strength',
+                    link: '/static/briefcase.html'
+                },
+                {
+                    test: () => r.category === 'eviction',
+                    priority: 2,
+                    verbType: 'review',
+                    object: 'defense options',
+                    reasonType: 'protection',
+                    link: '/static/dakota_defense.html'
+                },
+                {
+                    test: () => r.category === 'habitability',
+                    priority: r.health_impact === 'severe' ? 1 : 2,
+                    verbType: 'prepare',
+                    object: 'habitability complaint',
+                    reasonType: 'requirement',
+                    link: '/static/complaints.html'
+                },
+                {
+                    test: () => r.conditions?.length > 0,
+                    priority: 2,
+                    verbType: 'prepare',
+                    object: 'repair demand letter',
+                    reasonType: 'protection',
+                    link: '/static/letter_builder.html'
+                },
+                {
+                    test: () => r.communication_type !== 'written',
+                    priority: 3,
+                    verbType: 'document',
+                    object: 'all communications',
+                    reasonType: 'strength',
+                    link: '/static/document_intake.html'
+                },
+                {
+                    test: () => !r.assistance_received?.includes('legal_aid') && !r.assistance_received?.includes('attorney'),
+                    priority: state.intensity > 50 ? 2 : 3,
+                    verbType: 'contact',
+                    object: 'legal assistance',
+                    reasonType: 'protection',
+                    link: '/static/legal-aid.html'
+                },
+                {
+                    test: () => true,
+                    priority: 4,
+                    verbType: 'review',
+                    object: 'your legal rights',
+                    reasonType: 'strength',
+                    link: '/static/law_library.html'
+                },
+                {
+                    test: () => r.category === 'eviction' || r.court_status === 'active',
+                    priority: 3,
+                    verbType: 'prepare',
+                    object: 'event timeline',
+                    reasonType: 'strength',
+                    link: '/static/timeline-builder.html'
+                }
+            ];
+
+            actionRules.forEach(rule => {
+                if (rule.test()) {
+                    const title = synthesizeUnique('suggestions', {
+                        verbType: rule.verbType,
+                        object: rule.object,
+                        reasonType: rule.reasonType
+                    });
+                    const rationale = generateRationale(rule.reasonType);
+                    
+                    // Avoid duplicates
+                    if (!state.priorityActions.some(a => a.link === rule.link)) {
+                        state.priorityActions.push({
+                            priority: rule.priority,
+                            title,
+                            rationale,
+                            link: rule.link
+                        });
+                    }
+                }
+            });
+
+            state.priorityActions.sort((a, b) => a.priority - b.priority);
+            state.priorityActions = state.priorityActions.slice(0, 6);
+        }
+
+        function generateRationale(type) {
+            const pools = {
+                deadline: ['Time-sensitive - act now', 'Deadlines don\'t wait', 'Clock is ticking', 'Missing dates has consequences', 'Every day counts'],
+                protection: ['Shield yourself legally', 'Protect your position', 'Defense matters', 'Safeguard your rights', 'Security through action'],
+                strength: ['Build your case', 'Strengthen your position', 'Add weight to your side', 'Bolster your standing', 'Reinforce your claims'],
+                requirement: ['This must happen', 'Non-negotiable step', 'Essential action', 'Required for progress', 'Mandatory item']
+            };
+            return pickUnused(pools[type] || pools.strength);
+        }
+
+        function restart() {
+            state = { responses: {}, intensity: 0, factors: [], questionIndex: 0, usedPhrases: new Set(), sessionSeed: Math.random(), priorityActions: [] };
+            phraseHistory.questions = [];
+            phraseHistory.suggestions = [];
+            phraseHistory.contexts = [];
+            render();
+        }
+
+        function showHelp() {
+            alert('Adaptive Guide uses pure algorithmic reasoning. No preset paths - every question is computed based on information value. Text is synthesized uniquely each session - no phrase repeats.');
+        }
+
+        // Init
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof SemptifyNav !== 'undefined') SemptifyNav.init();
+            render();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,266 @@
+{
+  "user_id": "OUW9cfgtN4",
+  "case_number": "19AV-CV-25-3477",
+  "case_type": "eviction_defense",
+  "status": "active",
+  "court": "District Court",
+  "property_address": "",
+  "rent_amount": 0,
+  "security_deposit": 0,
+  "plaintiff": {
+    "name": "Lexington Flats, Limited Partnership",
+    "role": "plaintiff",
+    "address": null,
+    "phone": null
+  },
+  "defendant": {
+    "name": "Heather Mendiola",
+    "role": "defendant",
+    "is_pro_se": true,
+    "address": null,
+    "phone": null
+  },
+  "hearing_date": "2025-12-23",
+  "answer_due": null,
+  "source_document_id": "c0f3cbba-4fde-4bab-bd1e-66c7d900553a",
+  "source_filename": "MCRO_19AV-CV-25-3477_Amended Motion_2025-12-03_20251217163502.pdf",
+  "timeline": [
+    {
+      "id": "evt_doc_c0f3cbba",
+      "date": "2025-12-18",
+      "title": "Document Received: MCRO_19AV-CV-25-3477_Amended Motion_2025-12-03_20251217163502.pdf",
+      "description": "Court document 'MCRO_19AV-CV-25-3477_Amended Motion_2025-12-03_20251217163502.pdf' uploaded and case auto-created",
+      "category": "court",
+      "importance": "high"
+    },
+    {
+      "id": "evt_7994e8f2_113838",
+      "date": "2025-12-18",
+      "title": "Document Added: MCRO_19AV-CV-25-3477_Amended Motion_2025-12-03_20251217163502.pdf",
+      "description": "Document 'MCRO_19AV-CV-25-3477_Amended Motion_2025-12-03_20251217163502.pdf' (court_filing) added to case",
+      "category": "document",
+      "importance": "medium"
+    },
+    {
+      "id": "evt_a70f9258_113841",
+      "date": "2025-12-18",
+      "title": "Document Added: MCRO_19AV-CV-25-3477_Notice of Remote Hearing with Instructions_2025-12-03_20251217163448.pdf",
+      "description": "Document 'MCRO_19AV-CV-25-3477_Notice of Remote Hearing with Instructions_2025-12-03_20251217163448.pdf' (court_filing) added to case",
+      "category": "document",
+      "importance": "medium"
+    },
+    {
+      "id": "evt_84b08018_113845",
+      "date": "2025-12-18",
+      "title": "Document Added: MCRO_19AV-CV-25-3477_Notice to Remove Judicial Officer_2025-12-03_20251217163441.pdf",
+      "description": "Document 'MCRO_19AV-CV-25-3477_Notice to Remove Judicial Officer_2025-12-03_20251217163441.pdf' (court_filing) added to case",
+      "category": "document",
+      "importance": "medium"
+    },
+    {
+      "id": "evt_6cdbe3bc_113849",
+      "date": "2025-12-18",
+      "title": "Document Added: MCRO_19AV-CV-25-3477_Proposed Order or Document_2025-12-02_20251217163430.pdf",
+      "description": "Document 'MCRO_19AV-CV-25-3477_Proposed Order or Document_2025-12-02_20251217163430.pdf' (court_filing) added to case",
+      "category": "document",
+      "importance": "medium"
+    },
+    {
+      "id": "evt_12dc39b6_113853",
+      "date": "2025-12-18",
+      "title": "Document Added: MCRO_19AV-CV-25-3477_Memorandum_2025-12-02_20251217163422.pdf",
+      "description": "Document 'MCRO_19AV-CV-25-3477_Memorandum_2025-12-02_20251217163422.pdf' (court_filing) added to case",
+      "category": "document",
+      "importance": "medium"
+    },
+    {
+      "id": "evt_a6c49892_113858",
+      "date": "2025-12-18",
+      "title": "Document Added: MCRO_19AV-CV-25-3477_Answer_2025-12-02_20251217163419.pdf",
+      "description": "Document 'MCRO_19AV-CV-25-3477_Answer_2025-12-02_20251217163419.pdf' (court_filing) added to case",
+      "category": "document",
+      "importance": "medium"
+    },
+    {
+      "id": "evt_8e2410c2_113901",
+      "date": "2025-12-18",
+      "title": "Document Added: MCRO_19AV-CV-25-3477_Notice of Motion and Motion_2025-12-02_20251217163403.pdf",
+      "description": "Document 'MCRO_19AV-CV-25-3477_Notice of Motion and Motion_2025-12-02_20251217163403.pdf' (court_filing) added to case",
+      "category": "document",
+      "importance": "medium"
+    },
+    {
+      "id": "evt_a2c63ca9_113909",
+      "date": "2025-12-18",
+      "title": "Document Added: MCRO_19AV-CV-25-3477_Complaint-Civil_2025-11-17_20251217163333.pdf",
+      "description": "Document 'MCRO_19AV-CV-25-3477_Complaint-Civil_2025-11-17_20251217163333.pdf' (court_filing) added to case",
+      "category": "document",
+      "importance": "medium"
+    },
+    {
+      "id": "evt_400dd4f0_151655",
+      "date": "2025-12-18",
+      "title": "Document Added: LEASEMCRO_19AV-CV-25-3477_Complaint-Civil_2025-11-17_2025leses1127030721.pdf",
+      "description": "Document 'LEASEMCRO_19AV-CV-25-3477_Complaint-Civil_2025-11-17_2025leses1127030721.pdf' (lease) added to case",
+      "category": "document",
+      "importance": "medium"
+    }
+  ],
+  "evidence": [
+    {
+      "id": "evi_c0f3cbba",
+      "title": "MCRO_19AV-CV-25-3477_Amended Motion_2025-12-03_20251217163502.pdf",
+      "evidence_type": "document",
+      "date_obtained": "2025-12-18",
+      "description": "Original court filing: court_filing",
+      "source": "document_intake",
+      "relevance": "Primary court document",
+      "document_id": "c0f3cbba-4fde-4bab-bd1e-66c7d900553a"
+    },
+    {
+      "id": "evi_7994e8f2_113838",
+      "title": "MCRO_19AV-CV-25-3477_Amended Motion_2025-12-03_20251217163502.pdf",
+      "evidence_type": "document",
+      "date_obtained": "2025-12-18",
+      "description": "Document type: court_filing",
+      "source": "document_intake",
+      "relevance": "Related to case",
+      "document_id": "7994e8f2-fec5-4f58-b2be-b44f8ffb4ac9",
+      "auto_added": true
+    },
+    {
+      "id": "evi_a70f9258_113841",
+      "title": "MCRO_19AV-CV-25-3477_Notice of Remote Hearing with Instructions_2025-12-03_20251217163448.pdf",
+      "evidence_type": "document",
+      "date_obtained": "2025-12-18",
+      "description": "Document type: court_filing",
+      "source": "document_intake",
+      "relevance": "Related to case",
+      "document_id": "a70f9258-16ee-4554-ac0f-fe3dbcd55f84",
+      "auto_added": true
+    },
+    {
+      "id": "evi_84b08018_113845",
+      "title": "MCRO_19AV-CV-25-3477_Notice to Remove Judicial Officer_2025-12-03_20251217163441.pdf",
+      "evidence_type": "document",
+      "date_obtained": "2025-12-18",
+      "description": "Document type: court_filing",
+      "source": "document_intake",
+      "relevance": "Related to case",
+      "document_id": "84b08018-df40-4995-b1de-199576ac11a0",
+      "auto_added": true
+    },
+    {
+      "id": "evi_6cdbe3bc_113849",
+      "title": "MCRO_19AV-CV-25-3477_Proposed Order or Document_2025-12-02_20251217163430.pdf",
+      "evidence_type": "document",
+      "date_obtained": "2025-12-18",
+      "description": "Document type: court_filing",
+      "source": "document_intake",
+      "relevance": "Related to case",
+      "document_id": "6cdbe3bc-bf76-4eb9-8c74-c7641becf726",
+      "auto_added": true
+    },
+    {
+      "id": "evi_12dc39b6_113853",
+      "title": "MCRO_19AV-CV-25-3477_Memorandum_2025-12-02_20251217163422.pdf",
+      "evidence_type": "document",
+      "date_obtained": "2025-12-18",
+      "description": "Document type: court_filing",
+      "source": "document_intake",
+      "relevance": "Related to case",
+      "document_id": "12dc39b6-4f7d-4f64-b756-f895b62d00f1",
+      "auto_added": true
+    },
+    {
+      "id": "evi_a6c49892_113858",
+      "title": "MCRO_19AV-CV-25-3477_Answer_2025-12-02_20251217163419.pdf",
+      "evidence_type": "document",
+      "date_obtained": "2025-12-18",
+      "description": "Document type: court_filing",
+      "source": "document_intake",
+      "relevance": "Related to case",
+      "document_id": "a6c49892-640c-4059-8823-60b99ead7258",
+      "auto_added": true
+    },
+    {
+      "id": "evi_8e2410c2_113901",
+      "title": "MCRO_19AV-CV-25-3477_Notice of Motion and Motion_2025-12-02_20251217163403.pdf",
+      "evidence_type": "document",
+      "date_obtained": "2025-12-18",
+      "description": "Document type: court_filing",
+      "source": "document_intake",
+      "relevance": "Related to case",
+      "document_id": "8e2410c2-fc13-4c54-88db-280ef83b85b8",
+      "auto_added": true
+    },
+    {
+      "id": "evi_a2c63ca9_113909",
+      "title": "MCRO_19AV-CV-25-3477_Complaint-Civil_2025-11-17_20251217163333.pdf",
+      "evidence_type": "document",
+      "date_obtained": "2025-12-18",
+      "description": "Document type: court_filing",
+      "source": "document_intake",
+      "relevance": "Related to case",
+      "document_id": "a2c63ca9-64d8-4b13-8209-dcd816ce4ff4",
+      "auto_added": true
+    },
+    {
+      "id": "evi_400dd4f0_151655",
+      "title": "LEASEMCRO_19AV-CV-25-3477_Complaint-Civil_2025-11-17_2025leses1127030721.pdf",
+      "evidence_type": "document",
+      "date_obtained": "2025-12-18",
+      "description": "Document type: lease",
+      "source": "document_intake",
+      "relevance": "Related to case",
+      "document_id": "400dd4f0-2b93-44e6-9474-93ae047654ec",
+      "auto_added": true
+    }
+  ],
+  "defenses": [],
+  "counterclaims": [],
+  "motions": [],
+  "deadlines": [
+    {
+      "id": "ddl_hearing_20251218113732",
+      "title": "Court Hearing",
+      "deadline": "2025-12-23",
+      "description": "Court hearing date",
+      "priority": "critical",
+      "completed": false
+    },
+    {
+      "id": "ddl_answer_20251218113858",
+      "title": "Answer Deadline (from MCRO_19AV-CV-25-3477_Answer_2025-12-02_20251217163419.pdf)",
+      "deadline": "2025-12-02",
+      "description": "Extracted from document: MCRO_19AV-CV-25-3477_Answer_2025-12-02_20251217163419.pdf",
+      "priority": "critical",
+      "completed": false
+    },
+    {
+      "id": "ddl_hearing_20251218113901",
+      "title": "Hearing (from MCRO_19AV-CV-25-3477_Notice of Motion and Motion_2025-12-02_20251217163403.pdf)",
+      "deadline": "2025-12-03",
+      "description": "Extracted from document: MCRO_19AV-CV-25-3477_Notice of Motion and Motion_2025-12-02_20251217163403.pdf",
+      "priority": "critical",
+      "completed": false
+    }
+  ],
+  "notes": [
+    "Case auto-created from uploaded document: MCRO_19AV-CV-25-3477_Amended Motion_2025-12-03_20251217163502.pdf",
+    "[2025-12-18 11:38] Document auto-added: MCRO_19AV-CV-25-3477_Amended Motion_2025-12-03_20251217163502.pdf",
+    "[2025-12-18 11:38] Document auto-added: MCRO_19AV-CV-25-3477_Notice of Remote Hearing with Instructions_2025-12-03_20251217163448.pdf",
+    "[2025-12-18 11:38] Document auto-added: MCRO_19AV-CV-25-3477_Notice to Remove Judicial Officer_2025-12-03_20251217163441.pdf",
+    "[2025-12-18 11:38] Document auto-added: MCRO_19AV-CV-25-3477_Proposed Order or Document_2025-12-02_20251217163430.pdf",
+    "[2025-12-18 11:38] Document auto-added: MCRO_19AV-CV-25-3477_Memorandum_2025-12-02_20251217163422.pdf",
+    "[2025-12-18 11:38] Document auto-added: MCRO_19AV-CV-25-3477_Answer_2025-12-02_20251217163419.pdf",
+    "[2025-12-18 11:39] Document auto-added: MCRO_19AV-CV-25-3477_Notice of Motion and Motion_2025-12-02_20251217163403.pdf",
+    "[2025-12-18 11:39] Document auto-added: MCRO_19AV-CV-25-3477_Complaint-Civil_2025-11-17_20251217163333.pdf",
+    "[2025-12-18 15:16] Document auto-added: LEASEMCRO_19AV-CV-25-3477_Complaint-Civil_2025-11-17_2025leses1127030721.pdf"
+  ],
+  "created_at": "2025-12-18T11:37:32.438032",
+  "updated_at": "2025-12-18T15:16:55.802178",
+  "auto_created": true,
+  "needs_evaluation": true,
+  "last_document_added": "2025-12-18T15:16:55.802171"
+}
