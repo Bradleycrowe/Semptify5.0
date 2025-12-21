@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Semptify - Document Intake</title>
+    <link rel="stylesheet" href="/static/css/shared-nav.css">
     <style>
         :root {
             --primary: #2563eb;
@@ -1356,9 +1357,11 @@
         }
     </style>
 </head>
-<body>
+<body class="nav-pinned">
+    <div id="semptify-nav"></div>
+    
+    <div class="main-content" style="margin-left: 260px; padding: 1.5rem; transition: margin-left 0.3s;">
     <!-- Site-wide header -->
-    <script src="/static/js/header.js"></script>
 
     <div class="container">
         <!-- Auth Banner -->
@@ -3998,10 +4001,17 @@
             if (typeof EmotionEngine !== 'undefined') {
                 EmotionEngine.init();
             }
+            
+            // Initialize navigation
+            if (typeof SemptifyNav !== 'undefined') {
+                SemptifyNav.init();
+            }
         });
     </script>
 
     <!-- Legal Vocabulary Panel -->
     <script src="/static/js/legal-vocabulary.js"></script>
+    <script src="/static/js/shared-nav.js"></script>
+    </div> <!-- Close main-content -->
 </body>
 </html>
