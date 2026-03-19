@@ -511,34 +511,18 @@
     "integrity_status": "verified",
     "is_duplicate": true,
     "original_document_id": "SEM-2025-000001-1292",
-    "duplicate_ids": [],
-    "duplicate_count": 0,
+    "duplicate_ids": [
+      "SEM-2026-000001-458F"
+    ],
+    "duplicate_count": 1,
     "forgery_alerts": [],
     "forgery_score": 0.0,
     "requires_review": false,
     "registered_at": "2025-12-31T05:34:02.090613+00:00",
     "last_verified_at": null,
     "last_accessed_at": null,
-    "custody_chain": [
-      {
-        "timestamp": "2025-12-31T05:34:02.090627+00:00",
-        "action": "received",
-        "actor": "OUERbGoRAh",
-        "details": "Document registered: maintenance.pdf",
-        "ip_address": "127.0.0.1",
-        "device_info": null,
-        "integrity_hash": "866954e17b2ebddbab8a7446805c70d3fe766a1bd663c8677c602854de356f73"
-      }
-    ],
-    "versions": [
-      {
-        "version": 1,
-        "timestamp": "2025-12-31T05:34:02.090729+00:00",
-        "content_hash": "8b3e8a9e23b5b4d941ff05237c3095ac0e526a8be2f33c4764697617d28575c0",
-        "changes": "Initial registration",
-        "changed_by": "OUERbGoRAh"
-      }
-    ],
+    "custody_chain": [],
+    "versions": [],
     "current_version": 1,
     "storage_path": null,
     "intake_document_id": null
@@ -567,26 +551,8 @@
     "registered_at": "2025-12-31T05:34:53.042240+00:00",
     "last_verified_at": null,
     "last_accessed_at": null,
-    "custody_chain": [
-      {
-        "timestamp": "2025-12-31T05:34:53.042253+00:00",
-        "action": "received",
-        "actor": "OUERbGoRAh",
-        "details": "Document registered: notice of the lease violation .jpg",
-        "ip_address": "127.0.0.1",
-        "device_info": null,
-        "integrity_hash": "465d4b175bacb2067c1655193cfa3f2f58136cb93746b20046b613da3d4897c7"
-      }
-    ],
-    "versions": [
-      {
-        "version": 1,
-        "timestamp": "2025-12-31T05:34:53.042279+00:00",
-        "content_hash": "d8e38068ca4c317f9f1efba2a7cb65128781a4b24c8972bef1a0acf5675b9d88",
-        "changes": "Initial registration",
-        "changed_by": "OUERbGoRAh"
-      }
-    ],
+    "custody_chain": [],
+    "versions": [],
     "current_version": 1,
     "storage_path": null,
     "intake_document_id": null
@@ -613,26 +579,8 @@
     "registered_at": "2025-12-31T05:35:42.365998+00:00",
     "last_verified_at": null,
     "last_accessed_at": null,
-    "custody_chain": [
-      {
-        "timestamp": "2025-12-31T05:35:42.366014+00:00",
-        "action": "received",
-        "actor": "OUERbGoRAh",
-        "details": "Document registered: Notice to vacate.jpg",
-        "ip_address": "127.0.0.1",
-        "device_info": null,
-        "integrity_hash": "e0f504e4d23930d386595b9240788a42886d4971f325ef1e85bf68d0fd00cd7b"
-      }
-    ],
-    "versions": [
-      {
-        "version": 1,
-        "timestamp": "2025-12-31T05:35:42.366032+00:00",
-        "content_hash": "4bdbfe82e68a3a88ef1a8d4e06832aff18a046f3a7d6c3e30b9801f9654a974b",
-        "changes": "Initial registration",
-        "changed_by": "OUERbGoRAh"
-      }
-    ],
+    "custody_chain": [],
+    "versions": [],
     "current_version": 1,
     "storage_path": null,
     "intake_document_id": null
@@ -659,26 +607,8 @@
     "registered_at": "2025-12-31T05:35:59.843644+00:00",
     "last_verified_at": null,
     "last_accessed_at": null,
-    "custody_chain": [
-      {
-        "timestamp": "2025-12-31T05:35:59.843666+00:00",
-        "action": "received",
-        "actor": "OUERbGoRAh",
-        "details": "Document registered: Tenant Report Formfiled .pdf",
-        "ip_address": "127.0.0.1",
-        "device_info": null,
-        "integrity_hash": "5c0b31b0060f1775d4484fb8c1b2ad00dd8126fae5f15d4125cc23df79f8877f"
-      }
-    ],
-    "versions": [
-      {
-        "version": 1,
-        "timestamp": "2025-12-31T05:35:59.843692+00:00",
-        "content_hash": "982679bfee35e7972669a469f8748f9bcb39a7ffc1531d3cc62a302aa6142e3b",
-        "changes": "Initial registration",
-        "changed_by": "OUERbGoRAh"
-      }
-    ],
+    "custody_chain": [],
+    "versions": [],
     "current_version": 1,
     "storage_path": null,
     "intake_document_id": null
@@ -705,26 +635,8 @@
     "registered_at": "2025-12-31T05:36:51.763840+00:00",
     "last_verified_at": null,
     "last_accessed_at": null,
-    "custody_chain": [
-      {
-        "timestamp": "2025-12-31T05:36:51.763851+00:00",
-        "action": "received",
-        "actor": "OUERbGoRAh",
-        "details": "Document registered: notice of the lease violation .jpg",
-        "ip_address": "127.0.0.1",
-        "device_info": null,
-        "integrity_hash": "09992a5765a03358c453ae03f45f0547d43c5479f9f23c899e0ffb6d083bf9f0"
-      }
-    ],
-    "versions": [
-      {
-        "version": 1,
-        "timestamp": "2025-12-31T05:36:51.763865+00:00",
-        "content_hash": "d8e38068ca4c317f9f1efba2a7cb65128781a4b24c8972bef1a0acf5675b9d88",
-        "changes": "Initial registration",
-        "changed_by": "OUERbGoRAh"
-      }
-    ],
+    "custody_chain": [],
+    "versions": [],
     "current_version": 1,
     "storage_path": null,
     "intake_document_id": null
@@ -751,26 +663,8 @@
     "registered_at": "2025-12-31T05:37:15.092476+00:00",
     "last_verified_at": null,
     "last_accessed_at": null,
-    "custody_chain": [
-      {
-        "timestamp": "2025-12-31T05:37:15.092486+00:00",
-        "action": "received",
-        "actor": "OUERbGoRAh",
-        "details": "Document registered: Formal Cease and Desist Demand \u2013 Harassment and Retaliation at Lexington Flats e mailx.pdf",
-        "ip_address": "127.0.0.1",
-        "device_info": null,
-        "integrity_hash": "3091468cf59e22c84871287d632b6a58a451936a4a070a4789b09096972af699"
-      }
-    ],
-    "versions": [
-      {
-        "version": 1,
-        "timestamp": "2025-12-31T05:37:15.092497+00:00",
-        "content_hash": "79da15f9f8f5abb1f315a9887ec5a4feb1c40c5fa1446527ab08fef2fb317541",
-        "changes": "Initial registration",
-        "changed_by": "OUERbGoRAh"
-      }
-    ],
+    "custody_chain": [],
+    "versions": [],
     "current_version": 1,
     "storage_path": null,
     "intake_document_id": null
@@ -789,32 +683,1899 @@
     "integrity_status": "verified",
     "is_duplicate": false,
     "original_document_id": null,
-    "duplicate_ids": [],
-    "duplicate_count": 0,
+    "duplicate_ids": [
+      "SEM-2026-000008-A672"
+    ],
+    "duplicate_count": 1,
     "forgery_alerts": [],
     "forgery_score": 0.0,
     "requires_review": false,
     "registered_at": "2025-12-31T05:38:53.601061+00:00",
     "last_verified_at": null,
     "last_accessed_at": null,
+    "custody_chain": [],
+    "versions": [],
+    "current_version": 1,
+    "storage_path": null,
+    "intake_document_id": null
+  },
+  "SEM-2026-000001-A182": {
+    "document_id": "SEM-2026-000001-A182",
+    "user_id": "GUO0FDLHzB",
+    "case_number": null,
+    "original_filename": "Dear Ms.docx",
+    "file_size": 12608,
+    "mime_type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "content_hash": "484ed14c93086fb2526d1cc7c6adbdff72ab404c0697c606fdf6170dee5697c3",
+    "metadata_hash": "cc830b852b62f7b03cad1aff7085d6efe00593b23e1d5bd99b9104d4ccd21d95",
+    "combined_hash": "3e295262c45698ca8a565c9415d58d085debfae168e10a9346f20dff7414ac8e",
+    "status": "original",
+    "integrity_status": "verified",
+    "is_duplicate": false,
+    "original_document_id": null,
+    "duplicate_ids": [],
+    "duplicate_count": 0,
+    "forgery_alerts": [],
+    "forgery_score": 0.0,
+    "requires_review": false,
+    "registered_at": "2026-01-09T06:09:06.675952+00:00",
+    "last_verified_at": null,
+    "last_accessed_at": null,
+    "custody_chain": [],
+    "versions": [],
+    "current_version": 1,
+    "storage_path": null,
+    "intake_document_id": null
+  },
+  "SEM-2026-000001-2EDF": {
+    "document_id": "SEM-2026-000001-2EDF",
+    "user_id": "GUIRy2Rcov",
+    "case_number": null,
+    "original_filename": "the one we signed 1 of11 2024-2025 lease_ocred.pdf",
+    "file_size": 4009550,
+    "mime_type": "application/pdf",
+    "content_hash": "218e6368942095dd8010f67884c43d7494c18c6602055ffd4753f8fc27ac8459",
+    "metadata_hash": "804d0d2e9d56066a14bc36e5d0a2d0c26a9961e78f821b8dec366c6b8eb92346",
+    "combined_hash": "a9aed9b73808f9218bbac2a669aa06cea7b657fc0960fb1b53f3657e3cf8aacf",
+    "status": "original",
+    "integrity_status": "verified",
+    "is_duplicate": false,
+    "original_document_id": null,
+    "duplicate_ids": [],
+    "duplicate_count": 0,
+    "forgery_alerts": [],
+    "forgery_score": 0.0,
+    "requires_review": false,
+    "registered_at": "2026-03-10T15:44:19.856172+00:00",
+    "last_verified_at": null,
+    "last_accessed_at": null,
+    "custody_chain": [],
+    "versions": [],
+    "current_version": 1,
+    "storage_path": null,
+    "intake_document_id": null
+  },
+  "SEM-2026-000001-458F": {
+    "document_id": "SEM-2026-000001-458F",
+    "user_id": "DUGRdBnjGa",
+    "case_number": null,
+    "original_filename": "maintenance.pdf",
+    "file_size": 382572,
+    "mime_type": "application/pdf",
+    "content_hash": "8b3e8a9e23b5b4d941ff05237c3095ac0e526a8be2f33c4764697617d28575c0",
+    "metadata_hash": "1e3f8e3ebaf315719dd8662dc8e8cd6773a5cc103164b28a39a39f4de707e98e",
+    "combined_hash": "cd6bc004eb830fd3d829de066ade2144bec26bbac739d2b3538a917cffe9251d",
+    "status": "copy",
+    "integrity_status": "verified",
+    "is_duplicate": true,
+    "original_document_id": "SEM-2025-000001-BDF6",
+    "duplicate_ids": [],
+    "duplicate_count": 0,
+    "forgery_alerts": [],
+    "forgery_score": 0.0,
+    "requires_review": false,
+    "registered_at": "2026-03-11T00:59:41.028743+00:00",
+    "last_verified_at": null,
+    "last_accessed_at": null,
+    "custody_chain": [],
+    "versions": [],
+    "current_version": 1,
+    "storage_path": null,
+    "intake_document_id": null
+  },
+  "SEM-2026-000001-0C28": {
+    "document_id": "SEM-2026-000001-0C28",
+    "user_id": "GUlRso41d8",
+    "case_number": null,
+    "original_filename": "LEASE 2025   2 DIFFERANT MONTHYLY  ORIGANAL AND  THE FORGED  ONE-01-12.pdf",
+    "file_size": 50608004,
+    "mime_type": "application/pdf",
+    "content_hash": "88b5a3c59865a756946030b19b46af42f9c55e6495d59c510f1217d7eab32b1a",
+    "metadata_hash": "8f9f8c54916577c5234716075e8320d252727a8dce1f66986337d166fd264258",
+    "combined_hash": "abaf8d0b2f94203c37c1719b5555024b05607cc886861ce1552b688e70cb87ac",
+    "status": "original",
+    "integrity_status": "verified",
+    "is_duplicate": false,
+    "original_document_id": null,
+    "duplicate_ids": [],
+    "duplicate_count": 0,
+    "forgery_alerts": [],
+    "forgery_score": 0.0,
+    "requires_review": false,
+    "registered_at": "2026-03-11T15:56:05.706124+00:00",
+    "last_verified_at": null,
+    "last_accessed_at": null,
     "custody_chain": [
       {
-        "timestamp": "2025-12-31T05:38:53.601086+00:00",
+        "timestamp": "2026-03-11T15:56:05.706151+00:00",
         "action": "received",
-        "actor": "OUERbGoRAh",
-        "details": "Document registered: Formal Cease and Desist Demand \u2013 Harassment and Retaliation at Lexington Flats e mailx_ocred.pdf",
+        "actor": "GUlRso41d8",
+        "details": "Document registered: LEASE 2025   2 DIFFERANT MONTHYLY  ORIGANAL AND  THE FORGED  ONE-01-12.pdf",
         "ip_address": "127.0.0.1",
         "device_info": null,
-        "integrity_hash": "97643b620ee0b9e71491cb38f0582f20d2f6e24e756110cfb1b6eac20094457f"
+        "integrity_hash": "abaf8d0b2f94203c37c1719b5555024b05607cc886861ce1552b688e70cb87ac"
       }
     ],
     "versions": [
       {
         "version": 1,
-        "timestamp": "2025-12-31T05:38:53.601113+00:00",
+        "timestamp": "2026-03-11T15:56:05.706251+00:00",
+        "content_hash": "88b5a3c59865a756946030b19b46af42f9c55e6495d59c510f1217d7eab32b1a",
+        "changes": "Initial registration",
+        "changed_by": "GUlRso41d8"
+      }
+    ],
+    "current_version": 1,
+    "storage_path": null,
+    "intake_document_id": null
+  },
+  "SEM-2026-000002-8ED9": {
+    "document_id": "SEM-2026-000002-8ED9",
+    "user_id": "GUlRso41d8",
+    "case_number": null,
+    "original_filename": "LEASE 2025   2 DIFFERANT MONTHYLY  ORIGANAL AND  THE FORGED  ONE-13-20.pdf",
+    "file_size": 1860480,
+    "mime_type": "application/pdf",
+    "content_hash": "9427e1d7619d75804679a4f6c970214219004403673ec1e7ddc720ed8b38b979",
+    "metadata_hash": "78323f6e86f9984e1bc0e93f49c81cc3729584137b68a222fe67a30d0d69c3fe",
+    "combined_hash": "cac081dac8faf8f3ae63cea26b867d5c9247bd50f93004d503ed3379c0057246",
+    "status": "original",
+    "integrity_status": "verified",
+    "is_duplicate": false,
+    "original_document_id": null,
+    "duplicate_ids": [],
+    "duplicate_count": 0,
+    "forgery_alerts": [],
+    "forgery_score": 0.0,
+    "requires_review": false,
+    "registered_at": "2026-03-11T15:58:03.104454+00:00",
+    "last_verified_at": null,
+    "last_accessed_at": null,
+    "custody_chain": [
+      {
+        "timestamp": "2026-03-11T15:58:03.104470+00:00",
+        "action": "received",
+        "actor": "GUlRso41d8",
+        "details": "Document registered: LEASE 2025   2 DIFFERANT MONTHYLY  ORIGANAL AND  THE FORGED  ONE-13-20.pdf",
+        "ip_address": "127.0.0.1",
+        "device_info": null,
+        "integrity_hash": "cac081dac8faf8f3ae63cea26b867d5c9247bd50f93004d503ed3379c0057246"
+      }
+    ],
+    "versions": [
+      {
+        "version": 1,
+        "timestamp": "2026-03-11T15:58:03.104499+00:00",
+        "content_hash": "9427e1d7619d75804679a4f6c970214219004403673ec1e7ddc720ed8b38b979",
+        "changes": "Initial registration",
+        "changed_by": "GUlRso41d8"
+      }
+    ],
+    "current_version": 1,
+    "storage_path": null,
+    "intake_document_id": null
+  },
+  "SEM-2026-000003-BE21": {
+    "document_id": "SEM-2026-000003-BE21",
+    "user_id": "GUlRso41d8",
+    "case_number": null,
+    "original_filename": "maintenance_ocred.pdf",
+    "file_size": 557770,
+    "mime_type": "application/pdf",
+    "content_hash": "f70304d47a4252cb6e804d8fa3c88f54f823b3f81698a30da28ee3c1d825bdf4",
+    "metadata_hash": "0b2d825d8b6072458ae4ef8a85b2a2c7c02a02c9f61a0bb62f9293e68180f3f1",
+    "combined_hash": "9f819bb95b64988374a3aef1ba42bda187e38717661778cb4e3cf8fad3e95098",
+    "status": "original",
+    "integrity_status": "verified",
+    "is_duplicate": false,
+    "original_document_id": null,
+    "duplicate_ids": [],
+    "duplicate_count": 0,
+    "forgery_alerts": [],
+    "forgery_score": 0.0,
+    "requires_review": false,
+    "registered_at": "2026-03-11T17:23:51.332284+00:00",
+    "last_verified_at": null,
+    "last_accessed_at": null,
+    "custody_chain": [
+      {
+        "timestamp": "2026-03-11T17:23:51.332295+00:00",
+        "action": "received",
+        "actor": "GUlRso41d8",
+        "details": "Document registered: maintenance_ocred.pdf",
+        "ip_address": "127.0.0.1",
+        "device_info": null,
+        "integrity_hash": "9f819bb95b64988374a3aef1ba42bda187e38717661778cb4e3cf8fad3e95098"
+      }
+    ],
+    "versions": [
+      {
+        "version": 1,
+        "timestamp": "2026-03-11T17:23:51.332406+00:00",
+        "content_hash": "f70304d47a4252cb6e804d8fa3c88f54f823b3f81698a30da28ee3c1d825bdf4",
+        "changes": "Initial registration",
+        "changed_by": "GUlRso41d8"
+      }
+    ],
+    "current_version": 1,
+    "storage_path": null,
+    "intake_document_id": null
+  },
+  "SEM-2026-000004-FAD4": {
+    "document_id": "SEM-2026-000004-FAD4",
+    "user_id": "GUlRso41d8",
+    "case_number": null,
+    "original_filename": "IMG_1518_ocred.pdf",
+    "file_size": 319793,
+    "mime_type": "application/pdf",
+    "content_hash": "e92d19240c71ddbb4651ea7c7cd52bd169ef44c0a9009be0db0468af957e387a",
+    "metadata_hash": "18168e66e460c88b17446192ae4fb714e01af658540fa2022f095382844fafd5",
+    "combined_hash": "f104740fd8852a70bdaea81ba84c5078b2317e5b24d24121f6b347c7436dd55d",
+    "status": "original",
+    "integrity_status": "verified",
+    "is_duplicate": false,
+    "original_document_id": null,
+    "duplicate_ids": [],
+    "duplicate_count": 0,
+    "forgery_alerts": [],
+    "forgery_score": 0.0,
+    "requires_review": false,
+    "registered_at": "2026-03-11T17:26:11.970368+00:00",
+    "last_verified_at": null,
+    "last_accessed_at": null,
+    "custody_chain": [
+      {
+        "timestamp": "2026-03-11T17:26:11.970373+00:00",
+        "action": "received",
+        "actor": "GUlRso41d8",
+        "details": "Document registered: IMG_1518_ocred.pdf",
+        "ip_address": "127.0.0.1",
+        "device_info": null,
+        "integrity_hash": "f104740fd8852a70bdaea81ba84c5078b2317e5b24d24121f6b347c7436dd55d"
+      }
+    ],
+    "versions": [
+      {
+        "version": 1,
+        "timestamp": "2026-03-11T17:26:11.970387+00:00",
+        "content_hash": "e92d19240c71ddbb4651ea7c7cd52bd169ef44c0a9009be0db0468af957e387a",
+        "changes": "Initial registration",
+        "changed_by": "GUlRso41d8"
+      }
+    ],
+    "current_version": 1,
+    "storage_path": null,
+    "intake_document_id": null
+  },
+  "SEM-2026-000005-1357": {
+    "document_id": "SEM-2026-000005-1357",
+    "user_id": "GUlRso41d8",
+    "case_number": null,
+    "original_filename": "Lexington Flats _ Apartments in Eagan, MN _ RENTCafe_ocred.pdf",
+    "file_size": 566496,
+    "mime_type": "application/pdf",
+    "content_hash": "d2ddedd8587d0cee679f1dacd6a1f5b6d081eb8234e5a4235696f482094651aa",
+    "metadata_hash": "eb833efbc7174d41433a3e87e1239c6724c56505f994519bb81e8736a1da04d0",
+    "combined_hash": "dca117698b74b81c0b296991c8d594d03e6e2afca7f9bfbd82a66a443da40cf9",
+    "status": "original",
+    "integrity_status": "verified",
+    "is_duplicate": false,
+    "original_document_id": null,
+    "duplicate_ids": [],
+    "duplicate_count": 0,
+    "forgery_alerts": [],
+    "forgery_score": 0.0,
+    "requires_review": false,
+    "registered_at": "2026-03-11T17:54:16.767052+00:00",
+    "last_verified_at": null,
+    "last_accessed_at": "2026-03-12T01:33:42.742752+00:00",
+    "custody_chain": [
+      {
+        "timestamp": "2026-03-11T17:54:16.767065+00:00",
+        "action": "received",
+        "actor": "GUlRso41d8",
+        "details": "Document registered: Lexington Flats _ Apartments in Eagan, MN _ RENTCafe_ocred.pdf",
+        "ip_address": "127.0.0.1",
+        "device_info": null,
+        "integrity_hash": "dca117698b74b81c0b296991c8d594d03e6e2afca7f9bfbd82a66a443da40cf9"
+      },
+      {
+        "timestamp": "2026-03-12T01:33:37.575685+00:00",
+        "action": "accessed",
+        "actor": "GUlRso41d8",
+        "details": "Document retrieved via API",
+        "ip_address": "127.0.0.1",
+        "device_info": null,
+        "integrity_hash": "dca117698b74b81c0b296991c8d594d03e6e2afca7f9bfbd82a66a443da40cf9"
+      },
+      {
+        "timestamp": "2026-03-12T01:33:39.058036+00:00",
+        "action": "accessed",
+        "actor": "GUlRso41d8",
+        "details": "Document retrieved via API",
+        "ip_address": "127.0.0.1",
+        "device_info": null,
+        "integrity_hash": "dca117698b74b81c0b296991c8d594d03e6e2afca7f9bfbd82a66a443da40cf9"
+      },
+      {
+        "timestamp": "2026-03-12T01:33:40.816407+00:00",
+        "action": "accessed",
+        "actor": "GUlRso41d8",
+        "details": "Document retrieved via API",
+        "ip_address": "127.0.0.1",
+        "device_info": null,
+        "integrity_hash": "dca117698b74b81c0b296991c8d594d03e6e2afca7f9bfbd82a66a443da40cf9"
+      },
+      {
+        "timestamp": "2026-03-12T01:33:41.781088+00:00",
+        "action": "accessed",
+        "actor": "GUlRso41d8",
+        "details": "Document retrieved via API",
+        "ip_address": "127.0.0.1",
+        "device_info": null,
+        "integrity_hash": "dca117698b74b81c0b296991c8d594d03e6e2afca7f9bfbd82a66a443da40cf9"
+      },
+      {
+        "timestamp": "2026-03-12T01:33:42.742753+00:00",
+        "action": "accessed",
+        "actor": "GUlRso41d8",
+        "details": "Document retrieved via API",
+        "ip_address": "127.0.0.1",
+        "device_info": null,
+        "integrity_hash": "dca117698b74b81c0b296991c8d594d03e6e2afca7f9bfbd82a66a443da40cf9"
+      }
+    ],
+    "versions": [
+      {
+        "version": 1,
+        "timestamp": "2026-03-11T17:54:16.767225+00:00",
+        "content_hash": "d2ddedd8587d0cee679f1dacd6a1f5b6d081eb8234e5a4235696f482094651aa",
+        "changes": "Initial registration",
+        "changed_by": "GUlRso41d8"
+      }
+    ],
+    "current_version": 1,
+    "storage_path": null,
+    "intake_document_id": null
+  },
+  "SEM-2026-000006-6A02": {
+    "document_id": "SEM-2026-000006-6A02",
+    "user_id": "GUlRso41d8",
+    "case_number": null,
+    "original_filename": "resident reminder_ocred.pdf",
+    "file_size": 4196326,
+    "mime_type": "application/pdf",
+    "content_hash": "8a24fb581ed5f54a7bb207244afe1cfe7dba5c63364389218f7c7d227d38bccb",
+    "metadata_hash": "1e89338c0d8c868141d72a910a7182c7a93bb43c84499b5fb150e91e51df4bf2",
+    "combined_hash": "7dec71f2fea3a1f9fc5e851ce6d9b15b6572e5476b554fe395fc0bf531635371",
+    "status": "original",
+    "integrity_status": "verified",
+    "is_duplicate": false,
+    "original_document_id": null,
+    "duplicate_ids": [],
+    "duplicate_count": 0,
+    "forgery_alerts": [],
+    "forgery_score": 0.0,
+    "requires_review": false,
+    "registered_at": "2026-03-11T18:03:52.330218+00:00",
+    "last_verified_at": null,
+    "last_accessed_at": null,
+    "custody_chain": [
+      {
+        "timestamp": "2026-03-11T18:03:52.330224+00:00",
+        "action": "received",
+        "actor": "GUlRso41d8",
+        "details": "Document registered: resident reminder_ocred.pdf",
+        "ip_address": "127.0.0.1",
+        "device_info": null,
+        "integrity_hash": "7dec71f2fea3a1f9fc5e851ce6d9b15b6572e5476b554fe395fc0bf531635371"
+      }
+    ],
+    "versions": [
+      {
+        "version": 1,
+        "timestamp": "2026-03-11T18:03:52.330243+00:00",
+        "content_hash": "8a24fb581ed5f54a7bb207244afe1cfe7dba5c63364389218f7c7d227d38bccb",
+        "changes": "Initial registration",
+        "changed_by": "GUlRso41d8"
+      }
+    ],
+    "current_version": 1,
+    "storage_path": null,
+    "intake_document_id": null
+  },
+  "SEM-2026-000007-B340": {
+    "document_id": "SEM-2026-000007-B340",
+    "user_id": "GUlRso41d8",
+    "case_number": null,
+    "original_filename": "Notice to vacate_ocred - Copy.pdf",
+    "file_size": 4480661,
+    "mime_type": "application/pdf",
+    "content_hash": "86b29c61a39034cb71d5a71b6fe613d9eb59c3a6b502c255b73a000cc20832cb",
+    "metadata_hash": "94d3587dda312235c37f3e507e54fc6d1f85610b0b986a947e39f740fd8cf426",
+    "combined_hash": "50bf97ccac7a939110ae37a1ac2d75b59de7ee6ce0597e4ff5b80b12ddf25fe0",
+    "status": "original",
+    "integrity_status": "verified",
+    "is_duplicate": false,
+    "original_document_id": null,
+    "duplicate_ids": [],
+    "duplicate_count": 0,
+    "forgery_alerts": [],
+    "forgery_score": 0.0,
+    "requires_review": false,
+    "registered_at": "2026-03-11T18:35:06.138778+00:00",
+    "last_verified_at": null,
+    "last_accessed_at": null,
+    "custody_chain": [
+      {
+        "timestamp": "2026-03-11T18:35:06.138799+00:00",
+        "action": "received",
+        "actor": "GUlRso41d8",
+        "details": "Document registered: Notice to vacate_ocred - Copy.pdf",
+        "ip_address": "127.0.0.1",
+        "device_info": null,
+        "integrity_hash": "50bf97ccac7a939110ae37a1ac2d75b59de7ee6ce0597e4ff5b80b12ddf25fe0"
+      }
+    ],
+    "versions": [
+      {
+        "version": 1,
+        "timestamp": "2026-03-11T18:35:06.138958+00:00",
+        "content_hash": "86b29c61a39034cb71d5a71b6fe613d9eb59c3a6b502c255b73a000cc20832cb",
+        "changes": "Initial registration",
+        "changed_by": "GUlRso41d8"
+      }
+    ],
+    "current_version": 1,
+    "storage_path": null,
+    "intake_document_id": null
+  },
+  "SEM-2026-000008-A672": {
+    "document_id": "SEM-2026-000008-A672",
+    "user_id": "GUlRso41d8",
+    "case_number": null,
+    "original_filename": "Formal Cease and Desist Demand \u2013 Harassment and Retaliation at Lexington Flats e mailx_ocred.pdf",
+    "file_size": 1523102,
+    "mime_type": "application/pdf",
+    "content_hash": "bd1ba2af5b941cedba2a04a4af137f193a96ee3e94ec613d6f2c4df4beb0b1c3",
+    "metadata_hash": "1ff097e2e3fc6f95266bfcdf92172f023ff43a6cb86173bac8ff7e68f374bbb2",
+    "combined_hash": "b2aa144234f376aaa516006968d82d7f4a462aa008b5d8c561df184659db79bb",
+    "status": "copy",
+    "integrity_status": "verified",
+    "is_duplicate": true,
+    "original_document_id": "SEM-2025-000007-CB00",
+    "duplicate_ids": [],
+    "duplicate_count": 0,
+    "forgery_alerts": [],
+    "forgery_score": 0.0,
+    "requires_review": false,
+    "registered_at": "2026-03-11T18:38:36.401587+00:00",
+    "last_verified_at": null,
+    "last_accessed_at": null,
+    "custody_chain": [
+      {
+        "timestamp": "2026-03-11T18:38:36.401601+00:00",
+        "action": "received",
+        "actor": "GUlRso41d8",
+        "details": "Document registered: Formal Cease and Desist Demand \u2013 Harassment and Retaliation at Lexington Flats e mailx_ocred.pdf",
+        "ip_address": "127.0.0.1",
+        "device_info": null,
+        "integrity_hash": "b2aa144234f376aaa516006968d82d7f4a462aa008b5d8c561df184659db79bb"
+      }
+    ],
+    "versions": [
+      {
+        "version": 1,
+        "timestamp": "2026-03-11T18:38:36.401620+00:00",
         "content_hash": "bd1ba2af5b941cedba2a04a4af137f193a96ee3e94ec613d6f2c4df4beb0b1c3",
         "changes": "Initial registration",
-        "changed_by": "OUERbGoRAh"
+        "changed_by": "GUlRso41d8"
+      }
+    ],
+    "current_version": 1,
+    "storage_path": null,
+    "intake_document_id": null
+  },
+  "SEM-2026-000009-29D0": {
+    "document_id": "SEM-2026-000009-29D0",
+    "user_id": "GUlRso41d8",
+    "case_number": null,
+    "original_filename": "Tenant Report Formfiled _ocred.pdf",
+    "file_size": 221734,
+    "mime_type": "application/pdf",
+    "content_hash": "d31cc24f3683083456aa231da91483a73232d0c0bea7f2f9ee7449f673d6af17",
+    "metadata_hash": "643bcc67626771a7239396fdd9e687fa1ce723c902504ff73f98d3e1546fc3e7",
+    "combined_hash": "10f85715c68ec358771762999dcf43a290e10b8b7a938399c514adbc0c713df5",
+    "status": "original",
+    "integrity_status": "verified",
+    "is_duplicate": false,
+    "original_document_id": null,
+    "duplicate_ids": [],
+    "duplicate_count": 0,
+    "forgery_alerts": [],
+    "forgery_score": 0.0,
+    "requires_review": false,
+    "registered_at": "2026-03-11T18:43:48.604439+00:00",
+    "last_verified_at": null,
+    "last_accessed_at": null,
+    "custody_chain": [
+      {
+        "timestamp": "2026-03-11T18:43:48.604444+00:00",
+        "action": "received",
+        "actor": "GUlRso41d8",
+        "details": "Document registered: Tenant Report Formfiled _ocred.pdf",
+        "ip_address": "127.0.0.1",
+        "device_info": null,
+        "integrity_hash": "10f85715c68ec358771762999dcf43a290e10b8b7a938399c514adbc0c713df5"
+      }
+    ],
+    "versions": [
+      {
+        "version": 1,
+        "timestamp": "2026-03-11T18:43:48.604454+00:00",
+        "content_hash": "d31cc24f3683083456aa231da91483a73232d0c0bea7f2f9ee7449f673d6af17",
+        "changes": "Initial registration",
+        "changed_by": "GUlRso41d8"
+      }
+    ],
+    "current_version": 1,
+    "storage_path": null,
+    "intake_document_id": null
+  },
+  "SEM-2026-000010-A8FA": {
+    "document_id": "SEM-2026-000010-A8FA",
+    "user_id": "GUlRso41d8",
+    "case_number": null,
+    "original_filename": "1 home line seeking legal OCR_ocred.pdf",
+    "file_size": 605976,
+    "mime_type": "application/pdf",
+    "content_hash": "433d6a053dc93968acbcf38169da30d400b92632b141a0bdad843fc878e724bb",
+    "metadata_hash": "75c73a26e76169b0ae6ac646fb0eaf85be56098652a85a7299704d2e0a25b2eb",
+    "combined_hash": "1ae57deb66d3b8ecc3bc42ce30ac33a28d861562492d87996d268ab1ce54efa4",
+    "status": "original",
+    "integrity_status": "verified",
+    "is_duplicate": false,
+    "original_document_id": null,
+    "duplicate_ids": [],
+    "duplicate_count": 0,
+    "forgery_alerts": [],
+    "forgery_score": 0.0,
+    "requires_review": false,
+    "registered_at": "2026-03-11T18:59:41.600524+00:00",
+    "last_verified_at": null,
+    "last_accessed_at": null,
+    "custody_chain": [
+      {
+        "timestamp": "2026-03-11T18:59:41.600532+00:00",
+        "action": "received",
+        "actor": "GUlRso41d8",
+        "details": "Document registered: 1 home line seeking legal OCR_ocred.pdf",
+        "ip_address": "127.0.0.1",
+        "device_info": null,
+        "integrity_hash": "1ae57deb66d3b8ecc3bc42ce30ac33a28d861562492d87996d268ab1ce54efa4"
+      }
+    ],
+    "versions": [
+      {
+        "version": 1,
+        "timestamp": "2026-03-11T18:59:41.600754+00:00",
+        "content_hash": "433d6a053dc93968acbcf38169da30d400b92632b141a0bdad843fc878e724bb",
+        "changes": "Initial registration",
+        "changed_by": "GUlRso41d8"
+      }
+    ],
+    "current_version": 1,
+    "storage_path": null,
+    "intake_document_id": null
+  },
+  "SEM-2026-000011-DB81": {
+    "document_id": "SEM-2026-000011-DB81",
+    "user_id": "GUlRso41d8",
+    "case_number": null,
+    "original_filename": "attourney generals  Crowe - Outlook_ocred.pdf",
+    "file_size": 93581,
+    "mime_type": "application/pdf",
+    "content_hash": "9ae9158f4cfcca56fe7cb70864daa48d1b5bab31301f01ad7b19a408a0a0fee5",
+    "metadata_hash": "5de9d54d8e791ac8eb9635140c651d8e0cbc1d8796862519779f968c52d501c3",
+    "combined_hash": "a0382d1c0f0a404112175c65ba9817d917b215227662d545239d71244dc805a4",
+    "status": "original",
+    "integrity_status": "verified",
+    "is_duplicate": false,
+    "original_document_id": null,
+    "duplicate_ids": [],
+    "duplicate_count": 0,
+    "forgery_alerts": [],
+    "forgery_score": 0.0,
+    "requires_review": false,
+    "registered_at": "2026-03-11T19:03:35.962658+00:00",
+    "last_verified_at": null,
+    "last_accessed_at": null,
+    "custody_chain": [
+      {
+        "timestamp": "2026-03-11T19:03:35.962663+00:00",
+        "action": "received",
+        "actor": "GUlRso41d8",
+        "details": "Document registered: attourney generals  Crowe - Outlook_ocred.pdf",
+        "ip_address": "127.0.0.1",
+        "device_info": null,
+        "integrity_hash": "a0382d1c0f0a404112175c65ba9817d917b215227662d545239d71244dc805a4"
+      }
+    ],
+    "versions": [
+      {
+        "version": 1,
+        "timestamp": "2026-03-11T19:03:35.962673+00:00",
+        "content_hash": "9ae9158f4cfcca56fe7cb70864daa48d1b5bab31301f01ad7b19a408a0a0fee5",
+        "changes": "Initial registration",
+        "changed_by": "GUlRso41d8"
+      }
+    ],
+    "current_version": 1,
+    "storage_path": null,
+    "intake_document_id": null
+  },
+  "SEM-2026-000012-9037": {
+    "document_id": "SEM-2026-000012-9037",
+    "user_id": "GUlRso41d8",
+    "case_number": null,
+    "original_filename": "case_ocred.pdf",
+    "file_size": 3962060,
+    "mime_type": "application/pdf",
+    "content_hash": "119d2b1f0ee59a580c230b54170f3ed1c376a49bff6d63f6ccd015aea0578323",
+    "metadata_hash": "53ec955f1c388cadc376e4a18d00828a0b0ba5bb5e9815778011f833b3d93f6e",
+    "combined_hash": "2f575b670851408c21a187a49496592b54819588ed9ece2999491d438c1b4fd2",
+    "status": "original",
+    "integrity_status": "verified",
+    "is_duplicate": false,
+    "original_document_id": null,
+    "duplicate_ids": [],
+    "duplicate_count": 0,
+    "forgery_alerts": [],
+    "forgery_score": 0.0,
+    "requires_review": false,
+    "registered_at": "2026-03-11T19:06:03.875570+00:00",
+    "last_verified_at": null,
+    "last_accessed_at": null,
+    "custody_chain": [
+      {
+        "timestamp": "2026-03-11T19:06:03.875587+00:00",
+        "action": "received",
+        "actor": "GUlRso41d8",
+        "details": "Document registered: case_ocred.pdf",
+        "ip_address": "127.0.0.1",
+        "device_info": null,
+        "integrity_hash": "2f575b670851408c21a187a49496592b54819588ed9ece2999491d438c1b4fd2"
+      }
+    ],
+    "versions": [
+      {
+        "version": 1,
+        "timestamp": "2026-03-11T19:06:03.875610+00:00",
+        "content_hash": "119d2b1f0ee59a580c230b54170f3ed1c376a49bff6d63f6ccd015aea0578323",
+        "changes": "Initial registration",
+        "changed_by": "GUlRso41d8"
+      }
+    ],
+    "current_version": 1,
+    "storage_path": null,
+    "intake_document_id": null
+  },
+  "SEM-2026-000013-CE24": {
+    "document_id": "SEM-2026-000013-CE24",
+    "user_id": "GUlRso41d8",
+    "case_number": null,
+    "original_filename": "Gmail - Request for Written Rationale Regarding Non-Renewal and Assertion of Anti-Retaliation Right1s - Copy_ocred.pdf",
+    "file_size": 96168,
+    "mime_type": "application/pdf",
+    "content_hash": "cdd50c0b4e001031203370fd71184ba12047b82bfe4a3e07616a5db93e84a18e",
+    "metadata_hash": "49010089db0946a05f892ab95cf1c558752bdc6fba02094694cb50265ef7bd29",
+    "combined_hash": "58d7e05579b1d6bbd0e6de808113af9c742225cd733cbdc83758d7f711695411",
+    "status": "original",
+    "integrity_status": "verified",
+    "is_duplicate": false,
+    "original_document_id": null,
+    "duplicate_ids": [],
+    "duplicate_count": 0,
+    "forgery_alerts": [],
+    "forgery_score": 0.0,
+    "requires_review": false,
+    "registered_at": "2026-03-11T19:08:20.969652+00:00",
+    "last_verified_at": null,
+    "last_accessed_at": null,
+    "custody_chain": [
+      {
+        "timestamp": "2026-03-11T19:08:20.969657+00:00",
+        "action": "received",
+        "actor": "GUlRso41d8",
+        "details": "Document registered: Gmail - Request for Written Rationale Regarding Non-Renewal and Assertion of Anti-Retaliation Right1s - Copy_ocred.pdf",
+        "ip_address": "127.0.0.1",
+        "device_info": null,
+        "integrity_hash": "58d7e05579b1d6bbd0e6de808113af9c742225cd733cbdc83758d7f711695411"
+      }
+    ],
+    "versions": [
+      {
+        "version": 1,
+        "timestamp": "2026-03-11T19:08:20.969666+00:00",
+        "content_hash": "cdd50c0b4e001031203370fd71184ba12047b82bfe4a3e07616a5db93e84a18e",
+        "changes": "Initial registration",
+        "changed_by": "GUlRso41d8"
+      }
+    ],
+    "current_version": 1,
+    "storage_path": null,
+    "intake_document_id": null
+  },
+  "SEM-2026-000014-813B": {
+    "document_id": "SEM-2026-000014-813B",
+    "user_id": "GUlRso41d8",
+    "case_number": null,
+    "original_filename": "Gmail - Re_ [EXTERNAL] Request for Written Rationale Regarding Non-Renewal and Assertion of Anti-Retaliation Rights_ocred.pdf",
+    "file_size": 196513,
+    "mime_type": "application/pdf",
+    "content_hash": "a1834dc28b7abb8c6b5b719d660d60b93bd3c2c7627fd641e55f0368d7db4709",
+    "metadata_hash": "ff5c3661450d27550ba8d3e5776f6098ab18a8131da408d3ca1a852e0c9c878c",
+    "combined_hash": "cb0cb0b53667a9dc048ef9ab3b08765b8cf21f87ff05bf0876856b23cf5e32b3",
+    "status": "original",
+    "integrity_status": "verified",
+    "is_duplicate": false,
+    "original_document_id": null,
+    "duplicate_ids": [
+      "SEM-2026-000016-5C48"
+    ],
+    "duplicate_count": 1,
+    "forgery_alerts": [],
+    "forgery_score": 0.0,
+    "requires_review": false,
+    "registered_at": "2026-03-11T19:09:24.357286+00:00",
+    "last_verified_at": null,
+    "last_accessed_at": null,
+    "custody_chain": [
+      {
+        "timestamp": "2026-03-11T19:09:24.357291+00:00",
+        "action": "received",
+        "actor": "GUlRso41d8",
+        "details": "Document registered: Gmail - Re_ [EXTERNAL] Request for Written Rationale Regarding Non-Renewal and Assertion of Anti-Retaliation Rights_ocred.pdf",
+        "ip_address": "127.0.0.1",
+        "device_info": null,
+        "integrity_hash": "cb0cb0b53667a9dc048ef9ab3b08765b8cf21f87ff05bf0876856b23cf5e32b3"
+      }
+    ],
+    "versions": [
+      {
+        "version": 1,
+        "timestamp": "2026-03-11T19:09:24.357300+00:00",
+        "content_hash": "a1834dc28b7abb8c6b5b719d660d60b93bd3c2c7627fd641e55f0368d7db4709",
+        "changes": "Initial registration",
+        "changed_by": "GUlRso41d8"
+      }
+    ],
+    "current_version": 1,
+    "storage_path": null,
+    "intake_document_id": null
+  },
+  "SEM-2026-000015-823F": {
+    "document_id": "SEM-2026-000015-823F",
+    "user_id": "GUlRso41d8",
+    "case_number": null,
+    "original_filename": "e mail final notice_ocred.pdf",
+    "file_size": 692955,
+    "mime_type": "application/pdf",
+    "content_hash": "7d3967a1ad4447e93acbf314c9a962b680bdc25eafb5c9653546c017786f5301",
+    "metadata_hash": "00df4432395b40333050e17c2924edbf2f79aef072949dec81021afc3a0f7876",
+    "combined_hash": "6147622789153bf8ebadd684c13776c61644ba07037e2c2174a44a2b593d62fa",
+    "status": "original",
+    "integrity_status": "verified",
+    "is_duplicate": false,
+    "original_document_id": null,
+    "duplicate_ids": [],
+    "duplicate_count": 0,
+    "forgery_alerts": [],
+    "forgery_score": 0.0,
+    "requires_review": false,
+    "registered_at": "2026-03-11T19:12:07.791897+00:00",
+    "last_verified_at": null,
+    "last_accessed_at": null,
+    "custody_chain": [
+      {
+        "timestamp": "2026-03-11T19:12:07.791911+00:00",
+        "action": "received",
+        "actor": "GUlRso41d8",
+        "details": "Document registered: e mail final notice_ocred.pdf",
+        "ip_address": "127.0.0.1",
+        "device_info": null,
+        "integrity_hash": "6147622789153bf8ebadd684c13776c61644ba07037e2c2174a44a2b593d62fa"
+      }
+    ],
+    "versions": [
+      {
+        "version": 1,
+        "timestamp": "2026-03-11T19:12:07.791926+00:00",
+        "content_hash": "7d3967a1ad4447e93acbf314c9a962b680bdc25eafb5c9653546c017786f5301",
+        "changes": "Initial registration",
+        "changed_by": "GUlRso41d8"
+      }
+    ],
+    "current_version": 1,
+    "storage_path": null,
+    "intake_document_id": null
+  },
+  "SEM-2026-000016-5C48": {
+    "document_id": "SEM-2026-000016-5C48",
+    "user_id": "GUlRso41d8",
+    "case_number": null,
+    "original_filename": "Gmail - Re_ [EXTERNAL] Request for Written Rationale Regarding Non-Renewal and Assertion of Anti-Retaliation Rights_ocred.pdf",
+    "file_size": 196513,
+    "mime_type": "application/pdf",
+    "content_hash": "a1834dc28b7abb8c6b5b719d660d60b93bd3c2c7627fd641e55f0368d7db4709",
+    "metadata_hash": "6b50bf60bd3f27974d33cbc7e9edc2dc011d4b5bbcce2a60467c94a1f8b17054",
+    "combined_hash": "ef70db436b8da05c511885b6dc28e468b8a55f9c2201f33007d4be37c60617e8",
+    "status": "copy",
+    "integrity_status": "verified",
+    "is_duplicate": true,
+    "original_document_id": "SEM-2026-000014-813B",
+    "duplicate_ids": [],
+    "duplicate_count": 0,
+    "forgery_alerts": [],
+    "forgery_score": 0.0,
+    "requires_review": false,
+    "registered_at": "2026-03-11T19:16:31.904553+00:00",
+    "last_verified_at": null,
+    "last_accessed_at": null,
+    "custody_chain": [
+      {
+        "timestamp": "2026-03-11T19:16:31.904558+00:00",
+        "action": "received",
+        "actor": "GUlRso41d8",
+        "details": "Document registered: Gmail - Re_ [EXTERNAL] Request for Written Rationale Regarding Non-Renewal and Assertion of Anti-Retaliation Rights_ocred.pdf",
+        "ip_address": "127.0.0.1",
+        "device_info": null,
+        "integrity_hash": "ef70db436b8da05c511885b6dc28e468b8a55f9c2201f33007d4be37c60617e8"
+      }
+    ],
+    "versions": [
+      {
+        "version": 1,
+        "timestamp": "2026-03-11T19:16:31.904570+00:00",
+        "content_hash": "a1834dc28b7abb8c6b5b719d660d60b93bd3c2c7627fd641e55f0368d7db4709",
+        "changes": "Initial registration",
+        "changed_by": "GUlRso41d8"
+      }
+    ],
+    "current_version": 1,
+    "storage_path": null,
+    "intake_document_id": null
+  },
+  "SEM-2026-000017-2937": {
+    "document_id": "SEM-2026-000017-2937",
+    "user_id": "GUlRso41d8",
+    "case_number": null,
+    "original_filename": "patty homeline_ocred.pdf",
+    "file_size": 524672,
+    "mime_type": "application/pdf",
+    "content_hash": "97f9efd72c2bea38030b454159072d24df9123e59c7cf4914448971efd7447ba",
+    "metadata_hash": "3de54ece40f3ac8e394892393dbcd7336652fe0557c3c223607d9414ef985805",
+    "combined_hash": "0f53d70730aab685f0395448a263a31cb8289cd71e0544059f7d45478e5b487c",
+    "status": "original",
+    "integrity_status": "verified",
+    "is_duplicate": false,
+    "original_document_id": null,
+    "duplicate_ids": [],
+    "duplicate_count": 0,
+    "forgery_alerts": [],
+    "forgery_score": 0.0,
+    "requires_review": false,
+    "registered_at": "2026-03-11T19:18:22.145723+00:00",
+    "last_verified_at": null,
+    "last_accessed_at": null,
+    "custody_chain": [
+      {
+        "timestamp": "2026-03-11T19:18:22.145736+00:00",
+        "action": "received",
+        "actor": "GUlRso41d8",
+        "details": "Document registered: patty homeline_ocred.pdf",
+        "ip_address": "127.0.0.1",
+        "device_info": null,
+        "integrity_hash": "0f53d70730aab685f0395448a263a31cb8289cd71e0544059f7d45478e5b487c"
+      }
+    ],
+    "versions": [
+      {
+        "version": 1,
+        "timestamp": "2026-03-11T19:18:22.145758+00:00",
+        "content_hash": "97f9efd72c2bea38030b454159072d24df9123e59c7cf4914448971efd7447ba",
+        "changes": "Initial registration",
+        "changed_by": "GUlRso41d8"
+      }
+    ],
+    "current_version": 1,
+    "storage_path": null,
+    "intake_document_id": null
+  },
+  "SEM-2026-000018-9068": {
+    "document_id": "SEM-2026-000018-9068",
+    "user_id": "GUlRso41d8",
+    "case_number": null,
+    "original_filename": "HUD COMPOLAINT.pdf",
+    "file_size": 114890,
+    "mime_type": "application/pdf",
+    "content_hash": "f40fbe3e0ee040fb9391b0f17267aae912e98b38ccd186f81dc7ddd1cbf83cd0",
+    "metadata_hash": "cc27106583a36725bfc60d7ce63a40084be503557ec7c093233751f6e4c0c2ba",
+    "combined_hash": "045e376b7df07ccfb6ce4d438cb208b39f18073e5f58450cfaf8ed2d603383b0",
+    "status": "original",
+    "integrity_status": "verified",
+    "is_duplicate": false,
+    "original_document_id": null,
+    "duplicate_ids": [],
+    "duplicate_count": 0,
+    "forgery_alerts": [],
+    "forgery_score": 0.0,
+    "requires_review": false,
+    "registered_at": "2026-03-11T19:23:08.206073+00:00",
+    "last_verified_at": null,
+    "last_accessed_at": null,
+    "custody_chain": [
+      {
+        "timestamp": "2026-03-11T19:23:08.206083+00:00",
+        "action": "received",
+        "actor": "GUlRso41d8",
+        "details": "Document registered: HUD COMPOLAINT.pdf",
+        "ip_address": "127.0.0.1",
+        "device_info": null,
+        "integrity_hash": "045e376b7df07ccfb6ce4d438cb208b39f18073e5f58450cfaf8ed2d603383b0"
+      }
+    ],
+    "versions": [
+      {
+        "version": 1,
+        "timestamp": "2026-03-11T19:23:08.206097+00:00",
+        "content_hash": "f40fbe3e0ee040fb9391b0f17267aae912e98b38ccd186f81dc7ddd1cbf83cd0",
+        "changes": "Initial registration",
+        "changed_by": "GUlRso41d8"
+      }
+    ],
+    "current_version": 1,
+    "storage_path": null,
+    "intake_document_id": null
+  },
+  "SEM-2026-000019-7794": {
+    "document_id": "SEM-2026-000019-7794",
+    "user_id": "GUlRso41d8",
+    "case_number": null,
+    "original_filename": "ryan brokerl.pdf",
+    "file_size": 135114,
+    "mime_type": "application/pdf",
+    "content_hash": "647e1569c19e2c491a28d4813b2a3c3b1e27427a90c28304df0596697d884c28",
+    "metadata_hash": "039debd67a892b0d437e4d83a0a55e98852ffc39090ad36ea03d7e6c8966f29c",
+    "combined_hash": "bf90ca805ee5823f44569cfeed74de9d18f2bb322b4023677f27c7e080cbc2ea",
+    "status": "original",
+    "integrity_status": "verified",
+    "is_duplicate": false,
+    "original_document_id": null,
+    "duplicate_ids": [],
+    "duplicate_count": 0,
+    "forgery_alerts": [],
+    "forgery_score": 0.0,
+    "requires_review": false,
+    "registered_at": "2026-03-11T19:24:45.336683+00:00",
+    "last_verified_at": null,
+    "last_accessed_at": null,
+    "custody_chain": [
+      {
+        "timestamp": "2026-03-11T19:24:45.336687+00:00",
+        "action": "received",
+        "actor": "GUlRso41d8",
+        "details": "Document registered: ryan brokerl.pdf",
+        "ip_address": "127.0.0.1",
+        "device_info": null,
+        "integrity_hash": "bf90ca805ee5823f44569cfeed74de9d18f2bb322b4023677f27c7e080cbc2ea"
+      }
+    ],
+    "versions": [
+      {
+        "version": 1,
+        "timestamp": "2026-03-11T19:24:45.336696+00:00",
+        "content_hash": "647e1569c19e2c491a28d4813b2a3c3b1e27427a90c28304df0596697d884c28",
+        "changes": "Initial registration",
+        "changed_by": "GUlRso41d8"
+      }
+    ],
+    "current_version": 1,
+    "storage_path": null,
+    "intake_document_id": null
+  },
+  "SEM-2026-000020-3D06": {
+    "document_id": "SEM-2026-000020-3D06",
+    "user_id": "GUlRso41d8",
+    "case_number": null,
+    "original_filename": "MCRO_19AV-CV-25-3477_Complaint-Civil_2025-12-03_20251203175827.pdf",
+    "file_size": 2851739,
+    "mime_type": "application/pdf",
+    "content_hash": "c3382b8c4c03ea12c2edac85cddfa57d8658fa9ac146c87997a61675eaec9472",
+    "metadata_hash": "4d63a5fee143f10224f71ad1334b124f91cbac2fc45cf513fa49634f9fa8abfe",
+    "combined_hash": "47197a65b069c364c3bfdf6abb75a42ab7f3e43e837d4281f3a4051353e68145",
+    "status": "original",
+    "integrity_status": "verified",
+    "is_duplicate": false,
+    "original_document_id": null,
+    "duplicate_ids": [],
+    "duplicate_count": 0,
+    "forgery_alerts": [],
+    "forgery_score": 0.0,
+    "requires_review": false,
+    "registered_at": "2026-03-11T19:28:47.863708+00:00",
+    "last_verified_at": null,
+    "last_accessed_at": null,
+    "custody_chain": [
+      {
+        "timestamp": "2026-03-11T19:28:47.863722+00:00",
+        "action": "received",
+        "actor": "GUlRso41d8",
+        "details": "Document registered: MCRO_19AV-CV-25-3477_Complaint-Civil_2025-12-03_20251203175827.pdf",
+        "ip_address": "127.0.0.1",
+        "device_info": null,
+        "integrity_hash": "47197a65b069c364c3bfdf6abb75a42ab7f3e43e837d4281f3a4051353e68145"
+      }
+    ],
+    "versions": [
+      {
+        "version": 1,
+        "timestamp": "2026-03-11T19:28:47.863756+00:00",
+        "content_hash": "c3382b8c4c03ea12c2edac85cddfa57d8658fa9ac146c87997a61675eaec9472",
+        "changes": "Initial registration",
+        "changed_by": "GUlRso41d8"
+      }
+    ],
+    "current_version": 1,
+    "storage_path": null,
+    "intake_document_id": null
+  },
+  "SEM-2026-000021-4676": {
+    "document_id": "SEM-2026-000021-4676",
+    "user_id": "GUlRso41d8",
+    "case_number": null,
+    "original_filename": "MCRO_19AV-CV-25-3477_Notice of Remote Hearing with Instructions_2025-12-03_20251203175831.pdf",
+    "file_size": 203474,
+    "mime_type": "application/pdf",
+    "content_hash": "e792622e4425a9307b229ac9c47363851fa907bae1b689edc2ccbd69e23c115f",
+    "metadata_hash": "1c211230f6e9580d408b17d84165c129ad5d53b28fb3c5c58d4f742488a8e874",
+    "combined_hash": "3f9709f19f269bdec02ae9c2f20bd1e2265319656e02d6c61b1dca80e08b39c4",
+    "status": "original",
+    "integrity_status": "verified",
+    "is_duplicate": false,
+    "original_document_id": null,
+    "duplicate_ids": [],
+    "duplicate_count": 0,
+    "forgery_alerts": [],
+    "forgery_score": 0.0,
+    "requires_review": false,
+    "registered_at": "2026-03-11T19:29:36.428251+00:00",
+    "last_verified_at": null,
+    "last_accessed_at": null,
+    "custody_chain": [
+      {
+        "timestamp": "2026-03-11T19:29:36.428256+00:00",
+        "action": "received",
+        "actor": "GUlRso41d8",
+        "details": "Document registered: MCRO_19AV-CV-25-3477_Notice of Remote Hearing with Instructions_2025-12-03_20251203175831.pdf",
+        "ip_address": "127.0.0.1",
+        "device_info": null,
+        "integrity_hash": "3f9709f19f269bdec02ae9c2f20bd1e2265319656e02d6c61b1dca80e08b39c4"
+      }
+    ],
+    "versions": [
+      {
+        "version": 1,
+        "timestamp": "2026-03-11T19:29:36.428262+00:00",
+        "content_hash": "e792622e4425a9307b229ac9c47363851fa907bae1b689edc2ccbd69e23c115f",
+        "changes": "Initial registration",
+        "changed_by": "GUlRso41d8"
+      }
+    ],
+    "current_version": 1,
+    "storage_path": null,
+    "intake_document_id": null
+  },
+  "SEM-2026-000022-6B1A": {
+    "document_id": "SEM-2026-000022-6B1A",
+    "user_id": "GUlRso41d8",
+    "case_number": null,
+    "original_filename": "MCRO_19AV-CV-25-3477_Notice to Remove Judicial Officer_2025-12-03_20251203175833.pdf",
+    "file_size": 138590,
+    "mime_type": "application/pdf",
+    "content_hash": "65d2fa8aa30628bb571221cbcf8c2f693fb00519e9f6dd5329c3c57a1775d366",
+    "metadata_hash": "7b603fa8838568c824d302092bfb239c7b3e3e28f661666942bd47ecf1b583f3",
+    "combined_hash": "2808f4168447ebc639d6880bf32ff36f249880a93e93bad4d3c6106207607d1c",
+    "status": "original",
+    "integrity_status": "verified",
+    "is_duplicate": false,
+    "original_document_id": null,
+    "duplicate_ids": [],
+    "duplicate_count": 0,
+    "forgery_alerts": [],
+    "forgery_score": 0.0,
+    "requires_review": false,
+    "registered_at": "2026-03-11T19:30:13.253477+00:00",
+    "last_verified_at": null,
+    "last_accessed_at": null,
+    "custody_chain": [
+      {
+        "timestamp": "2026-03-11T19:30:13.253487+00:00",
+        "action": "received",
+        "actor": "GUlRso41d8",
+        "details": "Document registered: MCRO_19AV-CV-25-3477_Notice to Remove Judicial Officer_2025-12-03_20251203175833.pdf",
+        "ip_address": "127.0.0.1",
+        "device_info": null,
+        "integrity_hash": "2808f4168447ebc639d6880bf32ff36f249880a93e93bad4d3c6106207607d1c"
+      }
+    ],
+    "versions": [
+      {
+        "version": 1,
+        "timestamp": "2026-03-11T19:30:13.253502+00:00",
+        "content_hash": "65d2fa8aa30628bb571221cbcf8c2f693fb00519e9f6dd5329c3c57a1775d366",
+        "changes": "Initial registration",
+        "changed_by": "GUlRso41d8"
+      }
+    ],
+    "current_version": 1,
+    "storage_path": null,
+    "intake_document_id": null
+  },
+  "SEM-2026-000023-FB0A": {
+    "document_id": "SEM-2026-000023-FB0A",
+    "user_id": "GUlRso41d8",
+    "case_number": null,
+    "original_filename": "MCRO_19AV-CV-25-3477_Proposed Order or Document_2025-12-02_20251203175838.pdf",
+    "file_size": 157136,
+    "mime_type": "application/pdf",
+    "content_hash": "181478c2c6c81b0d03c72ded85e9fb5f809ec9c784f6354258ede7dfb0266caa",
+    "metadata_hash": "b7150b3cd78fc17262851ce9a5b263840cd87b4822d411a9d6d9329285214afd",
+    "combined_hash": "89da52e43c6fe5733348e3b13bfe9ca73f39e7988ea8ff1c42e3bdf2724a0bb8",
+    "status": "original",
+    "integrity_status": "verified",
+    "is_duplicate": false,
+    "original_document_id": null,
+    "duplicate_ids": [],
+    "duplicate_count": 0,
+    "forgery_alerts": [],
+    "forgery_score": 0.0,
+    "requires_review": false,
+    "registered_at": "2026-03-11T19:31:34.394143+00:00",
+    "last_verified_at": null,
+    "last_accessed_at": null,
+    "custody_chain": [
+      {
+        "timestamp": "2026-03-11T19:31:34.394149+00:00",
+        "action": "received",
+        "actor": "GUlRso41d8",
+        "details": "Document registered: MCRO_19AV-CV-25-3477_Proposed Order or Document_2025-12-02_20251203175838.pdf",
+        "ip_address": "127.0.0.1",
+        "device_info": null,
+        "integrity_hash": "89da52e43c6fe5733348e3b13bfe9ca73f39e7988ea8ff1c42e3bdf2724a0bb8"
+      }
+    ],
+    "versions": [
+      {
+        "version": 1,
+        "timestamp": "2026-03-11T19:31:34.394158+00:00",
+        "content_hash": "181478c2c6c81b0d03c72ded85e9fb5f809ec9c784f6354258ede7dfb0266caa",
+        "changes": "Initial registration",
+        "changed_by": "GUlRso41d8"
+      }
+    ],
+    "current_version": 1,
+    "storage_path": null,
+    "intake_document_id": null
+  },
+  "SEM-2026-000024-38CB": {
+    "document_id": "SEM-2026-000024-38CB",
+    "user_id": "GUlRso41d8",
+    "case_number": null,
+    "original_filename": "MCRO_19AV-CV-25-3477_Memorandum_2025-12-02_20251203175842.pdf",
+    "file_size": 302461,
+    "mime_type": "application/pdf",
+    "content_hash": "ef80948a750458310aa901a70618aa3144ed65fb871fc648dc79950f3dd1bc8f",
+    "metadata_hash": "5be75a354089df3f48e754d9fee61d89b340c016aa65ef5e3e825bee8cb5b394",
+    "combined_hash": "67d1c84acbc840bd2fe35ecbaa28c574db5cc2a78b60bf9cc4789e054d18dec8",
+    "status": "original",
+    "integrity_status": "verified",
+    "is_duplicate": false,
+    "original_document_id": null,
+    "duplicate_ids": [],
+    "duplicate_count": 0,
+    "forgery_alerts": [],
+    "forgery_score": 0.0,
+    "requires_review": false,
+    "registered_at": "2026-03-11T19:32:26.617003+00:00",
+    "last_verified_at": null,
+    "last_accessed_at": null,
+    "custody_chain": [
+      {
+        "timestamp": "2026-03-11T19:32:26.617008+00:00",
+        "action": "received",
+        "actor": "GUlRso41d8",
+        "details": "Document registered: MCRO_19AV-CV-25-3477_Memorandum_2025-12-02_20251203175842.pdf",
+        "ip_address": "127.0.0.1",
+        "device_info": null,
+        "integrity_hash": "67d1c84acbc840bd2fe35ecbaa28c574db5cc2a78b60bf9cc4789e054d18dec8"
+      }
+    ],
+    "versions": [
+      {
+        "version": 1,
+        "timestamp": "2026-03-11T19:32:26.617016+00:00",
+        "content_hash": "ef80948a750458310aa901a70618aa3144ed65fb871fc648dc79950f3dd1bc8f",
+        "changes": "Initial registration",
+        "changed_by": "GUlRso41d8"
+      }
+    ],
+    "current_version": 1,
+    "storage_path": null,
+    "intake_document_id": null
+  },
+  "SEM-2026-000025-1FDC": {
+    "document_id": "SEM-2026-000025-1FDC",
+    "user_id": "GUlRso41d8",
+    "case_number": null,
+    "original_filename": "MCRO_19AV-CV-25-3477_Answer_2025-12-02_20251203175845.pdf",
+    "file_size": 344243,
+    "mime_type": "application/pdf",
+    "content_hash": "92b41e4fe79711f780fc4ba5431500a1b69ebdce1abaeb57c7eb66e5f8145728",
+    "metadata_hash": "69cd758cacaf50939875e8227adb2b57a97917f7afbbe6629ed349ed02ced60e",
+    "combined_hash": "d81452fbffb34f4738d09ab9eb4f17cf921f297a8fdfadfa813c77de71058ee8",
+    "status": "original",
+    "integrity_status": "verified",
+    "is_duplicate": false,
+    "original_document_id": null,
+    "duplicate_ids": [],
+    "duplicate_count": 0,
+    "forgery_alerts": [],
+    "forgery_score": 0.0,
+    "requires_review": false,
+    "registered_at": "2026-03-11T19:34:39.418477+00:00",
+    "last_verified_at": null,
+    "last_accessed_at": null,
+    "custody_chain": [
+      {
+        "timestamp": "2026-03-11T19:34:39.418482+00:00",
+        "action": "received",
+        "actor": "GUlRso41d8",
+        "details": "Document registered: MCRO_19AV-CV-25-3477_Answer_2025-12-02_20251203175845.pdf",
+        "ip_address": "127.0.0.1",
+        "device_info": null,
+        "integrity_hash": "d81452fbffb34f4738d09ab9eb4f17cf921f297a8fdfadfa813c77de71058ee8"
+      }
+    ],
+    "versions": [
+      {
+        "version": 1,
+        "timestamp": "2026-03-11T19:34:39.418492+00:00",
+        "content_hash": "92b41e4fe79711f780fc4ba5431500a1b69ebdce1abaeb57c7eb66e5f8145728",
+        "changes": "Initial registration",
+        "changed_by": "GUlRso41d8"
+      }
+    ],
+    "current_version": 1,
+    "storage_path": null,
+    "intake_document_id": null
+  },
+  "SEM-2026-000026-1512": {
+    "document_id": "SEM-2026-000026-1512",
+    "user_id": "GUlRso41d8",
+    "case_number": null,
+    "original_filename": "MCRO_19AV-CV-25-3477_Notice of Motion and Motion_2025-12-02_20251203175847.pdf",
+    "file_size": 146538,
+    "mime_type": "application/pdf",
+    "content_hash": "042df9735ef12dcbe6d1191d807580992f7a67d07a193e42a4de46865d095b01",
+    "metadata_hash": "d974f842f570c1823eafdcc2bdbcc3d539ffd27303644793e09a8a68a54c502e",
+    "combined_hash": "70f33cc69a24d605fcfd5e1db5447c33d8c427592908f77a311f1c3d4dbc2a0e",
+    "status": "original",
+    "integrity_status": "verified",
+    "is_duplicate": false,
+    "original_document_id": null,
+    "duplicate_ids": [],
+    "duplicate_count": 0,
+    "forgery_alerts": [],
+    "forgery_score": 0.0,
+    "requires_review": false,
+    "registered_at": "2026-03-11T19:38:13.039201+00:00",
+    "last_verified_at": null,
+    "last_accessed_at": null,
+    "custody_chain": [
+      {
+        "timestamp": "2026-03-11T19:38:13.039220+00:00",
+        "action": "received",
+        "actor": "GUlRso41d8",
+        "details": "Document registered: MCRO_19AV-CV-25-3477_Notice of Motion and Motion_2025-12-02_20251203175847.pdf",
+        "ip_address": "127.0.0.1",
+        "device_info": null,
+        "integrity_hash": "70f33cc69a24d605fcfd5e1db5447c33d8c427592908f77a311f1c3d4dbc2a0e"
+      }
+    ],
+    "versions": [
+      {
+        "version": 1,
+        "timestamp": "2026-03-11T19:38:13.039249+00:00",
+        "content_hash": "042df9735ef12dcbe6d1191d807580992f7a67d07a193e42a4de46865d095b01",
+        "changes": "Initial registration",
+        "changed_by": "GUlRso41d8"
+      }
+    ],
+    "current_version": 1,
+    "storage_path": null,
+    "intake_document_id": null
+  },
+  "SEM-2026-000027-98DB": {
+    "document_id": "SEM-2026-000027-98DB",
+    "user_id": "GUlRso41d8",
+    "case_number": null,
+    "original_filename": "MCRO_19AV-CV-25-3477_Affidavit-Other_2025-11-25_20251203175858.pdf",
+    "file_size": 112167,
+    "mime_type": "application/pdf",
+    "content_hash": "413dc10f82ef938b71cdc80020d9b7dd0a27f5b6592a416155c77c6fd5214440",
+    "metadata_hash": "c2f264a2a49bc325f2ff185f3be9986baf80a165082856adeb8cffff00211606",
+    "combined_hash": "4844ed6c4f63afcfd12ca31604cf34fae2e0180add5470ac1ea35303c9df007d",
+    "status": "original",
+    "integrity_status": "verified",
+    "is_duplicate": false,
+    "original_document_id": null,
+    "duplicate_ids": [],
+    "duplicate_count": 0,
+    "forgery_alerts": [],
+    "forgery_score": 0.0,
+    "requires_review": false,
+    "registered_at": "2026-03-11T19:38:44.797784+00:00",
+    "last_verified_at": null,
+    "last_accessed_at": null,
+    "custody_chain": [
+      {
+        "timestamp": "2026-03-11T19:38:44.797792+00:00",
+        "action": "received",
+        "actor": "GUlRso41d8",
+        "details": "Document registered: MCRO_19AV-CV-25-3477_Affidavit-Other_2025-11-25_20251203175858.pdf",
+        "ip_address": "127.0.0.1",
+        "device_info": null,
+        "integrity_hash": "4844ed6c4f63afcfd12ca31604cf34fae2e0180add5470ac1ea35303c9df007d"
+      }
+    ],
+    "versions": [
+      {
+        "version": 1,
+        "timestamp": "2026-03-11T19:38:44.797804+00:00",
+        "content_hash": "413dc10f82ef938b71cdc80020d9b7dd0a27f5b6592a416155c77c6fd5214440",
+        "changes": "Initial registration",
+        "changed_by": "GUlRso41d8"
+      }
+    ],
+    "current_version": 1,
+    "storage_path": null,
+    "intake_document_id": null
+  },
+  "SEM-2026-000028-51DC": {
+    "document_id": "SEM-2026-000028-51DC",
+    "user_id": "GUlRso41d8",
+    "case_number": null,
+    "original_filename": "MCRO_19AV-CV-25-3477_Eviction Summons_2025-11-19_20251203175914.pdf",
+    "file_size": 169519,
+    "mime_type": "application/pdf",
+    "content_hash": "f456d0eb9bb39b5c1d2485201ee0678c6d49b941762ef189e7d07ff1089093aa",
+    "metadata_hash": "99df411728c914c494dd15232be168ecace5a00fbb8224698bca605ae89a9001",
+    "combined_hash": "752fa50956896d2b3cc5c98a4ef50c88a171ef2fe5f787470a8ff70468fc1632",
+    "status": "original",
+    "integrity_status": "verified",
+    "is_duplicate": false,
+    "original_document_id": null,
+    "duplicate_ids": [],
+    "duplicate_count": 0,
+    "forgery_alerts": [],
+    "forgery_score": 0.0,
+    "requires_review": false,
+    "registered_at": "2026-03-11T19:39:20.173728+00:00",
+    "last_verified_at": null,
+    "last_accessed_at": null,
+    "custody_chain": [
+      {
+        "timestamp": "2026-03-11T19:39:20.173733+00:00",
+        "action": "received",
+        "actor": "GUlRso41d8",
+        "details": "Document registered: MCRO_19AV-CV-25-3477_Eviction Summons_2025-11-19_20251203175914.pdf",
+        "ip_address": "127.0.0.1",
+        "device_info": null,
+        "integrity_hash": "752fa50956896d2b3cc5c98a4ef50c88a171ef2fe5f787470a8ff70468fc1632"
+      }
+    ],
+    "versions": [
+      {
+        "version": 1,
+        "timestamp": "2026-03-11T19:39:20.173740+00:00",
+        "content_hash": "f456d0eb9bb39b5c1d2485201ee0678c6d49b941762ef189e7d07ff1089093aa",
+        "changes": "Initial registration",
+        "changed_by": "GUlRso41d8"
+      }
+    ],
+    "current_version": 1,
+    "storage_path": null,
+    "intake_document_id": null
+  },
+  "SEM-2026-000029-CA2B": {
+    "document_id": "SEM-2026-000029-CA2B",
+    "user_id": "GUlRso41d8",
+    "case_number": null,
+    "original_filename": "MCRO_19AV-CV-25-3477_Complaint-Civil_2025-11-17_20251203175921.pdf",
+    "file_size": 3130308,
+    "mime_type": "application/pdf",
+    "content_hash": "15324ec1d70fa57d11559df43f8d4181cbd1a91deab77e92a9de19b101aa1eb9",
+    "metadata_hash": "22bfaafd7d2f4e3f4a9b2def684f0ce96c0e5d35454ac87fe589d0cae7a36afc",
+    "combined_hash": "b565bbf68450f6366f7c914951a79176f53cb5c0eeab521ac8b8c4988b000349",
+    "status": "original",
+    "integrity_status": "verified",
+    "is_duplicate": false,
+    "original_document_id": null,
+    "duplicate_ids": [],
+    "duplicate_count": 0,
+    "forgery_alerts": [],
+    "forgery_score": 0.0,
+    "requires_review": false,
+    "registered_at": "2026-03-11T19:53:52.803517+00:00",
+    "last_verified_at": null,
+    "last_accessed_at": null,
+    "custody_chain": [
+      {
+        "timestamp": "2026-03-11T19:53:52.803525+00:00",
+        "action": "received",
+        "actor": "GUlRso41d8",
+        "details": "Document registered: MCRO_19AV-CV-25-3477_Complaint-Civil_2025-11-17_20251203175921.pdf",
+        "ip_address": "127.0.0.1",
+        "device_info": null,
+        "integrity_hash": "b565bbf68450f6366f7c914951a79176f53cb5c0eeab521ac8b8c4988b000349"
+      }
+    ],
+    "versions": [
+      {
+        "version": 1,
+        "timestamp": "2026-03-11T19:53:52.803767+00:00",
+        "content_hash": "15324ec1d70fa57d11559df43f8d4181cbd1a91deab77e92a9de19b101aa1eb9",
+        "changes": "Initial registration",
+        "changed_by": "GUlRso41d8"
+      }
+    ],
+    "current_version": 1,
+    "storage_path": null,
+    "intake_document_id": null
+  },
+  "SEM-2026-000030-519A": {
+    "document_id": "SEM-2026-000030-519A",
+    "user_id": "GUlRso41d8",
+    "case_number": null,
+    "original_filename": "MCRO_19AV-CV-25-3477_Notice of Motion and Motion_2025-12-02_20251203180512.pdf",
+    "file_size": 146539,
+    "mime_type": "application/pdf",
+    "content_hash": "ffbd206803f23408d6e45e80e20720c6a066ff57ba37a0cd693d308fc04ac5ac",
+    "metadata_hash": "fb55deccff0f58d9e0b7c7601de32f9056998d756d8624e83fa0661414535248",
+    "combined_hash": "d86d294b453f22350d5231c89daeab60e6927b7291655c820ec1cee68e57fbd7",
+    "status": "original",
+    "integrity_status": "verified",
+    "is_duplicate": false,
+    "original_document_id": null,
+    "duplicate_ids": [],
+    "duplicate_count": 0,
+    "forgery_alerts": [],
+    "forgery_score": 0.0,
+    "requires_review": false,
+    "registered_at": "2026-03-11T19:55:39.683785+00:00",
+    "last_verified_at": null,
+    "last_accessed_at": null,
+    "custody_chain": [
+      {
+        "timestamp": "2026-03-11T19:55:39.683789+00:00",
+        "action": "received",
+        "actor": "GUlRso41d8",
+        "details": "Document registered: MCRO_19AV-CV-25-3477_Notice of Motion and Motion_2025-12-02_20251203180512.pdf",
+        "ip_address": "127.0.0.1",
+        "device_info": null,
+        "integrity_hash": "d86d294b453f22350d5231c89daeab60e6927b7291655c820ec1cee68e57fbd7"
+      }
+    ],
+    "versions": [
+      {
+        "version": 1,
+        "timestamp": "2026-03-11T19:55:39.683798+00:00",
+        "content_hash": "ffbd206803f23408d6e45e80e20720c6a066ff57ba37a0cd693d308fc04ac5ac",
+        "changes": "Initial registration",
+        "changed_by": "GUlRso41d8"
+      }
+    ],
+    "current_version": 1,
+    "storage_path": null,
+    "intake_document_id": null
+  },
+  "SEM-2026-000031-551C": {
+    "document_id": "SEM-2026-000031-551C",
+    "user_id": "GUlRso41d8",
+    "case_number": null,
+    "original_filename": "MCRO_19AV-CV-25-3477_Complaint-Civil_2025-12-03_20251203180601.pdf",
+    "file_size": 2851732,
+    "mime_type": "application/pdf",
+    "content_hash": "4f45f64b5e86db4c8600269670b213ab4a2d7afb158f1ec69fbbac7060a003bb",
+    "metadata_hash": "b1f5a7e4d324b9ad2ab7b393a6b4cb02af5899465cb4c89cf03a1cadda7eb593",
+    "combined_hash": "f4e30f7ad6426d8c1ff027845344c36fa325da833b484e02cb7f971532d73491",
+    "status": "original",
+    "integrity_status": "verified",
+    "is_duplicate": false,
+    "original_document_id": null,
+    "duplicate_ids": [
+      "SEM-2026-000032-4D11"
+    ],
+    "duplicate_count": 1,
+    "forgery_alerts": [],
+    "forgery_score": 0.0,
+    "requires_review": false,
+    "registered_at": "2026-03-11T19:56:24.740312+00:00",
+    "last_verified_at": null,
+    "last_accessed_at": null,
+    "custody_chain": [
+      {
+        "timestamp": "2026-03-11T19:56:24.740320+00:00",
+        "action": "received",
+        "actor": "GUlRso41d8",
+        "details": "Document registered: MCRO_19AV-CV-25-3477_Complaint-Civil_2025-12-03_20251203180601.pdf",
+        "ip_address": "127.0.0.1",
+        "device_info": null,
+        "integrity_hash": "f4e30f7ad6426d8c1ff027845344c36fa325da833b484e02cb7f971532d73491"
+      }
+    ],
+    "versions": [
+      {
+        "version": 1,
+        "timestamp": "2026-03-11T19:56:24.740331+00:00",
+        "content_hash": "4f45f64b5e86db4c8600269670b213ab4a2d7afb158f1ec69fbbac7060a003bb",
+        "changes": "Initial registration",
+        "changed_by": "GUlRso41d8"
+      }
+    ],
+    "current_version": 1,
+    "storage_path": null,
+    "intake_document_id": null
+  },
+  "SEM-2026-000032-4D11": {
+    "document_id": "SEM-2026-000032-4D11",
+    "user_id": "GUlRso41d8",
+    "case_number": null,
+    "original_filename": "MCRO_19AV-CV-25-3477_Complaint-Civil_2025-12-03_20251203180601.pdf",
+    "file_size": 2851732,
+    "mime_type": "application/pdf",
+    "content_hash": "4f45f64b5e86db4c8600269670b213ab4a2d7afb158f1ec69fbbac7060a003bb",
+    "metadata_hash": "4642374c897d855ca2e9caaab9bb1ededbfe25deb3ed4f23ca16f851472e2001",
+    "combined_hash": "e24b2341424583fde53e3b85069b5ac6c749c9c67a5ea945e01bb7b2d0f1a163",
+    "status": "copy",
+    "integrity_status": "verified",
+    "is_duplicate": true,
+    "original_document_id": "SEM-2026-000031-551C",
+    "duplicate_ids": [],
+    "duplicate_count": 0,
+    "forgery_alerts": [],
+    "forgery_score": 0.0,
+    "requires_review": false,
+    "registered_at": "2026-03-11T19:57:55.835998+00:00",
+    "last_verified_at": null,
+    "last_accessed_at": null,
+    "custody_chain": [
+      {
+        "timestamp": "2026-03-11T19:57:55.836011+00:00",
+        "action": "received",
+        "actor": "GUlRso41d8",
+        "details": "Document registered: MCRO_19AV-CV-25-3477_Complaint-Civil_2025-12-03_20251203180601.pdf",
+        "ip_address": "127.0.0.1",
+        "device_info": null,
+        "integrity_hash": "e24b2341424583fde53e3b85069b5ac6c749c9c67a5ea945e01bb7b2d0f1a163"
+      }
+    ],
+    "versions": [
+      {
+        "version": 1,
+        "timestamp": "2026-03-11T19:57:55.836031+00:00",
+        "content_hash": "4f45f64b5e86db4c8600269670b213ab4a2d7afb158f1ec69fbbac7060a003bb",
+        "changes": "Initial registration",
+        "changed_by": "GUlRso41d8"
+      }
+    ],
+    "current_version": 1,
+    "storage_path": null,
+    "intake_document_id": null
+  },
+  "SEM-2026-000033-452D": {
+    "document_id": "SEM-2026-000033-452D",
+    "user_id": "GUlRso41d8",
+    "case_number": null,
+    "original_filename": "MCRO_19AV-CV-25-3477_Notice of Filing of Order_2025-12-04_20251207202134.pdf",
+    "file_size": 177497,
+    "mime_type": "application/pdf",
+    "content_hash": "4ba5d0f3c89e04ed3850357ad24685404660d275beecaa158498b1b553ef17cf",
+    "metadata_hash": "0126368c2271e0b9c7b5b53b1668de9d84c3ec31d0e04f17de23179443be6154",
+    "combined_hash": "1d9b0d52de569c1fdb0ca44575fdca9c23464144a6200c0b88ce623dafe39057",
+    "status": "original",
+    "integrity_status": "verified",
+    "is_duplicate": false,
+    "original_document_id": null,
+    "duplicate_ids": [],
+    "duplicate_count": 0,
+    "forgery_alerts": [],
+    "forgery_score": 0.0,
+    "requires_review": false,
+    "registered_at": "2026-03-11T19:59:03.461377+00:00",
+    "last_verified_at": null,
+    "last_accessed_at": null,
+    "custody_chain": [
+      {
+        "timestamp": "2026-03-11T19:59:03.461382+00:00",
+        "action": "received",
+        "actor": "GUlRso41d8",
+        "details": "Document registered: MCRO_19AV-CV-25-3477_Notice of Filing of Order_2025-12-04_20251207202134.pdf",
+        "ip_address": "127.0.0.1",
+        "device_info": null,
+        "integrity_hash": "1d9b0d52de569c1fdb0ca44575fdca9c23464144a6200c0b88ce623dafe39057"
+      }
+    ],
+    "versions": [
+      {
+        "version": 1,
+        "timestamp": "2026-03-11T19:59:03.461391+00:00",
+        "content_hash": "4ba5d0f3c89e04ed3850357ad24685404660d275beecaa158498b1b553ef17cf",
+        "changes": "Initial registration",
+        "changed_by": "GUlRso41d8"
+      }
+    ],
+    "current_version": 1,
+    "storage_path": null,
+    "intake_document_id": null
+  },
+  "SEM-2026-000034-9235": {
+    "document_id": "SEM-2026-000034-9235",
+    "user_id": "GUlRso41d8",
+    "case_number": null,
+    "original_filename": "MCRO_19AV-CV-25-3477_Amended Motion_2025-12-03_20251207202459.pdf",
+    "file_size": 146669,
+    "mime_type": "application/pdf",
+    "content_hash": "4511c6c05aa080e072463597daf599c5167445df4ab499658c16c6e70b5b928e",
+    "metadata_hash": "363482fd45d07dbf758d5d9385a2a96815f648cb18c995aa134422ce8216068e",
+    "combined_hash": "6d8a6d262fcea98555e29ba32eb73856838c2f8e1a260278b9dcffb91f00f042",
+    "status": "original",
+    "integrity_status": "verified",
+    "is_duplicate": false,
+    "original_document_id": null,
+    "duplicate_ids": [
+      "SEM-2026-000035-E63C"
+    ],
+    "duplicate_count": 1,
+    "forgery_alerts": [],
+    "forgery_score": 0.0,
+    "requires_review": false,
+    "registered_at": "2026-03-11T19:59:29.353256+00:00",
+    "last_verified_at": null,
+    "last_accessed_at": null,
+    "custody_chain": [
+      {
+        "timestamp": "2026-03-11T19:59:29.353261+00:00",
+        "action": "received",
+        "actor": "GUlRso41d8",
+        "details": "Document registered: MCRO_19AV-CV-25-3477_Amended Motion_2025-12-03_20251207202459.pdf",
+        "ip_address": "127.0.0.1",
+        "device_info": null,
+        "integrity_hash": "6d8a6d262fcea98555e29ba32eb73856838c2f8e1a260278b9dcffb91f00f042"
+      }
+    ],
+    "versions": [
+      {
+        "version": 1,
+        "timestamp": "2026-03-11T19:59:29.353268+00:00",
+        "content_hash": "4511c6c05aa080e072463597daf599c5167445df4ab499658c16c6e70b5b928e",
+        "changes": "Initial registration",
+        "changed_by": "GUlRso41d8"
+      }
+    ],
+    "current_version": 1,
+    "storage_path": null,
+    "intake_document_id": null
+  },
+  "SEM-2026-000035-E63C": {
+    "document_id": "SEM-2026-000035-E63C",
+    "user_id": "GUlRso41d8",
+    "case_number": null,
+    "original_filename": "MCRO_19AV-CV-25-3477_Amended Motion_2025-12-03_20251207202459.pdf",
+    "file_size": 146669,
+    "mime_type": "application/pdf",
+    "content_hash": "4511c6c05aa080e072463597daf599c5167445df4ab499658c16c6e70b5b928e",
+    "metadata_hash": "3ef545db52bc6a89942b607b446c83ca9437585d0a9ec0ceb7fd5a9bfaf57ef4",
+    "combined_hash": "e5cfdb9ccef07f5081238bcb25e23b2de914b995d192c48e9d63d90fbf9a059c",
+    "status": "copy",
+    "integrity_status": "verified",
+    "is_duplicate": true,
+    "original_document_id": "SEM-2026-000034-9235",
+    "duplicate_ids": [],
+    "duplicate_count": 0,
+    "forgery_alerts": [],
+    "forgery_score": 0.0,
+    "requires_review": false,
+    "registered_at": "2026-03-11T20:00:40.710866+00:00",
+    "last_verified_at": null,
+    "last_accessed_at": null,
+    "custody_chain": [
+      {
+        "timestamp": "2026-03-11T20:00:40.710871+00:00",
+        "action": "received",
+        "actor": "GUlRso41d8",
+        "details": "Document registered: MCRO_19AV-CV-25-3477_Amended Motion_2025-12-03_20251207202459.pdf",
+        "ip_address": "127.0.0.1",
+        "device_info": null,
+        "integrity_hash": "e5cfdb9ccef07f5081238bcb25e23b2de914b995d192c48e9d63d90fbf9a059c"
+      }
+    ],
+    "versions": [
+      {
+        "version": 1,
+        "timestamp": "2026-03-11T20:00:40.710880+00:00",
+        "content_hash": "4511c6c05aa080e072463597daf599c5167445df4ab499658c16c6e70b5b928e",
+        "changes": "Initial registration",
+        "changed_by": "GUlRso41d8"
+      }
+    ],
+    "current_version": 1,
+    "storage_path": null,
+    "intake_document_id": null
+  },
+  "SEM-2026-000036-A3CC": {
+    "document_id": "SEM-2026-000036-A3CC",
+    "user_id": "GUlRso41d8",
+    "case_number": null,
+    "original_filename": "Ms Burg..pdf",
+    "file_size": 158932,
+    "mime_type": "application/pdf",
+    "content_hash": "9b43ef9794e9b81af77842c65f76e46efd72e08ddf16b59c1dceeb2bddc9fa3b",
+    "metadata_hash": "84b50e807dfed84e02a78215a71ec9ee2964f1287a3e5be8f2d831542c112a1c",
+    "combined_hash": "a298552157e3c5c88f9d7e7c75d8141bb9f047826ee1b7f11d1da926ffe8b64c",
+    "status": "original",
+    "integrity_status": "verified",
+    "is_duplicate": false,
+    "original_document_id": null,
+    "duplicate_ids": [],
+    "duplicate_count": 0,
+    "forgery_alerts": [],
+    "forgery_score": 0.0,
+    "requires_review": false,
+    "registered_at": "2026-03-11T20:04:35.927611+00:00",
+    "last_verified_at": null,
+    "last_accessed_at": null,
+    "custody_chain": [
+      {
+        "timestamp": "2026-03-11T20:04:35.927616+00:00",
+        "action": "received",
+        "actor": "GUlRso41d8",
+        "details": "Document registered: Ms Burg..pdf",
+        "ip_address": "127.0.0.1",
+        "device_info": null,
+        "integrity_hash": "a298552157e3c5c88f9d7e7c75d8141bb9f047826ee1b7f11d1da926ffe8b64c"
+      }
+    ],
+    "versions": [
+      {
+        "version": 1,
+        "timestamp": "2026-03-11T20:04:35.927625+00:00",
+        "content_hash": "9b43ef9794e9b81af77842c65f76e46efd72e08ddf16b59c1dceeb2bddc9fa3b",
+        "changes": "Initial registration",
+        "changed_by": "GUlRso41d8"
+      }
+    ],
+    "current_version": 1,
+    "storage_path": null,
+    "intake_document_id": null
+  },
+  "SEM-2026-000037-EE94": {
+    "document_id": "SEM-2026-000037-EE94",
+    "user_id": "GUlRso41d8",
+    "case_number": null,
+    "original_filename": "text messages  from vcelait dtating that we hs.pdf",
+    "file_size": 192338,
+    "mime_type": "application/pdf",
+    "content_hash": "73d187f193303199c91d12d0257dda4494038a62ab1a83e07b5a6ff49cd48bac",
+    "metadata_hash": "632081840d7de732fe35f89de4b914bcae944c1bdafa75c35653fa575bb40456",
+    "combined_hash": "19f05ba148571996f65f03e69647809f3127cbaf057c06960690ed4a9f7af62a",
+    "status": "original",
+    "integrity_status": "verified",
+    "is_duplicate": false,
+    "original_document_id": null,
+    "duplicate_ids": [],
+    "duplicate_count": 0,
+    "forgery_alerts": [],
+    "forgery_score": 0.0,
+    "requires_review": false,
+    "registered_at": "2026-03-11T22:12:28.790518+00:00",
+    "last_verified_at": null,
+    "last_accessed_at": null,
+    "custody_chain": [
+      {
+        "timestamp": "2026-03-11T22:12:28.790538+00:00",
+        "action": "received",
+        "actor": "GUlRso41d8",
+        "details": "Document registered: text messages  from vcelait dtating that we hs.pdf",
+        "ip_address": "127.0.0.1",
+        "device_info": null,
+        "integrity_hash": "19f05ba148571996f65f03e69647809f3127cbaf057c06960690ed4a9f7af62a"
+      }
+    ],
+    "versions": [
+      {
+        "version": 1,
+        "timestamp": "2026-03-11T22:12:28.792021+00:00",
+        "content_hash": "73d187f193303199c91d12d0257dda4494038a62ab1a83e07b5a6ff49cd48bac",
+        "changes": "Initial registration",
+        "changed_by": "GUlRso41d8"
+      }
+    ],
+    "current_version": 1,
+    "storage_path": null,
+    "intake_document_id": null
+  },
+  "SEM-2026-000038-BF25": {
+    "document_id": "SEM-2026-000038-BF25",
+    "user_id": "GUlRso41d8",
+    "case_number": null,
+    "original_filename": "Settlement Agreement_25-3477.pdf",
+    "file_size": 135935,
+    "mime_type": "application/pdf",
+    "content_hash": "7644c384f5f7d1cb72ed1436d13ecd8923886b917dbf322022bfa35ce25477b1",
+    "metadata_hash": "1006970a507be25f6e0de2e81d4d56043b51855b02becd553a83afd8adf8531b",
+    "combined_hash": "92a2172227a6f6b5f1c0a749a0428794ce2f3bfa3394654fcdc84c8d17a47ad1",
+    "status": "original",
+    "integrity_status": "verified",
+    "is_duplicate": false,
+    "original_document_id": null,
+    "duplicate_ids": [],
+    "duplicate_count": 0,
+    "forgery_alerts": [],
+    "forgery_score": 0.0,
+    "requires_review": false,
+    "registered_at": "2026-03-11T22:13:59.580392+00:00",
+    "last_verified_at": null,
+    "last_accessed_at": null,
+    "custody_chain": [
+      {
+        "timestamp": "2026-03-11T22:13:59.580397+00:00",
+        "action": "received",
+        "actor": "GUlRso41d8",
+        "details": "Document registered: Settlement Agreement_25-3477.pdf",
+        "ip_address": "127.0.0.1",
+        "device_info": null,
+        "integrity_hash": "92a2172227a6f6b5f1c0a749a0428794ce2f3bfa3394654fcdc84c8d17a47ad1"
+      }
+    ],
+    "versions": [
+      {
+        "version": 1,
+        "timestamp": "2026-03-11T22:13:59.580408+00:00",
+        "content_hash": "7644c384f5f7d1cb72ed1436d13ecd8923886b917dbf322022bfa35ce25477b1",
+        "changes": "Initial registration",
+        "changed_by": "GUlRso41d8"
       }
     ],
     "current_version": 1,
