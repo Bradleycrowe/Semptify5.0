@@ -19,7 +19,7 @@ Each overlay contains:
 
 from datetime import datetime, timezone
 from typing import Optional, List
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Header, Cookie, Request
 from pydantic import BaseModel, Field
 from sqlalchemy.ext.asyncio import AsyncSession
 import json
@@ -28,10 +28,55 @@ import logging
 
 from app.core.database import get_db
 from app.core.config import get_settings, Settings
-from app.core.security import require_user, StorageUser
+from app.core.security import require_user, StorageUser, verify_function_token_for_operation
 
 logger = logging.getLogger(__name__)
-router = APIRouter(prefix="/api/overlays", tags=["Document Overlays"])
+
+
+async def require_overlay_function_access(
+    request: Request,
+    document_id: str,
+    function_token_header: Optional[str] = Header(None, alias="X-Function-Token"),
+    semptify_uid: Optional[str] = Cookie(None),
+):
+    """Require both auth cookie identity and a valid short-lived function token."""
+    if not semptify_uid:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Authentication cookie is required",
+        )
+
+    token = function_token_header
+    if not token:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Function token required",
+        )
+
+    action = "overlay:read" if request.method in {"GET", "HEAD", "OPTIONS"} else "overlay:write"
+    token_result = verify_function_token_for_operation(
+        semptify_uid,
+        token,
+        action=action,
+        document_id=document_id,
+        refresh=False,
+    )
+    if not token_result.get("valid"):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail={
+                "error": "function_token_invalid",
+                "reason": token_result.get("reason", "invalid"),
+                "message": "Vault function token invalid or expired",
+            },
+        )
+
+
+router = APIRouter(
+    prefix="/api/overlays",
+    tags=["Document Overlays"],
+    dependencies=[Depends(require_overlay_function_access)],
+)
 
 
 # =============================================================================

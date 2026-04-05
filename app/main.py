@@ -2077,6 +2077,91 @@ All errors return JSON with `detail` field. Rate limit errors include `retry_aft
     </div>
 
     <script>
+        let functionToken = null;
+        let functionTokenReverifySeconds = 120;
+        let functionTokenIntervalId = null;
+
+        function setFunctionTokenState(token, reverifySeconds = 120) {{
+            functionToken = token || null;
+            functionTokenReverifySeconds = Number(reverifySeconds) || 120;
+            if (functionToken) {{
+                try {{
+                    localStorage.setItem('semptify_function_token', functionToken);
+                }} catch (e) {{}}
+            }}
+        }}
+
+        async function issueFunctionToken() {{
+            const res = await fetch('/storage/function-token/issue', {{
+                method: 'POST',
+                credentials: 'include',
+            }});
+            if (!res.ok) {{
+                throw new Error('Function token issue failed');
+            }}
+            const data = await res.json();
+            if (data?.token) {{
+                setFunctionTokenState(data.token, data.reverify_in_seconds);
+            }}
+            return data;
+        }}
+
+        async function verifyFunctionToken() {{
+            if (!functionToken) {{
+                return false;
+            }}
+            try {{
+                const params = new URLSearchParams({{
+                    refresh: 'true',
+                }});
+                const res = await fetch('/storage/function-token/verify?' + params.toString(), {{
+                    method: 'GET',
+                    credentials: 'include',
+                    headers: {{
+                        'X-Function-Token': functionToken,
+                    }},
+                }});
+                const data = await res.json();
+                if (!data.valid) {{
+                    functionToken = null;
+                    return false;
+                }}
+                if (data.reverify_in_seconds) {{
+                    functionTokenReverifySeconds = Number(data.reverify_in_seconds) || functionTokenReverifySeconds;
+                }}
+                return true;
+            }} catch (e) {{
+                return false;
+            }}
+        }}
+
+        async function ensureFunctionToken() {{
+            if (functionToken) {{
+                const valid = await verifyFunctionToken();
+                if (valid) {{
+                    return true;
+                }}
+            }}
+            await issueFunctionToken();
+            return !!functionToken;
+        }}
+
+        function startFunctionTokenReverifyLoop() {{
+            if (functionTokenIntervalId) {{
+                clearInterval(functionTokenIntervalId);
+            }}
+            functionTokenIntervalId = setInterval(async () => {{
+                const valid = await verifyFunctionToken();
+                if (!valid) {{
+                    try {{
+                        await issueFunctionToken();
+                    }} catch (e) {{
+                        // Keep UI usable; upload path will surface auth errors as needed.
+                    }}
+                }}
+            }}, Math.max(30, functionTokenReverifySeconds) * 1000);
+        }}
+
         // Check session and get storage status
         async function init() {{
             try {{
@@ -2086,6 +2171,12 @@ All errors return JSON with `detail` field. Rate limit errors include `retry_aft
                 if (data.authenticated) {{
                     document.getElementById('provider-status').textContent = 
                         '✓ Connected: ' + data.provider;
+                    try {{
+                        await ensureFunctionToken();
+                        startFunctionTokenReverifyLoop();
+                    }} catch (e) {{
+                        showMessage('Vault function security check pending. Upload to initialize access token.', 'error');
+                    }}
                     loadDocuments(data.access_token);
                 }} else {{
                     document.getElementById('provider-status').textContent = 'Not connected';
@@ -2195,13 +2286,20 @@ All errors return JSON with `detail` field. Rate limit errors include `retry_aft
                         body: formData,
                         credentials: 'include'
                     }});
+                    let body = null;
+                    try {{
+                        body = await res.json();
+                    }} catch (e) {{}}
                     
                     if (res.ok) {{
+                        if (body?.function_token) {{
+                            setFunctionTokenState(body.function_token, body.function_token_reverify_in_seconds);
+                            startFunctionTokenReverifyLoop();
+                        }}
                         showMessage('Uploaded: ' + file.name, 'success');
                         loadDocuments(data.access_token);
                     }} else {{
-                        const err = await res.json();
-                        showMessage('Failed: ' + (err.detail || 'Unknown error'), 'error');
+                        showMessage('Failed: ' + ((body && body.detail) || 'Unknown error'), 'error');
                     }}
                 }} catch (e) {{
                     showMessage('Upload failed: ' + e.message, 'error');
