@@ -1,4 +1,5 @@
 import pytest
+from app.routers import functionx as functionx_router
 
 
 @pytest.mark.anyio
@@ -115,3 +116,78 @@ async def test_create_and_execute_allowed_for_advocate_role(client):
     )
     assert execute_response.status_code == 200
     assert execute_response.json()["status"] == "executed"
+
+
+@pytest.mark.anyio
+async def test_functionx_create_emits_event_and_audit(client, monkeypatch):
+    published = []
+    audited = []
+
+    def fake_publish_sync(event_type, data, source="system", user_id=None):
+        published.append(
+            {
+                "event_type": event_type.value,
+                "data": data,
+                "source": source,
+                "user_id": user_id,
+            }
+        )
+
+    async def fake_audit_log(**kwargs):
+        audited.append(kwargs)
+
+    monkeypatch.setattr(functionx_router.event_bus, "publish_sync", fake_publish_sync)
+    monkeypatch.setattr(functionx_router, "audit_log", fake_audit_log)
+
+    response = await client.post(
+        "/api/functionx/sets",
+        json={"name": "Telemetry Set", "actions": ["x", "y"]},
+        cookies={"semptify_uid": "GVtest1234"},
+    )
+
+    assert response.status_code == 200
+    assert published
+    assert published[-1]["event_type"] == "user_action"
+    assert published[-1]["data"]["action"] == "functionx_set_created"
+    assert audited
+    assert audited[-1]["resource_type"] == "functionx_action_set"
+
+
+@pytest.mark.anyio
+async def test_functionx_execute_emits_event_and_audit(client, monkeypatch):
+    published = []
+    audited = []
+
+    def fake_publish_sync(event_type, data, source="system", user_id=None):
+        published.append(
+            {
+                "event_type": event_type.value,
+                "data": data,
+                "source": source,
+                "user_id": user_id,
+            }
+        )
+
+    async def fake_audit_log(**kwargs):
+        audited.append(kwargs)
+
+    monkeypatch.setattr(functionx_router.event_bus, "publish_sync", fake_publish_sync)
+    monkeypatch.setattr(functionx_router, "audit_log", fake_audit_log)
+
+    create_response = await client.post(
+        "/api/functionx/sets",
+        json={"name": "Exec Telemetry", "actions": ["a1"]},
+        cookies={"semptify_uid": "GVtest1234"},
+    )
+    assert create_response.status_code == 200
+    set_id = create_response.json()["set_id"]
+
+    response = await client.post(
+        f"/api/functionx/sets/{set_id}/execute",
+        json={"dry_run": False},
+        cookies={"semptify_uid": "GVtest1234"},
+    )
+
+    assert response.status_code == 200
+    assert any(item["data"].get("action") == "functionx_set_executed" for item in published)
+    assert any(item.get("resource_id") == set_id for item in audited)

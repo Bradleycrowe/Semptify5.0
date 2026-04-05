@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime
+import json
+from pathlib import Path
 from threading import Lock
 from uuid import uuid4
 
@@ -29,6 +31,58 @@ class FunctionXService:
     def __init__(self) -> None:
         self._records: dict[str, _ActionSetRecord] = {}
         self._lock = Lock()
+        self._store_path = Path("logs/functionx/action_sets.json")
+        self._store_path.parent.mkdir(parents=True, exist_ok=True)
+        self._load_records()
+
+    def _load_records(self) -> None:
+        if not self._store_path.exists():
+            return
+
+        try:
+            raw = json.loads(self._store_path.read_text(encoding="utf-8"))
+            if not isinstance(raw, list):
+                return
+            for item in raw:
+                try:
+                    record = _ActionSetRecord(
+                        set_id=item["set_id"],
+                        name=item["name"],
+                        actions=list(item.get("actions", [])),
+                        metadata=item.get("metadata"),
+                        status=item.get("status", "planned"),
+                        created_at=datetime.fromisoformat(item["created_at"]),
+                        last_executed_at=(
+                            datetime.fromisoformat(item["last_executed_at"])
+                            if item.get("last_executed_at")
+                            else None
+                        ),
+                    )
+                    self._records[record.set_id] = record
+                except Exception:
+                    continue
+        except Exception:
+            # Corrupt store should not break app startup.
+            self._records = {}
+
+    def _save_records(self) -> None:
+        payload = [
+            {
+                "set_id": record.set_id,
+                "name": record.name,
+                "actions": record.actions,
+                "metadata": record.metadata,
+                "status": record.status,
+                "created_at": record.created_at.isoformat(),
+                "last_executed_at": (
+                    record.last_executed_at.isoformat()
+                    if record.last_executed_at is not None
+                    else None
+                ),
+            }
+            for record in self._records.values()
+        ]
+        self._store_path.write_text(json.dumps(payload, ensure_ascii=True, indent=2), encoding="utf-8")
 
     def create_action_set(self, payload: FunctionXActionSetCreate) -> FunctionXActionSetDetail:
         now = utc_now()
@@ -46,6 +100,7 @@ class FunctionXService:
 
         with self._lock:
             self._records[set_id] = record
+            self._save_records()
 
         return self._to_detail(record)
 
@@ -76,6 +131,7 @@ class FunctionXService:
             else:
                 record.status = "executed"
                 record.last_executed_at = utc_now()
+                self._save_records()
                 status = record.status
                 message = "Action set executed successfully."
 
