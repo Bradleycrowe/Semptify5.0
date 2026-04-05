@@ -175,14 +175,57 @@ async def get_storage_client(user: StorageUser, db: AsyncSession, settings: Sett
     return await get_cloud_storage(user, db, settings)
 
 
+async def ensure_document_access(storage, document_id: str) -> None:
+    """Verify the document exists in the current user's vault scope."""
+    try:
+        files = await storage.list_files(".semptify/vault", recursive=True)
+    except Exception as e:
+        logger.warning("Unable to verify document access for %s: %s", document_id, e)
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Unable to verify document access",
+        ) from e
+
+    matches = [
+        f
+        for f in files
+        if not getattr(f, "is_folder", False)
+        and (
+            getattr(f, "name", "") == document_id
+            or getattr(f, "name", "").startswith(f"{document_id}.")
+        )
+    ]
+
+    if not matches:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Document access denied or document not found in user vault",
+        )
+
+
 async def load_overlay(storage, document_id: str, user_id: str) -> DocumentOverlay:
     """Load overlay from storage, creating if doesn't exist."""
+    await ensure_document_access(storage, document_id)
     overlay_path = f".semptify/vault/overlays/{document_id}.json"
     
     try:
         content = await storage.download_file(overlay_path)
         data = json.loads(content.decode("utf-8"))
-        return DocumentOverlay(**data)
+        overlay = DocumentOverlay(**data)
+        if overlay.user_id != user_id:
+            logger.warning(
+                "Overlay ownership mismatch for document %s: expected %s got %s",
+                document_id,
+                user_id,
+                overlay.user_id,
+            )
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Overlay owner mismatch for current user",
+            )
+        return overlay
+    except HTTPException:
+        raise
     except Exception:
         # Create new overlay
         return DocumentOverlay(
@@ -255,6 +298,7 @@ async def delete_overlay(
     Removes all annotations but keeps original document intact.
     """
     storage = await get_storage_client(user, db, settings)
+    await ensure_document_access(storage, document_id)
     overlay_path = f".semptify/vault/overlays/{document_id}.json"
     
     try:
@@ -797,6 +841,14 @@ async def import_overlay(
 ):
     """📥 Import overlay from JSON."""
     storage = await get_storage_client(user, db, settings)
+    await ensure_document_access(storage, document_id)
+
+    incoming_owner = overlay_data.get("user_id")
+    if incoming_owner and incoming_owner != user.user_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Imported overlay user_id does not match current user",
+        )
     
     if merge:
         existing = await load_overlay(storage, document_id, user.user_id)
