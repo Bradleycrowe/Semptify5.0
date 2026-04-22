@@ -2562,6 +2562,36 @@ All errors return JSON with `detail` field. Rate limit errors include `retry_aft
         )
 
     # =========================================================================
+    # Document Delivery Pages (Professional Send Flow)
+    # =========================================================================
+
+    PROFESSIONAL_ROLES = {"advocate", "manager", "legal", "admin"}
+
+    @fastapi_app.get("/delivery/send", response_class=HTMLResponse)
+    async def delivery_send_page(request: Request):
+        """Serve the document send page for professionals (Advocate, Manager, Legal, Admin)."""
+        from app.core.storage_middleware import is_valid_storage_user
+        from app.core.user_id import COOKIE_USER_ID, get_role_from_user_id
+
+        user_id = request.cookies.get(COOKIE_USER_ID)
+        if not is_valid_storage_user(user_id):
+            return RedirectResponse(url="/storage/providers", status_code=302)
+
+        # Verify professional role
+        role = get_role_from_user_id(user_id)
+        if role not in PROFESSIONAL_ROLES:
+            return RedirectResponse(url="/", status_code=302)
+
+        send_path = BASE_PATH / "static" / "delivery_send.html"
+        send_fallback = _render_static_page(send_path)
+        if send_fallback:
+            return send_fallback
+        return HTMLResponse(
+            content="<h1>Document Send page not found</h1>",
+            status_code=404
+        )
+
+    # =========================================================================
     # Tenant Pages (My Case)
     # =========================================================================
 
